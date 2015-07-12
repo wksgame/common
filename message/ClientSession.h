@@ -1,16 +1,29 @@
 #ifndef KISS_CLIENT_SESSION_H
 #define KISS_CLIENT_SESSION_H
 
-#include"MessageProcess.h"
+#include<message/ProtobufMessageProcess.h>
 
-struct c2sMessage;
+class SocketThread;
+class RingBuffer;
 
-class ClientSession :public MessageProcess<ClientSession, c2sMessage>
+class ClientSession :public kiss::pb::ProtobufMessageProcess<ClientSession>
 {
-public:
-	ClientSession();
+	friend SocketThread;
 
-	bool OnLogin(const c2sMessage* msg);
+	RingBuffer* readBuff;
+	RingBuffer* writeBuff;
+	int sock;
+	int msgId;
+	unsigned int msgSize;
+
+	double cur_time;
+
+	bool Update(const double cur_time);
+
+public:
+	ClientSession(const int sock,const int buffSize=32*1024);
+
+	bool OnLogin(const google::protobuf::MessageLite* msg);
 };
 
 #endif//KISS_CLIENT_SESSION_H
