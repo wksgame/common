@@ -1,0 +1,7 @@
+message Login
+{
+	enum MsgID
+	{
+		id = 1;
+	}
+}
