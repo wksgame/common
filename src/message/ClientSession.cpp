@@ -34,21 +34,21 @@ namespace kiss
 	{
 		this->cur_time = cur_time;
 
-		char buff[1024] = {};		///<´æ·Å´Ó»·ÐÎ»º³åÇøÖÐ¶ÁÈ¡µ½µÄÊý¾Ý
+		char buff[1024] = {};		///<ï¿½ï¿½ï¿½Å´Ó»ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 		if (readBuff->readSize() > 0)
 		{
 			if (msgSize == 0 && !readBuff->read((char*)&msgSize, 4))
 				return true;
 
-			if (msgSize < 4 || msgSize>1024)	///<ÏûÏ¢³¤¶È´íÎó£¬Ó¦¸ÃÖÁÉÙ°üº¬ÏûÏ¢ºÅµÄ³¤¶È
+			if (msgSize < 4 || msgSize>1024)	///<ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½Ù°ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ÅµÄ³ï¿½ï¿½ï¿½
 				return false;
 
-			if (readBuff->readSize() < msgSize)	///<ÏûÏ¢»¹²»ÍêÕû£¬²»´¦Àí
+			if (readBuff->readSize() < msgSize)	///<ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				return true;
 
 			readBuff->read((char*)&msgId, 4);
-			readBuff->read(buff, msgSize - 4);	///<¿Û³ýµôÏûÏ¢ºÅµÄ³¤¶È
+			readBuff->read(buff, msgSize - 4);	///<ï¿½Û³ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ÅµÄ³ï¿½ï¿½ï¿½
 
 			auto result = Process(msgId, buff, msgSize - 4);
 			msgSize = 0;
@@ -63,8 +63,8 @@ namespace kiss
 	{
 		Login* c2s = (Login*)msg;
 
-		string str = to_string(cur_time);
-		str += " sock:";
+		string str;
+		str += "sock:";
 		str += to_string(sock);
 		str += " login";
 		LOG_INFO(str.c_str());

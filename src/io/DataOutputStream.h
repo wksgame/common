@@ -18,7 +18,7 @@ namespace kiss
 
 		void close()override;
 		void Set(OutputStream* os);
-		void Delete();				// 释放OutputStream的内存
+		void Delete();				// 锟酵凤拷OutputStream锟斤拷锟节达拷
 
 		bool write(const void* data, const buff_t size)override;
 		buff_t cur_pos()const override;
@@ -37,7 +37,7 @@ namespace kiss
 		template<class T>
 		bool Write(const T& data)
 		{
-			return data.Write(*this);	//自定义数据需要实现 bool Write(DataOutputStream& dos)const;
+			return data.Write(*this);	//锟皆讹拷锟斤拷锟斤拷锟斤拷锟斤拷要实锟斤拷 bool Write(DataOutputStream& dos)const;
 		}
 
 		bool Write(const bool& data);

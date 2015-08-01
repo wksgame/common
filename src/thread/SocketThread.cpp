@@ -3,6 +3,8 @@
 #include<other/DateTime.h>
 #include<platform/platform.h>
 #include<message/ClientSession.h>
+#include<logger/logger.h>
+#include<string.h>
 
 using namespace std;
 
@@ -17,6 +19,9 @@ namespace kiss
 		FD_ZERO(&send_sock);
 		FD_ZERO(&err_sock);
 		max_sock = 0;
+		cur_time = 0;
+		last_time = 0;
+		sleep_time = 0;
 	}
 
 	SocketThread::~SocketThread()
@@ -25,6 +30,9 @@ namespace kiss
 
 	void SocketThread::Run()
 	{
+		strncpy(thread_name,"SocketThread",64);
+		thread_id=1;
+
 		while (true)
 		{
 			Update();
@@ -40,8 +48,15 @@ namespace kiss
 
 	void SocketThread::Update()
 	{
-		double cur_time = NowTime();
-		//¼ÓÈëÐÂÍæ¼Ò
+		cur_time = NowTime();
+
+		if(last_time> cur_time-1)
+		{
+
+			last_time = cur_time;
+		}
+
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (joinLock.try_lock())
 		{
 			if(joinClients.size()>0)
@@ -70,7 +85,7 @@ namespace kiss
 
 		auto selret = select(max_sock, &recv_sock, &send_sock, &err_sock, &timeout);
 
-		//¶ÁÈ¡Êý¾Ý
+		//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
 		const int buffSize = 32 * 1024;
 		char buff[buffSize] = {};
 		auto clientsIter = clients.begin();
@@ -95,7 +110,7 @@ namespace kiss
 			}
 		}
 
-		//´¦ÀíÊý¾Ý
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		clientsIter = clients.begin();
 		while (clientsIter != clients.end())
 		{
@@ -109,7 +124,7 @@ namespace kiss
 				++clientsIter;
 		}
 
-		//·¢ËÍÊý¾Ý
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (selret > 0)
 		{
 			clientsIter = clients.begin();
@@ -135,7 +150,7 @@ namespace kiss
 			}
 		}
 
-		//´¦Àísocket³ö´íÍæ¼Ò
+		//ï¿½ï¿½ï¿½ï¿½socketï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (selret > 0)
 		{
 			clientsIter = clients.begin();
@@ -152,7 +167,7 @@ namespace kiss
 			}
 		}
 
-		//´¦ÀíÍæ¼ÒÍË³ö
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½
 		for (auto i : quitClients)
 		{
 			FD_CLR(i->sock, &all_sock);

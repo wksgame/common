@@ -7,14 +7,14 @@ namespace kiss
 {
 	class RingBuffer
 	{
-		uint64 buffSize;			// 缓冲区大小
-		uint64 readLeftSize;		// 剩余可读取大小
-		uint64 writeLeftSize;		// 剩余可写入大小
-		uint64 readPos;				// 当前读取位置
-		uint64 writePos;			// 当前写入位置
+		uint64 buffSize;			// 锟斤拷锟斤拷锟斤拷锟斤拷小
+		uint64 readLeftSize;		// 剩锟斤拷锟缴讹拷取锟斤拷小
+		uint64 writeLeftSize;		// 剩锟斤拷锟斤拷写锟斤拷锟斤拷小
+		uint64 readPos;				// 锟斤拷前锟斤拷取位锟斤拷
+		uint64 writePos;			// 锟斤拷前写锟斤拷位锟斤拷
 
-		char* buff;					// 缓冲区
-		bool isNew;					// 是否是内部new的缓冲区
+		char* buff;					// 锟斤拷锟斤拷锟斤拷
+		bool isNew;					// 锟角凤拷锟斤拷锟节诧拷new锟侥伙拷锟斤拷锟斤拷
 
 	public:
 

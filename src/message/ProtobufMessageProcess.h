@@ -9,8 +9,8 @@ namespace kiss
 	namespace pb
 	{
 		/**
-		 * protobuf消息处理模版类,只负责处理已经解析成具体结构的消息
-		 * class SubClass 是继承此类的具体的消息处理类
+		 * protobuf锟斤拷息锟斤拷锟斤拷模锟斤拷锟斤拷,只锟斤拷锟斤拷锟斤拷锟斤拷锟窖撅拷锟斤拷锟斤拷锟缴撅拷锟斤拷锟结构锟斤拷锟斤拷息
+		 * class SubClass 锟角继承达拷锟斤拷锟侥撅拷锟斤拷锟斤拷锟斤拷息锟斤拷锟斤拷锟斤拷
 		 */
 		template<typename SubClass>
 		class ProtobufMessageProcess

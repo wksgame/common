@@ -8,11 +8,11 @@ typedef bool(*MessageProc)(ClientSession&, kiss::DataInputStream&);
 enum MESSAGE_ID
 {
 	MSGID_NULL,
-	MSGID_REGISTER,		// ×¢²áÓÃ»§
-	MSGID_LOGIN,		// µÇÈë
-	MSGID_CREATE,		// ´´½¨½ÇÉ«
-	MSGID_SELECT,		// Ñ¡Ôñ½ÇÉ«
-	MSGID_ATTACK,		// Õ½¶·
+	MSGID_REGISTER,		// ×¢ï¿½ï¿½ï¿½Ã»ï¿½
+	MSGID_LOGIN,		// ï¿½ï¿½ï¿½ï¿½
+	MSGID_CREATE,		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
+	MSGID_SELECT,		// Ñ¡ï¿½ï¿½ï¿½ï¿½É«
+	MSGID_ATTACK,		// Õ½ï¿½ï¿½
 	MSGID_MAX,
 };
 

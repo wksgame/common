@@ -35,6 +35,10 @@ namespace kiss
 		fd_set send_sock;
 		fd_set err_sock;
 		sock_t max_sock;
+
+		double cur_time;
+		double last_time;
+		double sleep_time;
 	};//class SocketThread
 }//namespace kiss
 #endif//KISS_SOCKET_THREAD_H

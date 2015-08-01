@@ -3,6 +3,9 @@
 
 namespace kiss
 {
+	extern thread_local char thread_name[64];
+	extern thread_local int thread_id;
+
 	void logger(const char* text);
 
 #ifndef LOG_NOT_OUTPUT

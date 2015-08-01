@@ -5,88 +5,130 @@
 #	include<windows.h>
 #else
 #	include<unistd.h>
+#	include<sys/time.h>
 #endif
 
-Date::Date()
+namespace
 {
-	auto t = localtime(nullptr);
+	time_t boot_time_seconds;
+	tm boot_time;			///<save start time
 
-	year	= t->tm_year+1900;
-	month	= t->tm_mon+1;
-	day		= t->tm_mday;
-	hour	= t->tm_hour;
-	minute	= t->tm_min;
-	second	= t->tm_sec;
-	weekday	= t->tm_wday?t->tm_wday:7;
+	struct TimeInit
+	{
+		TimeInit()
+		{
+			boot_time_seconds = time(nullptr);
+			tm* t = localtime(&boot_time_seconds);
+
+			boot_time.tm_year		= t->tm_year+1900;
+			boot_time.tm_mon		= t->tm_mon+1;
+			boot_time.tm_mday		= t->tm_mday;
+			boot_time.tm_hour		= t->tm_hour;
+			boot_time.tm_min		= t->tm_min;
+			boot_time.tm_sec		= t->tm_sec;
+			boot_time.tm_wday		= t->tm_wday?t->tm_wday:7;
+			boot_time.tm_gmtoff 	= t->tm_gmtoff;
+		}
+	};
+
+	TimeInit time_init;
 }
 
-Date::Date(const int time)
-{
-	auto t = localtime((time_t*)&time);
 
-	year = t->tm_year + 1900;
-	month = t->tm_mon + 1;
-	day = t->tm_mday;
-	hour = t->tm_hour;
-	minute = t->tm_min;
-	second = t->tm_sec;
-	weekday = t->tm_wday ? t->tm_wday : 7;
-}
 
-int Date::Year()
+namespace kiss
 {
-	return year;
-}
+	Date::Date()
+	{
+		auto now_time = time(nullptr);
+		auto t = localtime(&now_time);
 
-int Date::Month()
-{
-	return month;
-}
+		year	= t->tm_year+1900;
+		month	= t->tm_mon+1;
+		day		= t->tm_mday;
+		hour	= t->tm_hour;
+		minute	= t->tm_min;
+		second	= t->tm_sec;
+		weekday	= t->tm_wday?t->tm_wday:7;
+	}
 
-int Date::Day()
-{
-	return day;
-}
+	Date::Date(const int time)
+	{
+		auto t = localtime((time_t*)&time);
 
-int Date::Hour()
-{
-	return hour;
-}
+		year = t->tm_year + 1900;
+		month = t->tm_mon + 1;
+		day = t->tm_mday;
+		hour = t->tm_hour;
+		minute = t->tm_min;
+		second = t->tm_sec;
+		weekday = t->tm_wday ? t->tm_wday : 7;
+	}
 
-int Date::Minute()
-{
-	return minute;
-}
+	int Date::Year()
+	{
+		return year;
+	}
 
-int Date::Second()
-{
-	return second;
-}
+	int Date::Month()
+	{
+		return month;
+	}
 
-int Date::Weekday()
-{
-	return weekday;
-}
+	int Date::Day()
+	{
+		return day;
+	}
 
-Time::Time()
-{
-	cur_time = time(nullptr);
-}
+	int Date::Hour()
+	{
+		return hour;
+	}
 
-Time::~Time()
-{
-}
+	int Date::Minute()
+	{
+		return minute;
+	}
 
-double NowTime()
-{
-	return time(nullptr);
-}
+	int Date::Second()
+	{
+		return second;
+	}
 
-void WaitTime(const double milisec)
-{
-#ifdef WIN32
-	Sleep(milisec);
-#else
-	usleep(milisec*1000);
-#endif
+	int Date::Weekday()
+	{
+		return weekday;
+	}
+
+	Time::Time()
+	{
+		cur_time = time(nullptr);
+	}
+
+	Time::~Time()
+	{
+	}
+
+	double NowTime()
+	{
+	#ifdef WIN32
+			return GetLocalTime();
+	#else
+			struct timeval tv;
+			struct timezone tz;
+
+			gettimeofday(&tv, &tz);
+
+			return tv.tv_sec+double(tv.tv_usec)/1000000+boot_time.tm_gmtoff;
+	#endif//WIN32
+	}
+
+	void WaitTime(const double milliseconds)
+	{
+	#ifdef WIN32
+		Sleep(milliseconds);
+	#else
+		usleep(milliseconds*1000);
+	#endif
+	}
 }

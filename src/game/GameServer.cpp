@@ -12,6 +12,9 @@ using namespace kiss;
 
 bool GameServer::Init()
 {
+	strncpy(thread_name,"GameServer",64);
+	thread_id =5;
+
 	if (!InitNetwork())
 		return false;
 

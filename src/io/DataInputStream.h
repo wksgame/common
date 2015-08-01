@@ -18,7 +18,7 @@ namespace kiss
 
 		void close()override;
 		void Set(InputStream* is);
-		void Delete();				// 释放OutputStream的内存
+		void Delete();				// 锟酵凤拷OutputStream锟斤拷锟节达拷
 
 		bool read(void* data, const buff_t size)override;
 		bool peek(void* data, const buff_t size)override;
@@ -37,7 +37,7 @@ namespace kiss
 		template<class T>
 		bool Read(T& data)
 		{
-			return data.Read(*this);	//自定义数据需要实现 bool Read(DataInputStream& dos);
+			return data.Read(*this);	//锟皆讹拷锟斤拷锟斤拷锟斤拷锟斤拷要实锟斤拷 bool Read(DataInputStream& dos);
 		}
 
 		bool Read(bool& data);
