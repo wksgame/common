@@ -23,12 +23,6 @@ namespace kiss
 		this->is = is;
 	}
 
-	void DataInputStream::Delete()
-	{
-		delete is;
-		is = nullptr;
-	}
-
 	bool DataInputStream::read(void* data, const buff_t size)
 	{
 		if(is)

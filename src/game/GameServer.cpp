@@ -13,7 +13,6 @@ using namespace kiss;
 bool GameServer::Init()
 {
 	strncpy(thread_name,"GameServer",64);
-	thread_id =5;
 
 	if (!InitNetwork())
 		return false;
@@ -23,7 +22,9 @@ bool GameServer::Init()
 	srvSock->Bind();
 	srvSock->Listen(100);
 
-	logger("server start");
+	LOG_ERROR("server start");
+	LOG_WARNING("server start");
+	LOG_HINT("server start");
 
 	arr = new SocketThread*[4];
 	for (int i = 0; i < 4; ++i)
@@ -51,7 +52,7 @@ void GameServer::Run()
 		message += ":";
 		message += to_string(clientAddress.sin_port);
 
-		logger(message.c_str());
+		LOG_INFO(message.c_str());
 
 		ClientSession* cs = new ClientSession(clientSocket);
 		arr[clientSocket % 4]->Join(cs);

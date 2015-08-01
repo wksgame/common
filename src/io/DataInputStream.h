@@ -18,7 +18,6 @@ namespace kiss
 
 		void close()override;
 		void Set(InputStream* is);
-		void Delete();				// �ͷ�OutputStream���ڴ�
 
 		bool read(void* data, const buff_t size)override;
 		bool peek(void* data, const buff_t size)override;
@@ -37,7 +36,7 @@ namespace kiss
 		template<class T>
 		bool Read(T& data)
 		{
-			return data.Read(*this);	//�Զ���������Ҫʵ�� bool Read(DataInputStream& dos);
+			return data.Read(*this);	//bool Read(DataInputStream& dos);
 		}
 
 		bool Read(bool& data);
@@ -75,7 +74,7 @@ namespace kiss
 		{
 			return Read(data);
 		}
-	};
+	};//class DataInputStream
 }//namespace kiss
 
 #endif//KISS_DATA_INPUT_STREAM_H

@@ -24,12 +24,6 @@ namespace kiss
 		this->os = os;
 	}
 
-	void DataOutputStream::Delete()
-	{
-		delete os;
-		os = nullptr;
-	}
-
 	bool DataOutputStream::write(const void* data, const buff_t size)
 	{
 		if(os)

@@ -18,7 +18,6 @@ namespace kiss
 
 		void close()override;
 		void Set(OutputStream* os);
-		void Delete();				// �ͷ�OutputStream���ڴ�
 
 		bool write(const void* data, const buff_t size)override;
 		buff_t cur_pos()const override;
@@ -37,7 +36,7 @@ namespace kiss
 		template<class T>
 		bool Write(const T& data)
 		{
-			return data.Write(*this);	//�Զ���������Ҫʵ�� bool Write(DataOutputStream& dos)const;
+			return data.Write(*this);	//bool Write(DataOutputStream& dos)const;
 		}
 
 		bool Write(const bool& data);

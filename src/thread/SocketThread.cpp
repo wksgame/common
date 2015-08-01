@@ -31,7 +31,6 @@ namespace kiss
 	void SocketThread::Run()
 	{
 		strncpy(thread_name,"SocketThread",64);
-		thread_id=1;
 
 		while (true)
 		{

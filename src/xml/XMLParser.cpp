@@ -17,13 +17,13 @@ namespace kiss
 	{
 		if(!doc || !doc->LoadFile())
 		{
-			logger("file error");
+			LOG_ERROR("file error");
 			return false;
 		}
 
 		if(doc->Error())
 		{
-			logger(doc->ErrorDesc());
+			LOG_ERROR(doc->ErrorDesc());
 			return false;
 		}
 
