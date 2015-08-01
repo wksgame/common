@@ -19,7 +19,7 @@ namespace kiss
 
 		cur_time = 0;
 
-		RegisterMessage(1, &ClientSession::OnLogin, new Login());
+		RegisterMessage(1, &ClientSession::OnLogin, new c2sLogin());
 	}
 
 	ClientSession::~ClientSession()
@@ -61,7 +61,7 @@ namespace kiss
 
 	bool ClientSession::OnLogin(const google::protobuf::MessageLite* msg)
 	{
-		Login* c2s = (Login*)msg;
+		c2sLogin* c2s = (c2sLogin*)msg;
 
 		string str;
 		str += "sock:";

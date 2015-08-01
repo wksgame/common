@@ -23,7 +23,7 @@ const char* console_color[]=
 {
 	"\e[01;40;41m",		// red
 	"\e[01;40;43m",		// yellow
-	"\e[0;40;42m",		// green
+	"\e[01;40;42m",		// green
 	"\e[0m"				// reset
 };
 

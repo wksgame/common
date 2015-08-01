@@ -16,7 +16,7 @@ class ClientThread:public Thread
 		if(!sock.Connect())
 			return;
 
-		Login cts;
+		c2sLogin cts;
 		char buff[128]={0};
 		int* msgLen = (int*)buff;
 		int* msgId = (int*)(buff+4);

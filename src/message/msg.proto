@@ -1,7 +1,20 @@
-message Login
+message c2sLogin
 {
 	enum MsgID
 	{
 		id = 1;
 	}
+
+	required string account_name=1;
+	required string password=2;
+}
+
+message s2cLogin
+{
+	enum MsgID
+	{
+		id = 2;
+	}
+
+	required bool result=1;
 }
