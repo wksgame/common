@@ -2,19 +2,23 @@
 #define KISS_CLIENT_SESSION_H
 
 #include<message/ProtobufMessageProcess.h>
+#include<message/ProtobufMessageSend.h>
+#include<network/IOSocket.h>
 
 namespace kiss
 {
 	class SocketThread;
-	class RingBuffer;
+	class TCPIOSocket;
 
-	class ClientSession :public kiss::pb::ProtobufMessageProcess<ClientSession>
+	class ClientSession// :public kiss::pb::ProtobufMessageProcess<ClientSession>
 	{
 		friend SocketThread;
-
-		RingBuffer* readBuff;
-		RingBuffer* writeBuff;
-		int sock;
+		
+		kiss::pb::ProtobufMessageProcess<ClientSession> messageProcess;
+		kiss::pb::ProtobufMessageSend<> messageSend;
+		
+		TCPIOSocket* sock;
+		
 		int msgId;
 		unsigned int msgSize;
 
@@ -23,8 +27,10 @@ namespace kiss
 		bool Update(const double cur_time);
 
 	public:
-		ClientSession(const int sock,const int buffSize=32*1024);
+		ClientSession(const int sock,const sockaddr_in& address,const int buffSize=32*1024);
 		~ClientSession();
+		
+		bool Send();
 
 		bool OnLogin(const google::protobuf::MessageLite* msg);
 	};//class ClientSession

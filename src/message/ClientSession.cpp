@@ -4,58 +4,65 @@
 #include"other/RingBuffer.h"
 #include<string>
 #include<logger/logger.h>
+#include<network/IOSocket.h>
 
 using namespace std;
 
 namespace kiss
 {
-	ClientSession::ClientSession(const int sock, const int buffSize)
+	ClientSession::ClientSession(const int sock, const sockaddr_in& address, const int buffSize)
 	{
-		this->sock = sock;
-		readBuff = new RingBuffer(buffSize);
-		writeBuff = new RingBuffer(buffSize);
+		this->sock = new TCPIOSocket(sock,address,buffSize);
+
 		msgId = -1;
 		msgSize = 0;
 
 		cur_time = 0;
 
-		RegisterMessage(1, &ClientSession::OnLogin, new c2sLogin());
+		messageProcess.RegisterMessage(1, &ClientSession::OnLogin, new c2sLogin());
 	}
 
 	ClientSession::~ClientSession()
 	{
-		delete readBuff;
-		delete writeBuff;
-		readBuff = nullptr;
-		writeBuff = nullptr;
+		delete sock;
+		sock = nullptr;
+	}
+	
+	bool ClientSession::Send()
+	{
+		bool result = sock->Write(messageSend.buff, messageSend.curPos);
+		messageSend.ClearData();
+		
+		if(result)
+			LOG_INFO("send ok %d",sock->Socket());
+		return result;
 	}
 
 	bool ClientSession::Update(const double cur_time)
 	{
 		this->cur_time = cur_time;
 
-		char buff[1024] = {};		///<���Ŵӻ��λ������ж�ȡ��������
-
-		if (readBuff->readSize() > 0)
+		const int buffSize = 1024;
+		char tempBuff[1024] = {};
+		
+		if(msgSize==0)
 		{
-			if (msgSize == 0 && !readBuff->read((char*)&msgSize, 4))
+			if(!sock->Read((char*)&msgSize, 4))
 				return true;
-
-			if (msgSize < 4 || msgSize>1024)	///<��Ϣ���ȴ�����Ӧ�����ٰ�����Ϣ�ŵĳ���
+			
+			if(msgSize<4 || msgSize>1024)
 				return false;
-
-			if (readBuff->readSize() < msgSize)	///<��Ϣ����������������
-				return true;
-
-			readBuff->read((char*)&msgId, 4);
-			readBuff->read(buff, msgSize - 4);	///<�۳�����Ϣ�ŵĳ���
-
-			auto result = Process(msgId, buff, msgSize - 4);
-			msgSize = 0;
-			msgId = -1;
-			return result;
 		}
+		
+		if(!sock->Read(tempBuff,msgSize))
+			return true;
+		
+		msgId = *((int*)tempBuff);
 
+		auto result = messageProcess.Process(msgId, tempBuff+4, msgSize - 4);
+		msgSize = 0;
+		msgId = -1;
+			
 		return true;
 	}
 
@@ -63,11 +70,14 @@ namespace kiss
 	{
 		c2sLogin* c2s = (c2sLogin*)msg;
 
-		string str;
-		str += "sock:";
-		str += to_string(sock);
-		str += " login";
-		LOG_INFO(str.c_str());
-		return true;
+//		LOG_INFO(string("account_name")+c2s->account_name()+string(" password")+c2s->password()+string(" login ok"));
+		LOG_INFO("account_name %s password %s login ok",c2s->account_name().c_str(),c2s->password().c_str());
+		
+		s2cLogin s2c;
+		s2c.set_result(true);
+
+		messageSend.Append(&s2c);
+		
+		return Send();
 	}
 }//namespace kiss

@@ -24,7 +24,11 @@ namespace kiss
 		bool write(const char* b, const uint64 size);
 		bool read(char* b, const uint64 size);
 
-		uint64 readSize(){ return readLeftSize; }
+		bool peek(char* b, const uint64 size);		// for read
+		bool skip(const uint64 size);				// for read
+
+		uint64 readSize(){ return readLeftSize; }	// can read size
+		uint64 writeSize(){return writeLeftSize;}	// can write size
 	};// class Buffer
 }//namespace kiss
 #endif//RING_BUFFER_H

@@ -3,6 +3,7 @@
 #include<stdio.h>
 #include"logger.h"
 #include<other/DateTime.h>
+#include<stdarg.h>
 
 namespace
 {
@@ -16,22 +17,23 @@ enum class CONSOLE_COLOR
 };
 
 /**
- * light bgcolor fgcolor
- *
+ * light1 fgcolor30-37 bgcolor40-47 
  */
 const char* console_color[]=
 {
-	"\e[01;40;41m",		// red
-	"\e[01;40;43m",		// yellow
-	"\e[01;40;42m",		// green
+	"\e[0;30;41m",		// red
+	"\e[0;30;43m",		// yellow
+	"\e[0;30;42m",		// green
 	"\e[0m"				// reset
 };
 
 namespace kiss
 {
+#ifndef LOG_WITHOUT_THREAD_NAME
 	thread_local char thread_name[64];
+#endif//LOG_WITHOUT_THREAD_NAME
 
-	void logger(const LogLevel level, const char* text)
+	void logger(const kiss::LogLevel level, const char* format, ...)
 	{
 		logger_mutex.lock();
 
@@ -45,16 +47,24 @@ namespace kiss
 
 #ifndef LOG_WITHOUT_THREAD_NAME
 			printf("%s ",thread_name);
-#endif//LOG_WITHOUT_THREAD_ID
+#endif//LOG_WITHOUT_THREAD_NAME
 
-			printf("%s",text);
+			va_list args;
+			va_start(args,format);
+			vprintf(format,args);
+			va_end(args);
 
 #ifndef LOG_WITHOUT_COLOR
-			printf("\e[0m");
+			printf(" \e[0m");
 #endif//LOG_WITHOUT_COLOR
 
 			printf("\n");
 
 		logger_mutex.unlock();
+	}
+	
+	void logger(const kiss::LogLevel level, const std::string& text)
+	{
+		logger(level,text.c_str());
 	}
 }//namespace kiss

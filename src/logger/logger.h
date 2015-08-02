@@ -1,31 +1,35 @@
 #ifndef KISS_LOGGER_H
 #define KISS_LOGGER_H
 
+#include<string>
+
 namespace kiss
 {
+#ifndef LOG_WITHOUT_THREAD_NAME
 	extern thread_local char thread_name[64];
-	extern thread_local int thread_id;
+#endif//LOG_WITHOUT_THREAD_NAME
 
 	enum class LogLevel
 	{
 		error=0,
-		warning,
+		warn,
 		hint,
 		normal,
 	};
 
-	void logger(const LogLevel level, const char* text);
+	void logger(const LogLevel level, const char* format,...);
+	void logger(const LogLevel level, const std::string& text);
 
 #ifndef LOG_NOT_OUTPUT
-#	define LOG_ERROR(str)		{logger(LogLevel::error, str);}
-#	define LOG_WARNING(str)		{logger(LogLevel::warning, str);}
-#	define LOG_HINT(str)		{logger(LogLevel::hint, str);}
-#	define LOG_INFO(str)		{logger(LogLevel::normal, str);}
+#	define LOG_ERROR(str,...)		logger(LogLevel::error, str, ##__VA_ARGS__)
+#	define LOG_WARN(str,...)		logger(LogLevel::warn, str, ##__VA_ARGS__)
+#	define LOG_HINT(str,...)		logger(LogLevel::hint, str, ##__VA_ARGS__)
+#	define LOG_INFO(str,...)		logger(LogLevel::normal, str, ##__VA_ARGS__)
 #else
-#	define LOG_ERROR(str)		{}
-#	define LOG_WARNING(str)		{}
-#	define LOG_HINT(str)		{}
-#	define LOG_INFO(str)		{}
+#	define LOG_ERROR(str,...)
+#	define LOG_WARN(str,...)
+#	define LOG_HINT(str,...)
+#	define LOG_INFO(str,...)
 #endif//LOG_OUTPUT
 }//namespace kiss
 

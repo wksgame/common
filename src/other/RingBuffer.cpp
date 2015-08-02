@@ -83,4 +83,45 @@ namespace kiss
 
 		return true;
 	}
+	
+	bool RingBuffer::peek(char* b, const uint64 size)
+	{
+		if (readLeftSize < size)
+			return false;
+
+		if (readPos >= writePos)
+		{
+			uint64 left = buffSize - readPos;
+			if (left >= size)
+			{
+				memcpy(b, buff + readPos, size);
+				readPos += size;
+			}
+			else
+			{
+				memcpy(b, buff + readPos, left);
+				memcpy(b + left, buff, size - left);
+				readPos = size - left;
+			}
+		}
+		else
+		{
+			memcpy(b, buff + readPos, size);
+			readPos += size;
+		}
+		
+		return true;
+	}
+
+	bool RingBuffer::skip(const uint64 size)
+	{
+		if(readLeftSize < size)
+			return false;
+		
+		readLeftSize -= size;
+		writeLeftSize += size;
+		
+		return true;
+	}
+
 }//namespace kiss

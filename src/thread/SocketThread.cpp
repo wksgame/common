@@ -51,21 +51,22 @@ namespace kiss
 
 		if(last_time> cur_time-1)
 		{
-
-			last_time = cur_time;
+			WaitTime(cur_time-last_time);
 		}
+			
+		last_time = cur_time;
 
-		//����������
+		//add new_player
 		if (joinLock.try_lock())
 		{
 			if(joinClients.size()>0)
 			{
 				for (auto i : joinClients)
 				{
-					if(max_sock < i->sock)
-						max_sock=i->sock+1;
+					if(max_sock < i->sock->Socket())
+						max_sock=i->sock->Socket()+1;
 
-					FD_SET(i->sock, &all_sock);
+					FD_SET(i->sock->Socket(), &all_sock);
 				}
 
 				clients.insert(clients.end(), joinClients.begin(), joinClients.end());
@@ -84,7 +85,7 @@ namespace kiss
 
 		auto selret = select(max_sock, &recv_sock, &send_sock, &err_sock, &timeout);
 
-		//��ȡ����
+		//receive message
 		const int buffSize = 32 * 1024;
 		char buff[buffSize] = {};
 		auto clientsIter = clients.begin();
@@ -93,10 +94,9 @@ namespace kiss
 			while (clientsIter != clients.end())
 			{
 				auto cs = *clientsIter;
-				if (FD_ISSET(cs->sock, &recv_sock))
+				if (FD_ISSET(cs->sock->Socket(), &recv_sock))
 				{
-					auto result = ::recv(cs->sock, buff, buffSize, 0);
-					if (result <= 0 || !cs->readBuff->write(buff, result))
+					if (!cs->sock->Recv())
 					{
 						quitClients.push_back(cs);
 						clientsIter = clients.erase(clientsIter);
@@ -109,7 +109,7 @@ namespace kiss
 			}
 		}
 
-		//��������
+		//process message
 		clientsIter = clients.begin();
 		while (clientsIter != clients.end())
 		{
@@ -123,20 +123,16 @@ namespace kiss
 				++clientsIter;
 		}
 
-		//��������
+		//send message
 		if (selret > 0)
 		{
 			clientsIter = clients.begin();
 			while (clientsIter != clients.end())
 			{
 				auto cs = *clientsIter;
-				auto sendSize = cs->writeBuff->readSize();
-				if (FD_ISSET(cs->sock, &send_sock) && sendSize>0)
+				if (FD_ISSET(cs->sock->Socket(), &send_sock))
 				{
-					sendSize = sendSize < buffSize ? sendSize : buffSize;
-					cs->writeBuff->read(buff, sendSize);
-					auto result = ::send(cs->sock, buff, sendSize, 0);
-					if (result < sendSize)
+					if (!cs->sock->Send())
 					{
 						quitClients.push_back(cs);
 						clientsIter = clients.erase(clientsIter);
@@ -149,14 +145,14 @@ namespace kiss
 			}
 		}
 
-		//����socket��������
+		//delete_error socket
 		if (selret > 0)
 		{
 			clientsIter = clients.begin();
 			while (clientsIter != clients.end())
 			{
 				auto cs = *clientsIter;
-				if (FD_ISSET(cs->sock, &err_sock))
+				if (FD_ISSET(cs->sock->Socket(), &err_sock))
 				{
 					quitClients.push_back(cs);
 					clientsIter = clients.erase(clientsIter);
@@ -166,11 +162,11 @@ namespace kiss
 			}
 		}
 
-		//���������˳�
+		//clost error socket
 		for (auto i : quitClients)
 		{
-			FD_CLR(i->sock, &all_sock);
-			closesocket(i->sock);
+			FD_CLR(i->sock->Socket(), &all_sock);
+			//closesocket(i->sock);
 			delete i;
 		}
 

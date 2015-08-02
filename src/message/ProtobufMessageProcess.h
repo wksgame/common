@@ -1,24 +1,20 @@
 #ifndef KISS_PROTOBUF_MESSAGE_PROCESS_H
 #define KISS_PROTOBUF_MESSAGE_PROCESS_H
 
-#include<map>
+#include<unordered_map>
 #include<google/protobuf/message_lite.h>
 
 namespace kiss
 {
 	namespace pb
 	{
-		/**
-		 * protobuf��Ϣ����ģ����,ֻ���������Ѿ������ɾ����ṹ����Ϣ
-		 * class SubClass �Ǽ̳д����ľ�������Ϣ������
-		 */
 		template<typename SubClass>
 		class ProtobufMessageProcess
 		{
 			typedef bool(SubClass::*subcls_member_func)(const google::protobuf::MessageLite* msg);
 			typedef std::pair<subcls_member_func, google::protobuf::MessageLite*> func_message_item;
 
-			std::map<int, func_message_item>  client_session_func_map;
+			std::unordered_map<int, func_message_item>  client_session_func_map;
 
 		public:
 

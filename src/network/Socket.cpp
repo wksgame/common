@@ -3,9 +3,6 @@
 #include<string.h>
 #include<logger/logger.h>
 
-#define  PORT 4000
-#define  IP_ADDRESS "0.0.0.0"
-
 namespace kiss
 {
 
@@ -17,7 +14,7 @@ namespace kiss
 		//Init Windows Socket
 		if ( WSAStartup(MAKEWORD(2,2), &ws) != 0 )
 		{
-			LOG_INFO("Init Windows Socket Failed"+GetLastError())
+			LOG_ERROR("Init Windows Socket Failed %s",GetLastError())
 			return false;
 		}
 #else
@@ -39,11 +36,20 @@ namespace kiss
 		auto sock = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if ( sock == INVALID_SOCKET )
 		{
-			LOG_INFO("Create Socket Failed")
+			LOG_ERROR("Create Socket Failed");
 			return INVALID_SOCKET;
 		}
  
 		return sock;
+	}
+	
+	TCPSocket::TCPSocket()
+	{
+		memset(&address,0,sizeof(address));
+		sock=0;
+		timeout.tv_sec=0;
+		timeout.tv_usec=0;
+		block=true;
 	}
 
 	TCPSocket::~TCPSocket()
@@ -63,9 +69,35 @@ namespace kiss
 		address.sin_family = AF_INET;
 		address.sin_addr.s_addr = inet_addr(ip);
 		address.sin_port = htons(port);
-		memset(address.sin_zero, 0x00, 8);
+		//memset(address.sin_zero, 0x00, 8);
+		
+		int on=1;
+		setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)); 
 
 		return sock;
+	}
+	
+	bool TCPSocket::SetNoBlock()
+	{
+#ifdef WIN32
+		unsigned long ul = 1;
+		if (ioctlsocket(sock, FIONBIO, &ul) == SOCKET_ERROR)
+			return false;
+#else
+		fcntl(sock,F_SETFL,O_NONBLOCK);
+#endif
+		return true;
+	}
+	
+	bool TCPSocket::SetBlockTimeOut(const int sec, const int usec)
+	{
+		timeout.tv_sec = sec;
+		timeout.tv_usec = usec;
+
+		auto ret = ::setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
+		ret = ::setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof(timeout));
+
+		return ret == 0;
 	}
 
 	void TCPSocket::CloseSocket()
@@ -73,19 +105,11 @@ namespace kiss
 		::closesocket(sock);
 	}
 
-	TCPServerSocket::TCPServerSocket()
-	{
-		timeout.tv_sec = 0;
-		timeout.tv_usec = 0;
-		FD_ZERO(&rd);
-		block = true;
-	}
-
 	bool TCPServerSocket::Bind()
 	{
 		if(::bind(sock, (struct sockaddr*)&address, sizeof(address)) != 0 )
 		{
-			LOG_INFO("Bind Socket Failed")
+			LOG_ERROR("Bind Socket Failed");
 			return false;
 		}
 
@@ -96,7 +120,7 @@ namespace kiss
 	{
 		if(::listen(sock, count) != 0 )
 		{
-			LOG_INFO("Listen Socket Failed")
+			LOG_ERROR("Listen Socket Failed");
 			return false;
 		}
 
@@ -116,42 +140,18 @@ namespace kiss
 
 		if(s == INVALID_SOCKET )
 		{
-			LOG_INFO("Accept Socket Failed")
+			LOG_ERROR("Accept Socket Failed");
 			return false;
 		}
 
 		return true;
 	}
 
-	bool TCPServerSocket::SetNoBlock()
-	{
-#ifdef WIN32
-		unsigned long ul = 1;
-		if (ioctlsocket(sock, FIONBIO, &ul) == SOCKET_ERROR)
-			return false;
-#else
-#endif
-		return true;
-	}
-
-	bool TCPServerSocket::SetBlockTimeOut(const int sec, const int usec)
-	{
-		struct timeval tv_out;
-		tv_out.tv_sec = sec;
-		tv_out.tv_usec = usec;
-		block = false;
-		FD_SET(sock, &rd);
-
-		return SetNoBlock();
-		//auto ret = ::setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char*)&tv_out, sizeof(tv_out));
-		//return ret == 0;
-	}
-
 	bool TCPClientSocket::Connect()
 	{
 		if(connect(sock,(struct sockaddr*)&address, sizeof(address)) == SOCKET_ERROR)
 		{
-			LOG_INFO("Connect Socket Failed")
+			LOG_ERROR("Connect Socket Failed");
 			return false;
 		}
 

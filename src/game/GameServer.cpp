@@ -23,7 +23,7 @@ bool GameServer::Init()
 	srvSock->Listen(100);
 
 	LOG_ERROR("server start");
-	LOG_WARNING("server start");
+	LOG_WARN("server start");
 	LOG_HINT("server start");
 
 	arr = new SocketThread*[4];
@@ -54,7 +54,7 @@ void GameServer::Run()
 
 		LOG_INFO(message.c_str());
 
-		ClientSession* cs = new ClientSession(clientSocket);
+		ClientSession* cs = new ClientSession(clientSocket,clientAddress);
 		arr[clientSocket % 4]->Join(cs);
 	}
 

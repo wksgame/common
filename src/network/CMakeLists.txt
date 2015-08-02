@@ -1,6 +1,8 @@
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
-set(NET_WORK_DIR	Socket.cpp)
+set(NET_WORK_DIR	Socket.cpp
+					IOSocket.cpp
+)
 
 add_library(kissnetwork ${NET_WORK_DIR})
 

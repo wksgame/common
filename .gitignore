@@ -1,3 +1,5 @@
 build/*
 *.pb.*
 *.orig
+.kdev4/*
+common.kdev4
