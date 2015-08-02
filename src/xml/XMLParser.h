@@ -14,6 +14,9 @@ namespace kiss
 
 		bool Init();
 		void Parse();
+		
+	protected:
+		void Parse(TiXmlElement* element);
 
 	protected:
 		virtual void ParseElement(TiXmlElement* element);

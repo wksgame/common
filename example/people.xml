@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<people>
+	<person id="1" name="hello" hp="1000" damage="100" defend="30" hit="9000" dodge="1200" critical="2000"/>
+	<person id="2" name="world" hp="1200" damage="90" defend="35" hit="9500" dodge="1500" critical="1800"/>
+	<person id="3" name="baby" hp="1500" damage="85" defend="50" hit="9000" dodge="2000" critical="1500"/>
+	<person id="4" name="come" hp="900" damage="110" defend="45" hit="9500" dodge="1200" critical="2500"/>
+	
+	<pwd id="1" pwd="1"/>
+	<pwd id="2" pwd="2"/>
+	<pwd id="3" pwd="3"/>
+	<pwd id="4" pwd="4"/>	
+</people>

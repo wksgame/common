@@ -34,7 +34,22 @@ namespace kiss
 	{
 		TiXmlElement* rootElement = doc->RootElement();
 		TiXmlElement* childElement = rootElement->FirstChildElement();
-		ParseElement(childElement);
+		
+		Parse(childElement);
+	}
+	
+	void XMLParser::Parse(TiXmlElement* element)
+	{
+		while (element)
+		{
+			ParseElement(element);
+
+			auto child = element->FirstChildElement();
+			if(child)
+				Parse(child);
+		
+			element = element->NextSiblingElement();
+		}
 	}
 
 	void XMLParser::ParseElement(TiXmlElement* element)
