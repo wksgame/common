@@ -8,11 +8,15 @@ namespace kiss
 		friend void ThreadFunc(Thread* t);
 
 	public:
+		Thread(const char* thread_name);
 		virtual ~Thread(){}
 		void Start();
 
 	protected:
 		virtual void Run()=0;
+
+	private:
+		char thread_name[32];
 	};
 }//namespace kiss
 #endif//KISS_THREAD_H

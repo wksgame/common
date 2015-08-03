@@ -8,11 +8,13 @@
 namespace kiss
 {
 	class SocketThread;
+	class WorkThread;
 	class TCPIOSocket;
 
 	class ClientSession// :public kiss::pb::ProtobufMessageProcess<ClientSession>
 	{
 		friend SocketThread;
+		friend WorkThread;
 		
 		kiss::pb::ProtobufMessageProcess<ClientSession> messageProcess;
 		kiss::pb::ProtobufMessageSend<> messageSend;

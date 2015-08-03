@@ -24,12 +24,16 @@ namespace kiss
 		const int buffSize = 32 * 1024;
 		char tempBuff[buffSize] = {};
 
-		auto result = ::recv(sock, tempBuff, buffSize, 0);
+		auto recv_size = ::recv(sock, tempBuff, buffSize, 0);
 		
-		if(result<=0)
+		if(recv_size<=0)
 			return(false);
 		
-		return readBuff->write(tempBuff,result);
+		read_mutex.lock();
+			bool result = readBuff->write(tempBuff,recv_size);
+		read_mutex.unlock();
+
+		return result;
 	}
 
 	bool TCPIOSocket::Send()
@@ -37,47 +41,68 @@ namespace kiss
 		const int buffSize = 1024;
 		char tempBuff[buffSize] = {};
 		
-		int sendSize = writeBuff->readSize();
-		
-		while(sendSize>0)
-		{
-			sendSize = sendSize < buffSize ? sendSize : buffSize;
+		write_mutex.lock();
+			int sendSize = writeBuff->readSize();
 
-			writeBuff->peek(tempBuff,sendSize);
-			
-			auto result = ::send(sock, tempBuff, sendSize, 0);
-			
-			if(result<0)
-				return false;
-			
-			if(result==0)
-				break;
-			
-			writeBuff->skip(result);
-			sendSize = writeBuff->readSize();
-		}
+			while(sendSize>0)
+			{
+				sendSize = sendSize < buffSize ? sendSize : buffSize;
+
+				writeBuff->peek(tempBuff,sendSize);
+
+				auto result = ::send(sock, tempBuff, sendSize, 0);
+
+				if(result<0)
+				{
+					write_mutex.unlock();
+					return false;
+				}
+
+				if(result==0)
+					break;
+
+				writeBuff->skip(result);
+				sendSize = writeBuff->readSize();
+			}
+		write_mutex.unlock();
 		
 		return true;
 	}
 
 	bool TCPIOSocket::Read(char* b, const uint64 size)
 	{
-		return readBuff->read(b,size);
+		read_mutex.lock();
+			bool result = readBuff->read(b,size);
+		read_mutex.unlock();
+
+		return result;
 	}
 
 	bool TCPIOSocket::Write(const char* b, const uint64 size)
 	{
-		return writeBuff->write(b,size);
+		write_mutex.lock();
+			bool result = writeBuff->write(b,size);
+		write_mutex.unlock();
+
+		return result;
 	}
 	
 	bool TCPIOSocket::Peek(char* b, const uint64 size)
 	{
-		return readBuff->peek(b,size);
+		read_mutex.lock();
+			bool result = readBuff->peek(b,size);
+		read_mutex.unlock();
+
+		return result;
 	}
 
 	bool TCPIOSocket::Skip(const uint64 size)
 	{
-		return readBuff->skip(size);
+		read_mutex.lock();
+			bool result = readBuff->skip(size);
+		read_mutex.unlock();
+
+		return result;
 	}
 
 }//namespace kiss

@@ -21,16 +21,16 @@ enum class CONSOLE_COLOR
  */
 const char* console_color[]=
 {
-	"\e[0;30;41m",		// red
-	"\e[0;30;43m",		// yellow
-	"\e[0;30;42m",		// green
+	"\e[0;40;31m",		// red
+	"\e[0;40;33m",		// yellow
+	"\e[0;40;32m",		// green
 	"\e[0m"				// reset
 };
 
 namespace kiss
 {
 #ifndef LOG_WITHOUT_THREAD_NAME
-	thread_local char thread_name[64];
+	thread_local char thread_name[32];
 #endif//LOG_WITHOUT_THREAD_NAME
 
 	void logger(const kiss::LogLevel level, const char* format, ...)

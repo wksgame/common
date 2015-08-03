@@ -5,9 +5,12 @@
 #include<other/DateTime.h>
 #include<logger/logger.h>
 #include<thread/Thread.h>
+#include<atomic>
 
 using namespace kiss;
 using namespace std;
+
+std::atomic<int>	cur_count;
 
 class ClientSession
 {
@@ -29,7 +32,7 @@ public:
 		sock = new TCPIOSocket(1024);
 		sock->CreateSocket("127.0.0.1",4000);
 		
-		sock->SetBlockTimeOut(1,0);
+		//sock->SetBlockTimeOut(10,0);
 
 		if(!sock->Connect())
 			return;
@@ -114,21 +117,23 @@ class ClientThread:public Thread
 
 public:
 	
-	ClientThread(const int index)
+	ClientThread(const int index):Thread("ClientThread")
 	{
 		this->index = index;
 		cs = new ClientSession();
+
+		++cur_count;
 	}
 
 	void Run()
 	{
-//		WaitTime(3000);
+		WaitTime(1000);
 		while(true)
 		{
 			if(!cs->Send())
 			{
 				LOG_ERROR("send message error");
-				return;
+				break;
 			}
 
 			LOG_INFO("send success");
@@ -136,11 +141,13 @@ public:
 			if(!cs->Update(NowTime()))
 			{
 				LOG_ERROR("update error");
-				return;
+				break;
 			}
 
 			WaitTime(100);
 		}
+
+		--cur_count;
 	}
 };
 
@@ -149,7 +156,7 @@ int main()
 {
 	InitNetwork();
 
-	const int count =100;
+	const int count =500;
 	ClientThread* tharr[count];
 
 	for(int i=0; i<count; ++i)
@@ -158,7 +165,8 @@ int main()
 		tharr[i]->Start();
 	}
 
-	getchar();
+	while(cur_count>0)
+		WaitTime(1000);
 
 	CloseNetwork();
 	return 0;

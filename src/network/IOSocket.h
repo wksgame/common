@@ -2,6 +2,7 @@
 #define KISS_IO_SOCKET_H
 
 #include"Socket.h"
+#include<mutex>
 
 namespace kiss
 {
@@ -11,6 +12,9 @@ namespace kiss
 	{
 		RingBuffer* readBuff;
 		RingBuffer* writeBuff;
+
+		std::mutex read_mutex;
+		std::mutex write_mutex;
 		
 	public:
 		TCPIOSocket(const int buffSize);

@@ -5,10 +5,6 @@
 
 namespace kiss
 {
-#ifndef LOG_WITHOUT_THREAD_NAME
-	extern thread_local char thread_name[64];
-#endif//LOG_WITHOUT_THREAD_NAME
-
 	enum class LogLevel
 	{
 		error=0,

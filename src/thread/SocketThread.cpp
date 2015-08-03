@@ -10,7 +10,7 @@ using namespace std;
 
 namespace kiss
 {
-	SocketThread::SocketThread()
+	SocketThread::SocketThread():Thread("SocketThread")
 	{
 		timeout.tv_sec=1;
 		timeout.tv_usec = 0;
@@ -30,8 +30,6 @@ namespace kiss
 
 	void SocketThread::Run()
 	{
-		strncpy(thread_name,"SocketThread",64);
-
 		while (true)
 		{
 			Update();
@@ -48,13 +46,6 @@ namespace kiss
 	void SocketThread::Update()
 	{
 		cur_time = NowTime();
-
-		if(last_time> cur_time-1)
-		{
-			WaitTime(cur_time-last_time);
-		}
-			
-		last_time = cur_time;
 
 		//add new_player
 		if (joinLock.try_lock())
@@ -77,18 +68,38 @@ namespace kiss
 		}
 
 		if (clients.size() <= 0)
+		{
 			WaitTime(1000);
+			return;
+		}
 
 		memcpy(&recv_sock, &all_sock, sizeof(all_sock));
 		memcpy(&send_sock, &all_sock, sizeof(all_sock));
 		memcpy(&err_sock, &all_sock, sizeof(all_sock));
 
-		auto selret = select(max_sock, &recv_sock, &send_sock, &err_sock, &timeout);
+		auto selret = select(max_sock, &recv_sock, &send_sock, &err_sock, nullptr);//&timeout);
+
+		//delete_error socket
+		auto clientsIter = clients.begin();
+		if (selret > 0)
+		{
+			while (clientsIter != clients.end())
+			{
+				auto cs = *clientsIter;
+				if (FD_ISSET(cs->sock->Socket(), &err_sock))
+				{
+					quitClients.push_back(cs);
+					clientsIter = clients.erase(clientsIter);
+				}
+				else
+					++clientsIter;
+			}
+		}
 
 		//receive message
 		const int buffSize = 32 * 1024;
 		char buff[buffSize] = {};
-		auto clientsIter = clients.begin();
+		clientsIter = clients.begin();
 		if (selret > 0)
 		{
 			while (clientsIter != clients.end())
@@ -107,20 +118,6 @@ namespace kiss
 				else
 					++clientsIter;
 			}
-		}
-
-		//process message
-		clientsIter = clients.begin();
-		while (clientsIter != clients.end())
-		{
-			auto cs = *clientsIter;
-			if (!cs->Update(cur_time))
-			{
-				quitClients.push_back(cs);
-				clientsIter = clients.erase(clientsIter);
-			}
-			else
-				++clientsIter;
 		}
 
 		//send message
@@ -143,31 +140,6 @@ namespace kiss
 				else
 					++clientsIter;
 			}
-		}
-
-		//delete_error socket
-		if (selret > 0)
-		{
-			clientsIter = clients.begin();
-			while (clientsIter != clients.end())
-			{
-				auto cs = *clientsIter;
-				if (FD_ISSET(cs->sock->Socket(), &err_sock))
-				{
-					quitClients.push_back(cs);
-					clientsIter = clients.erase(clientsIter);
-				}
-				else
-					++clientsIter;
-			}
-		}
-
-		//clost error socket
-		for (auto i : quitClients)
-		{
-			FD_CLR(i->sock->Socket(), &all_sock);
-			//closesocket(i->sock);
-			delete i;
 		}
 
 		quitClients.clear();
