@@ -23,7 +23,7 @@ set(MESSAGE_DIR		message/ClientSession.cpp
 )
 
 set(NETWORK_DIR		network/Socket.cpp
-						network/IOSocket.cpp
+					network/IOSocket.cpp
 )
 
 set(OTHER_DIR		other/DateTime.cpp

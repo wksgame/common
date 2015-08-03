@@ -3,6 +3,7 @@
 
 #include"Socket.h"
 #include<mutex>
+#include<atomic>
 
 namespace kiss
 {
@@ -15,6 +16,9 @@ namespace kiss
 
 		std::mutex read_mutex;
 		std::mutex write_mutex;
+		
+	public:
+		std::atomic<bool> enable;
 		
 	public:
 		TCPIOSocket(const int buffSize);

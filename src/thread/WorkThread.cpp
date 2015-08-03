@@ -54,7 +54,10 @@ namespace kiss
 		}
 
 		if (clients.size() <= 0)
+		{
 			WaitTime(1000);
+			return;
+		}
 
 		//process message
 		auto clientsIter = clients.begin();
@@ -63,20 +66,22 @@ namespace kiss
 			auto cs = *clientsIter;
 			if (!cs->Update(cur_time))
 			{
-				quitClients.push_back(cs);
+//				quitClients.push_back(cs);
 				clientsIter = clients.erase(clientsIter);
+				LOG_WARN("client quit socket:%d",cs->sock->Socket());
+				SAFE_DELETE(cs);
 			}
 			else
 				++clientsIter;
 		}
 
 		//clost error socket
-		for (auto i : quitClients)
-		{
-			delete i;
-		}
-
-		quitClients.clear();
+// 		for (auto i : quitClients)
+// 		{
+// 			delete i;
+// 		}
+// 
+// 		quitClients.clear();
 	}
 
 }//namespace kiss

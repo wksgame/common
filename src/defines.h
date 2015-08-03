@@ -10,4 +10,7 @@ typedef unsigned long long int				uint64;
 
 typedef uint32 buff_t;
 
+#define SAFE_DELETE(object)	do{delete object; object = nullptr;}while(0)
+#define SAFE_DELETE_ARRAY(object)	do{delete [] object; object = nullptr;}while(0)
+
 #endif//DEFINES_H

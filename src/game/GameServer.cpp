@@ -70,7 +70,7 @@ void GameServer::Run()
 		LOG_INFO("client connect %s:%d",inet_ntoa(clientAddress.sin_addr),clientAddress.sin_port);
 
 		ClientSession* cs = new ClientSession(clientSocket,clientAddress);
-		recv_threads[clientSocket % 4]->Join(cs);
+		recv_threads[clientSocket % 4]->Join(cs->sock);
 		work_threads[clientSocket % 4]->Join(cs);
 	}
 

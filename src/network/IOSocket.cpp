@@ -8,6 +8,7 @@ namespace kiss
 	{
 		readBuff = new RingBuffer(buffSize);
 		writeBuff = new RingBuffer(buffSize);
+		enable = true;
 	}
 
 	TCPIOSocket::TCPIOSocket(const sock_t sock,const sockaddr_in& address,const int buffSize)
@@ -17,6 +18,7 @@ namespace kiss
 
 		readBuff = new RingBuffer(buffSize);
 		writeBuff = new RingBuffer(buffSize);
+		enable = true;
 	}
 	
 	bool TCPIOSocket::Recv()
@@ -28,7 +30,7 @@ namespace kiss
 		
 		if(recv_size<=0)
 			return(false);
-		
+
 		read_mutex.lock();
 			bool result = readBuff->write(tempBuff,recv_size);
 		read_mutex.unlock();
@@ -55,6 +57,7 @@ namespace kiss
 				if(result<0)
 				{
 					write_mutex.unlock();
+					
 					return false;
 				}
 

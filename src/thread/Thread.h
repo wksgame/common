@@ -15,7 +15,7 @@ namespace kiss
 	protected:
 		virtual void Run()=0;
 
-	private:
+	protected:
 		char thread_name[32];
 	};
 }//namespace kiss

@@ -1,17 +1,15 @@
 #include"EpollThread.h"
-
-#include"other/RingBuffer.h"
 #include<other/DateTime.h>
 #include<platform/platform.h>
-#include<message/ClientSession.h>
+#include<network/IOSocket.h>
 #include<logger/logger.h>
-#include<string.h>
+#include<sys/epoll.h>
 
 namespace kiss 
 {
 	EpollThread::EpollThread(const char* thread_name): Thread(thread_name)
 	{
-		events_size = 10000;
+		events_size = 2000;
 		events = new epoll_event[events_size];
 		epfd = epoll_create(events_size);
 		timeout = -1;
@@ -20,12 +18,13 @@ namespace kiss
 	EpollThread::~EpollThread()
 	{
 		::close(epfd);
+		SAFE_DELETE_ARRAY(events);
 	}
 	
-	void EpollThread::Join(ClientSession* cs)
+	void EpollThread::Join(TCPIOSocket* sock)
 	{
 		joinLock.lock();
-			joinClients.push_back(cs);
+			joinClients.push_back(sock);
 		joinLock.unlock();
 	}
 
@@ -39,19 +38,17 @@ namespace kiss
 
 	void EpollThread::Update()
 	{
-		cur_time = NowTime();
-
 		//add new_player
 		if (joinLock.try_lock())
 		{
 			if(joinClients.size()>0)
 			{
-				for (auto i : joinClients)
+				for (auto sock : joinClients)
 				{
 					epoll_event ee;
 					ee.events = EPOLLIN|EPOLLOUT|EPOLLERR;
-					ee.data.ptr = (void*)i;
-					epoll_ctl(epfd,EPOLL_CTL_ADD,i->sock->Socket(),&ee);
+					ee.data.ptr = (void*)sock;
+					epoll_ctl(epfd,EPOLL_CTL_ADD,sock->Socket(),&ee);
 				}
 
 				clients.insert(clients.end(), joinClients.begin(), joinClients.end());
@@ -71,32 +68,34 @@ namespace kiss
 
 		for(int i=0; i<selret; ++i)
 		{
-			ClientSession* cs = (ClientSession*)events[i].data.ptr;
+			TCPIOSocket* sock = (TCPIOSocket*)events[i].data.ptr;
 
 			if(events[i].events&EPOLLERR)
 			{
-				epoll_ctl(epfd,EPOLL_CTL_DEL,cs->sock->Socket(),0);
+				epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),0);
+				sock->enable = false;
 				continue;
 			}
 
 			if(events[i].events&EPOLLIN)
 			{
-				if(!cs->sock->Recv())
+				if(!sock->Recv())
 				{
-					epoll_ctl(epfd,EPOLL_CTL_DEL,cs->sock->Socket(),0);
+					epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),0);
+					sock->enable = false;
 					continue;
 				}
 			}
 			
 			if(events[i].events&EPOLLOUT)
 			{
-				if(!cs->sock->Send())
+				if(!sock->Send())
 				{
-					epoll_ctl(epfd,EPOLL_CTL_DEL,cs->sock->Socket(),0);
+					epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),0);
+					sock->enable = false;
 					continue;
 				}
 			}
 		}
 	}
-
 }//namespace kiss

@@ -45,6 +45,9 @@ namespace kiss
 		const int buffSize = 1024;
 		char tempBuff[1024] = {};
 		
+		if(!sock->enable)
+			return false;
+
 		if(msgSize==0)
 		{
 			if(!sock->Read((char*)&msgSize, 4))

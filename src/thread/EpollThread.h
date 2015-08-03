@@ -4,12 +4,12 @@
 #include"Thread.h"
 #include<list>
 #include<mutex>
-#include<platform/platform.h>
-#include<sys/epoll.h>
+
+struct epoll_event;
 
 namespace kiss
 {
-	class ClientSession;
+	class TCPIOSocket;
 
 	class EpollThread : public Thread
 	{
@@ -17,16 +17,16 @@ namespace kiss
 		EpollThread(const char* thread_name);
 		~EpollThread();
 		
-		void Join(ClientSession*cs);
+		void Join(TCPIOSocket* sock);
 
 	protected:
 		void Run()override;
 		void Update();
 
 	private:
-		std::list<ClientSession*>  clients;
-		std::list<ClientSession*>  joinClients;
-		std::list<ClientSession*>  quitClients;
+		std::list<TCPIOSocket*>  clients;
+		std::list<TCPIOSocket*>  joinClients;
+		std::list<TCPIOSocket*>  quitClients;
 		std::mutex joinLock;
 		std::mutex quitLock;
 
@@ -34,8 +34,6 @@ namespace kiss
 		epoll_event* events;
 		int events_size;
 		int timeout;
-		
-		double cur_time;
 	};//class EpollThread
 }//namespace kiss
 #endif//KISS_EPOLL_THREAD_H
