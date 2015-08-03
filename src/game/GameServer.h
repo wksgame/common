@@ -6,13 +6,15 @@ namespace kiss
 	class TCPServerSocket;
 	class SocketThread;
 	class WorkThread;
+	class EpollThread;
 }
 
 class GameServer
 {
 	kiss::TCPServerSocket* srvSock;
-	kiss::SocketThread** recv_threads;
+	//kiss::SocketThread** recv_threads;
 	kiss::WorkThread** work_threads;
+	kiss::EpollThread** recv_threads;
 
 public:
 

@@ -34,10 +34,10 @@ namespace kiss
 	sock_t CreateSocket()
 	{
 		auto sock = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-		if ( sock == INVALID_SOCKET )
+		if ( sock == SOCKET_ERROR )
 		{
 			LOG_ERROR("Create Socket Failed");
-			return INVALID_SOCKET;
+			return SOCKET_ERROR;
 		}
  
 		return sock;
@@ -62,9 +62,15 @@ namespace kiss
 		return sock;
 	}
 
-	sock_t TCPSocket::CreateSocket(const char* ip, const unsigned short port)
+	bool TCPSocket::CreateSocket(const char* ip, const unsigned short port)
 	{
-		sock = kiss::CreateSocket();
+		sock = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+		if ( sock == SOCKET_ERROR )
+		{
+			LOG_ERROR("Create Socket Failed");
+			return false;
+		}
 
 		address.sin_family = AF_INET;
 		address.sin_addr.s_addr = inet_addr(ip);
@@ -74,7 +80,7 @@ namespace kiss
 		int on=1;
 		setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)); 
 
-		return sock;
+		return true;
 	}
 	
 	bool TCPSocket::SetNoBlock()
@@ -138,7 +144,7 @@ namespace kiss
 		unsigned int addressLength = sizeof(sockaddr);
 		s = accept(sock, (struct sockaddr*)&sockaddr, (socklen_t*)&addressLength);
 
-		if(s == INVALID_SOCKET )
+		if(s == SOCKET_ERROR )
 		{
 			LOG_ERROR("Accept Socket Failed");
 			return false;

@@ -34,6 +34,7 @@ set(OTHER_DIR		other/DateTime.cpp
 set(THREAD_DIR		thread/Thread.cpp
 					thread/SocketThread.cpp
 					thread/WorkThread.cpp
+					thread/EpollThread.cpp
 )
 
 set(XML_DIR  		xml/XMLParser.cpp

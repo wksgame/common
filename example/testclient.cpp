@@ -144,7 +144,7 @@ public:
 				break;
 			}
 
-			WaitTime(100);
+			WaitTime(1000);
 		}
 
 		--cur_count;

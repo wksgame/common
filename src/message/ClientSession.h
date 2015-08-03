@@ -19,7 +19,7 @@ namespace kiss
 		kiss::pb::ProtobufMessageProcess<ClientSession> messageProcess;
 		kiss::pb::ProtobufMessageSend<> messageSend;
 		
-		TCPIOSocket* sock;
+		
 		
 		int msgId;
 		unsigned int msgSize;
@@ -27,6 +27,9 @@ namespace kiss
 		double cur_time;
 
 		bool Update(const double cur_time);
+		
+	public:
+		TCPIOSocket* sock;
 
 	public:
 		ClientSession(const int sock,const sockaddr_in& address,const int buffSize=32*1024);

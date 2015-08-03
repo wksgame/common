@@ -1,6 +1,7 @@
 #include"GameServer.h"
 #include<network/Socket.h>
-#include<thread/SocketThread.h>
+//#include<thread/SocketThread.h>
+#include<thread/EpollThread.h>
 #include<thread/WorkThread.h>
 #include<logger/logger.h>
 #include<message/ClientSession.h>
@@ -37,10 +38,10 @@ bool GameServer::Init()
 
 	LOG_HINT("server start listen port:%d",PORT);
 
-	recv_threads = new SocketThread*[4];
+	recv_threads = new EpollThread*[4];
 	for (int i = 0; i < 4; ++i)
 	{
-		recv_threads[i] = new SocketThread();
+		recv_threads[i] = new EpollThread("EpollThread");
 
 		recv_threads[i]->Start();
 	}

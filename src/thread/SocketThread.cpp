@@ -79,69 +79,49 @@ namespace kiss
 
 		auto selret = select(max_sock, &recv_sock, &send_sock, &err_sock, nullptr);//&timeout);
 
-		//delete_error socket
 		auto clientsIter = clients.begin();
-		if (selret > 0)
+		while (clientsIter != clients.end())
 		{
-			while (clientsIter != clients.end())
+			auto cs = *clientsIter;
+			if (FD_ISSET(cs->sock->Socket(), &err_sock))
 			{
-				auto cs = *clientsIter;
-				if (FD_ISSET(cs->sock->Socket(), &err_sock))
+				//quitClients.push_back(cs);
+				
+				FD_CLR(cs->sock->Socket(),&all_sock);
+				clientsIter = clients.erase(clientsIter);
+				
+				continue;
+			}
+
+			if(FD_ISSET(cs->sock->Socket(), &recv_sock))
+			{
+				if (!cs->sock->Recv())
 				{
-					quitClients.push_back(cs);
+					//quitClients.push_back(cs);
+				
+					FD_CLR(cs->sock->Socket(),&all_sock);
 					clientsIter = clients.erase(clientsIter);
+				
+					continue;
 				}
-				else
-					++clientsIter;
 			}
-		}
-
-		//receive message
-		const int buffSize = 32 * 1024;
-		char buff[buffSize] = {};
-		clientsIter = clients.begin();
-		if (selret > 0)
-		{
-			while (clientsIter != clients.end())
+			
+			if (FD_ISSET(cs->sock->Socket(), &send_sock))
 			{
-				auto cs = *clientsIter;
-				if (FD_ISSET(cs->sock->Socket(), &recv_sock))
+				if (!cs->sock->Send())
 				{
-					if (!cs->sock->Recv())
-					{
-						quitClients.push_back(cs);
-						clientsIter = clients.erase(clientsIter);
-					}
-					else
-						++clientsIter;
+					//quitClients.push_back(cs);
+				
+					FD_CLR(cs->sock->Socket(),&all_sock);
+					clientsIter = clients.erase(clientsIter);
+					
+					continue;
 				}
-				else
-					++clientsIter;
 			}
+
+			++clientsIter;
 		}
 
-		//send message
-		if (selret > 0)
-		{
-			clientsIter = clients.begin();
-			while (clientsIter != clients.end())
-			{
-				auto cs = *clientsIter;
-				if (FD_ISSET(cs->sock->Socket(), &send_sock))
-				{
-					if (!cs->sock->Send())
-					{
-						quitClients.push_back(cs);
-						clientsIter = clients.erase(clientsIter);
-					}
-					else
-						++clientsIter;
-				}
-				else
-					++clientsIter;
-			}
-		}
-
-		quitClients.clear();
+//		quitClients.clear();
 	}
 }//namespace kiss

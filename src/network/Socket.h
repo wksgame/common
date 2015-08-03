@@ -24,7 +24,7 @@ namespace kiss
 
 		sock_t Socket();
 
-		sock_t CreateSocket(const char* ip, const unsigned short port);
+		bool CreateSocket(const char* ip, const unsigned short port);
 		bool SetNoBlock();
 		bool SetBlockTimeOut(const int sec=5, const int usec=0);
 
