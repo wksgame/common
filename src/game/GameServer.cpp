@@ -38,16 +38,16 @@ bool GameServer::Init()
 
 	LOG_HINT("server start listen port:%d",PORT);
 
-	recv_threads = new EpollThread*[4];
-	for (int i = 0; i < 4; ++i)
+	recv_threads = new EpollThread*[thread_count];
+	for (int i = 0; i < thread_count; ++i)
 	{
 		recv_threads[i] = new EpollThread("EpollThread");
 
 		recv_threads[i]->Start();
 	}
 
-	work_threads = new WorkThread*[4];
-	for (int i = 0; i < 4; ++i)
+	work_threads = new WorkThread*[thread_count];
+	for (int i = 0; i < thread_count; ++i)
 	{
 		work_threads[i] = new WorkThread("WorkThread");
 
@@ -70,8 +70,8 @@ void GameServer::Run()
 		LOG_INFO("client connect %s:%d",inet_ntoa(clientAddress.sin_addr),clientAddress.sin_port);
 
 		ClientSession* cs = new ClientSession(clientSocket,clientAddress);
-		recv_threads[clientSocket % 4]->Join(cs->sock);
-		work_threads[clientSocket % 4]->Join(cs);
+		recv_threads[clientSocket % thread_count]->Join(cs->sock);
+		work_threads[clientSocket % thread_count]->Join(cs);
 	}
 
 	CloseNetwork();

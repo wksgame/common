@@ -1,13 +1,13 @@
-#include<mutex>
 #include<thread>
 #include<stdio.h>
 #include"logger.h"
 #include<other/DateTime.h>
 #include<stdarg.h>
+#include<thread/Mutex.h>
 
 namespace
 {
-	std::mutex logger_mutex;
+	Mutex<true> logger_mutex;
 }
 
 enum class CONSOLE_COLOR

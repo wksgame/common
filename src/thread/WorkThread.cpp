@@ -74,14 +74,6 @@ namespace kiss
 			else
 				++clientsIter;
 		}
-
-		//clost error socket
-// 		for (auto i : quitClients)
-// 		{
-// 			delete i;
-// 		}
-// 
-// 		quitClients.clear();
 	}
 
 }//namespace kiss

@@ -21,6 +21,12 @@ namespace kiss
 		enable = true;
 	}
 	
+	TCPIOSocket::~TCPIOSocket()
+	{
+		SAFE_DELETE(readBuff);
+		SAFE_DELETE(writeBuff);
+	}
+
 	bool TCPIOSocket::Recv()
 	{
 		const int buffSize = 32 * 1024;
@@ -42,7 +48,7 @@ namespace kiss
 	{
 		const int buffSize = 1024;
 		char tempBuff[buffSize] = {};
-		
+
 		write_mutex.lock();
 			int sendSize = writeBuff->readSize();
 
@@ -52,19 +58,19 @@ namespace kiss
 
 				writeBuff->peek(tempBuff,sendSize);
 
-				auto result = ::send(sock, tempBuff, sendSize, 0);
+				auto _size = ::send(sock, tempBuff, sendSize, 0);
 
-				if(result<0)
+				if(_size<0)
 				{
 					write_mutex.unlock();
 					
 					return false;
 				}
 
-				if(result==0)
+				if(_size==0)
 					break;
 
-				writeBuff->skip(result);
+				writeBuff->skip(_size);
 				sendSize = writeBuff->readSize();
 			}
 		write_mutex.unlock();
@@ -74,9 +80,16 @@ namespace kiss
 
 	bool TCPIOSocket::Read(char* b, const uint64 size)
 	{
-		read_mutex.lock();
-			bool result = readBuff->read(b,size);
-		read_mutex.unlock();
+// 		read_mutex.lock();
+// 			bool result = readBuff->read(b,size);
+// 		read_mutex.unlock();
+		bool result = false;
+
+		if(read_mutex.try_lock())
+		{
+			result = readBuff->read(b,size);
+			read_mutex.unlock();
+		}
 
 		return result;
 	}

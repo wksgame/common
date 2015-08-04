@@ -23,9 +23,12 @@ namespace kiss
 	
 	void EpollThread::Join(TCPIOSocket* sock)
 	{
-		joinLock.lock();
-			joinClients.push_back(sock);
-		joinLock.unlock();
+		epoll_event ee;
+		ee.events = EPOLLIN|EPOLLOUT|EPOLLERR;
+		ee.data.ptr = (void*)sock;
+		int result = epoll_ctl(epfd,EPOLL_CTL_ADD,sock->Socket(),&ee);
+		if(result==-1)
+			sock->enable = false;
 	}
 
 	void EpollThread::Run()
@@ -38,32 +41,6 @@ namespace kiss
 
 	void EpollThread::Update()
 	{
-		//add new_player
-		if (joinLock.try_lock())
-		{
-			if(joinClients.size()>0)
-			{
-				for (auto sock : joinClients)
-				{
-					epoll_event ee;
-					ee.events = EPOLLIN|EPOLLOUT|EPOLLERR;
-					ee.data.ptr = (void*)sock;
-					epoll_ctl(epfd,EPOLL_CTL_ADD,sock->Socket(),&ee);
-				}
-
-				clients.insert(clients.end(), joinClients.begin(), joinClients.end());
-				joinClients.clear();
-			}
-
-			joinLock.unlock();
-		}
-
-		if (clients.size() <= 0)
-		{
-			WaitTime(1000);
-			return;
-		}
-
 		auto selret = epoll_wait(epfd, events, events_size, timeout);
 
 		for(int i=0; i<selret; ++i)

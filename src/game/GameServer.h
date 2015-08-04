@@ -15,6 +15,7 @@ class GameServer
 	//kiss::SocketThread** recv_threads;
 	kiss::WorkThread** work_threads;
 	kiss::EpollThread** recv_threads;
+	const int thread_count = 1;
 
 public:
 

@@ -4,6 +4,7 @@
 #include"Socket.h"
 #include<mutex>
 #include<atomic>
+#include<thread/Mutex.h>
 
 namespace kiss
 {
@@ -14,8 +15,8 @@ namespace kiss
 		RingBuffer* readBuff;
 		RingBuffer* writeBuff;
 
-		std::mutex read_mutex;
-		std::mutex write_mutex;
+		Mutex<true> read_mutex;
+		Mutex<true> write_mutex;
 		
 	public:
 		std::atomic<bool> enable;
@@ -23,6 +24,7 @@ namespace kiss
 	public:
 		TCPIOSocket(const int buffSize);
 		TCPIOSocket(const sock_t sock,const sockaddr_in& address,const int buffSize);
+		~TCPIOSocket();
 		
 		bool Recv();
 		bool Send();
