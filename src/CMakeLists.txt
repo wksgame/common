@@ -18,6 +18,9 @@ aux_source_directory(io/ IO_DIR)
 set(LOGGER_DIR		logger/logger.cpp
 )
 
+set(DATABASE_DIR	db/SQLiteInterface.cpp
+)
+
 set(MESSAGE_DIR		message/ClientSession.cpp
 					message/msg.pb.cc
 )
@@ -45,6 +48,7 @@ aux_source_directory(game/ GAME_DIR)
 add_library(kiss	${GAME_DIR}
 					${IO_DIR}
 					${LOGGER_DIR}
+					${DATABASE_DIR}
 					${MESSAGE_DIR}
 					${NETWORK_DIR}
 					${OTHER_DIR}

@@ -3,23 +3,26 @@
 #include<time.h>
 #include<limits.h>
 
-int Random()
+namespace kiss 
 {
-	return rand();
-}
+	int Random()
+	{
+		return rand();
+	}
 
-int Random(const int x)
-{
-	return rand() % x + 1;
-}
+	int Random(const int x)
+	{
+		return rand() % x + 1;
+	}
 
-int Randomxy(const int x, const int y)
-{
-	int i = y - x + 1;
-	return rand() % i + x;
-}
+	int Randomxy(const int x, const int y)
+	{
+		int i = y - x + 1;
+		return rand() % i + x;
+	}
 
-float RandomFloat()
-{
-	return (float)rand() / INT_MAX;
+	float RandomFloat()
+	{
+		return (float)rand() / INT_MAX;
+	}
 }

@@ -2,7 +2,7 @@
 #define KISS_SQLITE_INTERFACE_H
 
 #include"sqlite3.h"
-#include"../DBInterface.h"
+#include"DBInterface.h"
 
 typedef void (*fun)(sqlite3_stmt* stmt);
 typedef void (*getdata)(char** result, int nRow, int nCol, void* out);

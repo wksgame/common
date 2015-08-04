@@ -7,25 +7,18 @@
 
 namespace kiss
 {
-	class SocketThread;
-	class WorkThread;
 	class TCPIOSocket;
 
-	class ClientSession// :public kiss::pb::ProtobufMessageProcess<ClientSession>
+	class ClientSession
 	{
-		friend SocketThread;
-		friend WorkThread;
-		
 		kiss::pb::ProtobufMessageProcess<ClientSession> messageProcess;
 		kiss::pb::ProtobufMessageSend<> messageSend;
 		
-		
-		
-		int msgId;
-		unsigned int msgSize;
+		unsigned int msgSize;		// current process message size
 
-		double cur_time;
+		double cur_time;			// current update time
 
+	public:
 		bool Update(const double cur_time);
 		
 	public:

@@ -14,12 +14,10 @@ namespace kiss
 	{
 		this->sock = new TCPIOSocket(sock,address,buffSize);
 
-		msgId = -1;
 		msgSize = 0;
-
 		cur_time = 0;
 
-		messageProcess.RegisterMessage(1, &ClientSession::OnLogin, new c2sLogin());
+		messageProcess.RegisterMessage(c2sLogin::id, &ClientSession::OnLogin, new c2sLogin());
 	}
 
 	ClientSession::~ClientSession()
@@ -60,7 +58,7 @@ namespace kiss
 		if(!sock->Read(tempBuff,msgSize))
 			return true;
 		
-		msgId = *((int*)tempBuff);
+		int msgId = *((int*)tempBuff);
 
 		auto result = messageProcess.Process(msgId, tempBuff+4, msgSize - 4);
 		msgSize = 0;
@@ -73,7 +71,6 @@ namespace kiss
 	{
 		c2sLogin* c2s = (c2sLogin*)msg;
 
-//		LOG_INFO(string("account_name")+c2s->account_name()+string(" password")+c2s->password()+string(" login ok"));
 		LOG_INFO("account_name %s password %s login ok",c2s->account_name().c_str(),c2s->password().c_str());
 		
 		s2cLogin s2c;

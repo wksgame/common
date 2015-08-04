@@ -33,7 +33,7 @@ namespace kiss
 	thread_local char thread_name[32];
 #endif//LOG_WITHOUT_THREAD_NAME
 
-	void logger(const kiss::LogLevel level, const char* format, ...)
+	void logger(const LogLevel level, const char* format, ...)
 	{
 		logger_mutex.lock();
 
@@ -63,7 +63,7 @@ namespace kiss
 		logger_mutex.unlock();
 	}
 	
-	void logger(const kiss::LogLevel level, const std::string& text)
+	void logger(const LogLevel level, const std::string& text)
 	{
 		logger(level,text.c_str());
 	}

@@ -1,5 +1,7 @@
 #include"SQLiteInterface.h"
 #include<iostream>
+#include<logger/logger.h>
+#include<cstring>
 
 using namespace std;
 
@@ -25,7 +27,8 @@ namespace kiss
 				sqlite3_close(db);
 				db = nullptr;
 
-				cerr<<"can't open database:"<<sqlite3_errmsg(db)<<endl;
+				LOG_ERROR("can't open database:%s",sqlite3_errmsg(db));
+				//cerr<<"can't open database:"<<sqlite3_errmsg(db)<<endl;
 				
 				return false;
 			}
@@ -50,7 +53,8 @@ namespace kiss
 				sqlite3_finalize(stmt);
 				stmt = nullptr;
 
-				cerr<<"can't sqlite3_prepare:"<<sqlite3_errmsg(db)<<endl;
+				LOG_ERROR("can't sqlite3_prepare:%s",sqlite3_errmsg(db));
+				//cerr<<"can't sqlite3_prepare:"<<sqlite3_errmsg(db)<<endl;
 				return false;
 			}
 
@@ -64,7 +68,8 @@ namespace kiss
 				sqlite3_finalize(stmt);
 				stmt = nullptr;
 
-				cerr<<"can't sqlite3_prepare:"<<sqlite3_errmsg(db)<<endl;
+				LOG_ERROR("can't sqlite3_prepare:%s",sqlite3_errmsg(db));
+				//cerr<<"can't sqlite3_prepare:"<<sqlite3_errmsg(db)<<endl;
 				return false;
 			}
 
@@ -88,7 +93,7 @@ namespace kiss
 		bool SQLiteInterface::DropTable(const char* tablename)
 		{
 			char sqlstr[1024]={0};
-			sprintf_s(sqlstr, "drop table %s",tablename);
+			snprintf(sqlstr,1024,"drop table %s",tablename);
 
 			if(!Prepare(sqlstr))
 				return false;
@@ -166,7 +171,7 @@ namespace kiss
 		bool SQLiteInterface::SelectAllFromTable(const char* tablename, fun f)
 		{
 			char sqlstr[1024]={0};
-			sprintf_s(sqlstr, "select * from %s",tablename);
+			snprintf(sqlstr,1024,"select * from %s",tablename);
 
 			if(!Prepare(sqlstr))
 				return false;
@@ -188,7 +193,7 @@ namespace kiss
 
 		bool SQLiteInterface::Insert()
 		{
-			char* beginSQL = "BEGIN TRANSACTION";
+			const char* beginSQL = "BEGIN TRANSACTION";
 			if(!Prepare(beginSQL))
 				return false;
 
@@ -198,7 +203,7 @@ namespace kiss
 			sqlite3_finalize(stmt);
 			stmt = nullptr;
 
-			char* insertSQL = "INSERT INTO testname VALUES(?,?)";
+			const char* insertSQL = "INSERT INTO testname VALUES(?,?)";
 			if(!Prepare(insertSQL))
 				return false;
 
@@ -217,7 +222,7 @@ namespace kiss
 			sqlite3_finalize(stmt);
 			stmt = nullptr;
 
-			char* commitSQL = "COMMIT";
+			const char* commitSQL = "COMMIT";
 			if(!Prepare(commitSQL))
 				return false;
 
