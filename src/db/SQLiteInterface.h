@@ -1,7 +1,7 @@
 #ifndef KISS_SQLITE_INTERFACE_H
 #define KISS_SQLITE_INTERFACE_H
 
-#include"sqlite3.h"
+#include<sqlite/sqlite3.h>
 #include"DBInterface.h"
 
 typedef void (*fun)(sqlite3_stmt* stmt);
@@ -25,6 +25,7 @@ namespace kiss
 			void Close()override;
 
 			bool Prepare(const char* sqlstr);
+			bool Prepare(const char* sqlstr, const int size);
 			bool Step();		// select 不能用此函数
 
 			bool CreateTable(const char* sqlstr)override;
@@ -35,9 +36,19 @@ namespace kiss
 			
 			bool Update(const char* sqlstr)override;
 
-			bool Select(const char* sqlstr, void* func, void* data)override;
+			/**
+			 * @param sqlstr sql string end of '\0'
+			 * @param callback callback function
+			 * @param arg argument to callback function
+			 */
+			bool Select(const char* sqlstr, void* callback, void* arg)override;
 
-			bool Select(const char* sqlstr, sqlite3_callback callback, void* data);
+			/**
+			 * @param sqlstr sql string end of '\0'
+			 * @param callback callback function
+			 * @param arg argument to callback function
+			 */
+			bool Select(const char* sqlstr, sqlite3_callback callback, void* arg);
 
 			bool Select(const char* sqlstr, getdata func, void* out);
 

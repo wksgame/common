@@ -6,6 +6,7 @@
 #include<logger/logger.h>
 #include<message/ClientSession.h>
 #include<stdio.h>
+#include"GameDB.h"
 
 using namespace std;
 using namespace kiss;
@@ -20,6 +21,10 @@ bool GameServer::Init()
 {
 	if (!InitNetwork())
 		return false;
+	
+	if(!InitGameDB())
+		return false;
+	LoadGameDB();
 
 	srvSock = new TCPServerSocket();
 	srvSock->CreateSocket(IP_ADDRESS, PORT);

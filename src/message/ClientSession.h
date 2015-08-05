@@ -4,7 +4,13 @@
 #include<message/ProtobufMessageProcess.h>
 #include<message/ProtobufMessageSend.h>
 #include<network/IOSocket.h>
+#include<vector>
 
+namespace game
+{
+	struct RoleInfo;
+	struct UserInfo;
+}
 namespace kiss
 {
 	class TCPIOSocket;
@@ -17,6 +23,9 @@ namespace kiss
 		unsigned int msgSize;		// current process message size
 
 		double cur_time;			// current update time
+		game::UserInfo* user_info;
+		std::vector<game::RoleInfo*> role_info;
+		int role_count;
 
 	public:
 		bool Update(const double cur_time);
@@ -30,7 +39,10 @@ namespace kiss
 		
 		bool Send();
 
+		bool OnSignup(const google::protobuf::MessageLite* msg);
 		bool OnLogin(const google::protobuf::MessageLite* msg);
+		bool OnCreateRole(const google::protobuf::MessageLite* msg);
+		bool OnSelectRole(const google::protobuf::MessageLite* msg);
 	};//class ClientSession
 }//namespace kiss
 #endif//KISS_CLIENT_SESSION_H

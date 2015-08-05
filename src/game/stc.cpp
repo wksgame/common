@@ -4,90 +4,93 @@
 
 using namespace kiss;
 
-bool stcRegister::Write(DataOutputStream& dos)const
+namespace game
 {
-	if(dos<<resultCode)
-		return true;
+	bool stcRegister::Write(DataOutputStream& dos)const
+	{
+		if(dos<<resultCode)
+			return true;
 
-	return false;
-}
+		return false;
+	}
 
-bool stcRegister::Read(DataInputStream& dis)
-{
-	if(dis>>resultCode)
-		return true;
+	bool stcRegister::Read(DataInputStream& dis)
+	{
+		if(dis>>resultCode)
+			return true;
 
-	return false;
-}
+		return false;
+	}
 
-bool stcLogin::Write(DataOutputStream& dos)const
-{
-	if(dos<<resultCode)
-	if(dos<<roles)
-		return true;
+	bool stcLogin::Write(DataOutputStream& dos)const
+	{
+		if(dos<<resultCode)
+		if(dos<<roles)
+			return true;
 
-	return false;
-}
+		return false;
+	}
 
-bool stcLogin::Read(DataInputStream& dis)
-{
-	if(dis>>resultCode)
-	if(dis>>roles)
-		return true;
+	bool stcLogin::Read(DataInputStream& dis)
+	{
+		if(dis>>resultCode)
+		if(dis>>roles)
+			return true;
 
-	return false;
-}
+		return false;
+	}
 
-bool stcCreateRole::Write(DataOutputStream& dos)const
-{
-	if(dos<<resultCode)
-	if(dos<<p)
-		return true;
+	bool stcCreateRole::Write(DataOutputStream& dos)const
+	{
+		if(dos<<resultCode)
+		if(dos<<p)
+			return true;
 
-	return false;
-}
+		return false;
+	}
 
-bool stcCreateRole::Read(DataInputStream& dis)
-{
-	if(dis>>resultCode)
-	if(dis>>p)
-		return true;
+	bool stcCreateRole::Read(DataInputStream& dis)
+	{
+		if(dis>>resultCode)
+		if(dis>>p)
+			return true;
 
-	return false;
-}
+		return false;
+	}
 
-bool stcSelectRole::Write(DataOutputStream& dos)const
-{
-	if(dos<<resultCode)
-	if(dos<<p)
-		return true;
+	bool stcSelectRole::Write(DataOutputStream& dos)const
+	{
+		if(dos<<resultCode)
+		if(dos<<p)
+			return true;
 
-	return false;
-}
+		return false;
+	}
 
-bool stcSelectRole::Read(DataInputStream& dis)
-{
-	if(dis>>resultCode)
-	if(dis>>p)
-		return true;
+	bool stcSelectRole::Read(DataInputStream& dis)
+	{
+		if(dis>>resultCode)
+		if(dis>>p)
+			return true;
 
-	return false;
-}
+		return false;
+	}
 
-bool stcAttack::Write(DataOutputStream& dos)const
-{
-	if(dos<<resultCode)
-	if(dos<<record)
-		return true;
+	bool stcAttack::Write(DataOutputStream& dos)const
+	{
+		if(dos<<resultCode)
+		if(dos<<record)
+			return true;
 
-	return false;
-}
+		return false;
+	}
 
-bool stcAttack::Read(DataInputStream& dis)
-{
-	if(dis>>resultCode)
-	if(dis>>record)
-		return true;
+	bool stcAttack::Read(DataInputStream& dis)
+	{
+		if(dis>>resultCode)
+		if(dis>>record)
+			return true;
 
-	return false;
+		return false;
+	}
 }

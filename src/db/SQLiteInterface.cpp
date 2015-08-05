@@ -54,7 +54,22 @@ namespace kiss
 				stmt = nullptr;
 
 				LOG_ERROR("can't sqlite3_prepare:%s",sqlite3_errmsg(db));
-				//cerr<<"can't sqlite3_prepare:"<<sqlite3_errmsg(db)<<endl;
+				return false;
+			}
+
+			return true;
+		}
+		
+		bool SQLiteInterface::Prepare(const char* sqlstr, const int size)
+		{
+			auto rc = sqlite3_prepare(db, sqlstr, size, &stmt, nullptr);
+
+			if(rc != SQLITE_OK)
+			{
+				sqlite3_finalize(stmt);
+				stmt = nullptr;
+
+				LOG_ERROR("can't sqlite3_prepare:%s",sqlite3_errmsg(db));
 				return false;
 			}
 
@@ -93,9 +108,9 @@ namespace kiss
 		bool SQLiteInterface::DropTable(const char* tablename)
 		{
 			char sqlstr[1024]={0};
-			snprintf(sqlstr,1024,"drop table %s",tablename);
+			int size = snprintf(sqlstr,1024,"drop table %s",tablename);
 
-			if(!Prepare(sqlstr))
+			if(!Prepare(sqlstr,size))
 				return false;
 
 			if(!Step())
@@ -124,14 +139,14 @@ namespace kiss
 			return sqlite3_exec(db, sqlstr, nullptr, nullptr, nullptr) == SQLITE_OK;
 		}
 
-		bool SQLiteInterface::Select(const char* sqlstr, void* func, void* data)
+		bool SQLiteInterface::Select(const char* sqlstr, void* callback, void* arg)
 		{
-			return Select(sqlstr, (sqlite3_callback)func, data);
+			return Select(sqlstr, (sqlite3_callback)callback, arg);
 		}
 
-		bool SQLiteInterface::Select(const char* sqlstr, sqlite3_callback callback, void* data)
+		bool SQLiteInterface::Select(const char* sqlstr, sqlite3_callback callback, void* arg)
 		{
-			return sqlite3_exec(db, sqlstr, callback, data, nullptr) == SQLITE_OK;
+			return sqlite3_exec(db, sqlstr, callback, arg, nullptr) == SQLITE_OK;
 		}
 
 		bool SQLiteInterface::Select(const char* sqlstr, getdata func, void* out)
@@ -150,7 +165,7 @@ namespace kiss
 			}
 
 			if(func)
-				func(result+nCol, nRow, nCol, out);
+				func(result+nCol, nRow, nCol, out);		// result+nCol  remove field name
 
 			/*index = nCol;
 			for(int i=0; i<nRow; ++i)
@@ -171,9 +186,9 @@ namespace kiss
 		bool SQLiteInterface::SelectAllFromTable(const char* tablename, fun f)
 		{
 			char sqlstr[1024]={0};
-			snprintf(sqlstr,1024,"select * from %s",tablename);
+			int size = snprintf(sqlstr,1024,"select * from %s",tablename);
 
-			if(!Prepare(sqlstr))
+			if(!Prepare(sqlstr,size))
 				return false;
 
 			while(true)
@@ -194,7 +209,7 @@ namespace kiss
 		bool SQLiteInterface::Insert()
 		{
 			const char* beginSQL = "BEGIN TRANSACTION";
-			if(!Prepare(beginSQL))
+			if(!Prepare(beginSQL,17))
 				return false;
 
 			if(!Step())
@@ -204,7 +219,7 @@ namespace kiss
 			stmt = nullptr;
 
 			const char* insertSQL = "INSERT INTO testname VALUES(?,?)";
-			if(!Prepare(insertSQL))
+			if(!Prepare(insertSQL,32))
 				return false;
 
 			int count = 10;

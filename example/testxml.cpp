@@ -7,6 +7,7 @@
 
 using namespace std;
 using namespace kiss;
+using namespace game;
 
 unordered_map<int,int> userandpwd;
 
