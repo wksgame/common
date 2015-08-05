@@ -25,8 +25,13 @@ namespace kiss
 				client_session_func_map.clear();
 			}
 
-			bool Process(const int msgId, const void* data, const int size)
+			bool Process(const char* data, const int size)
 			{
+				if(!data || size<4)
+					return false;
+
+				int msgId = *((int*)data);
+
 				auto it = client_session_func_map.find(msgId);
 				if (it == client_session_func_map.end())
 					return false;
@@ -35,7 +40,7 @@ namespace kiss
 				auto msg = it->second.second;
 
 				msg->Clear();
-				if (!msg->ParseFromArray(data, size))
+				if (!msg->ParseFromArray(data+4, size-4))
 					return false;
 
 				bool result = (((SubClass*)this)->*(func))(msg);

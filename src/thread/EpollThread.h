@@ -24,12 +24,6 @@ namespace kiss
 		void Update();
 
 	private:
-//		std::list<TCPIOSocket*>  clients;
-//		std::list<TCPIOSocket*>  joinClients;
-//		std::list<TCPIOSocket*>  quitClients;
-//		std::mutex joinLock;
-//		std::mutex quitLock;
-
 		int epfd;
 		epoll_event* events;
 		int events_size;

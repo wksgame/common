@@ -58,11 +58,8 @@ namespace kiss
 		if(!sock->Read(tempBuff,msgSize))
 			return true;
 		
-		int msgId = *((int*)tempBuff);
-
-		auto result = messageProcess.Process(msgId, tempBuff+4, msgSize - 4);
+		auto result = messageProcess.Process(tempBuff, msgSize);
 		msgSize = 0;
-		msgId = -1;
 			
 		return true;
 	}
