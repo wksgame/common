@@ -22,9 +22,9 @@ bool GameServer::Init()
 	if (!InitNetwork())
 		return false;
 	
-	if(!InitGameDB())
+	if(!game::InitGameDB())
 		return false;
-	LoadGameDB();
+	//LoadGameDB();
 
 	srvSock = new TCPServerSocket();
 	srvSock->CreateSocket(IP_ADDRESS, PORT);

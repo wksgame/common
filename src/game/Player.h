@@ -23,7 +23,7 @@ namespace game
 	{
 		std::string rolename;
 		long long roleID;
-		long long userID;
+		long long accountID;
 		long long money;
 		long long exp;
 		int level;

@@ -6,6 +6,11 @@
 #include<mutex>
 #include<platform/platform.h>
 
+namespace game
+{
+	class GameDB;
+}
+
 namespace kiss
 {
 	class ClientSession;
@@ -21,6 +26,8 @@ namespace kiss
 		void Run()override;
 		void Update();
 
+	public:
+		game::GameDB* db;
 	private:
 		std::list<ClientSession*>  clients;
 		std::list<ClientSession*>  joinClients;

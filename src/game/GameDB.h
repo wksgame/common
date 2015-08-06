@@ -6,26 +6,36 @@
 #include<deque>
 #include<vector>
 
+#include"gamedefines.h"
 #include"Player.h"
 
-// 创建数据表
-bool InitGameDB();
+namespace kiss
+{
+	namespace db
+	{
+		class DBInterface;
+	}
+}
 
-// 添加数据
-bool CreateUser(const char* username, const char* password);
-game::UserInfo* GetUser(const char* username, const char* password);
+namespace game
+{
+	// 创建数据表
+	bool InitGameDB();
 
-game::RoleInfo* CreateRole(const char* rolename, const long long userID);
-void GetRole(const long long userID, std::vector<game::RoleInfo*>* roles, int &count);
+	class GameDB
+	{
+		kiss::db::DBInterface* db;
+	public:
 
-// 加载数据
-void LoadGameDB();
-void LoadAllUser();
-void LoadAllRole();
+		GameDB();
+		~GameDB();
 
-extern std::unordered_map<long long, game::UserInfo*> all_users_by_id;
-extern std::unordered_map<std::string, game::UserInfo*> all_users_by_name;
-extern std::unordered_map<long long, game::RoleInfo*> all_roles_by_roleid;
-extern std::unordered_map<long long, std::deque<game::RoleInfo*>> all_roles_by_userid;
+		ACCOUNT_ID CreateAccount(const char* username, const char* password);
+		game::UserInfo* CheckAccount(const char* username, const char* password);
 
+		game::RoleInfo* CreateRole(const char* rolename, const ACCOUNT_ID accountid);
+		void GetRoleList(const ACCOUNT_ID accountid, std::vector<game::RoleInfo*>* roles);
+		game::RoleInfo* GetRole(const ROLE_ID roleid);
+	};
+}
 #endif//GAME_DB_H

@@ -7,6 +7,7 @@
 #include<network/IOSocket.h>
 #include<game/GameDB.h>
 #include<game/Player.h>
+#include<thread/WorkThread.h>
 
 using namespace std;
 
@@ -73,17 +74,21 @@ namespace kiss
 	bool ClientSession::OnSignup(const google::protobuf::MessageLite* msg)
 	{
 		c2sSignup* c2s = (c2sSignup*)msg;
-		
-		bool result = CreateUser(c2s->account_name().c_str(),c2s->password().c_str());
-
-		if(result)
-			LOG_INFO("account_name %s password %s signup ok",c2s->account_name().c_str(),c2s->password().c_str());
-		else
-			LOG_ERROR("account_name %s signup failed",c2s->account_name().c_str());
-		
 		s2cSignup s2c;
-		s2c.set_result(result);
 
+		ACCOUNT_ID newaccountid = work_thread->db->CreateAccount(c2s->account_name().c_str(),c2s->password().c_str());
+
+		if(newaccountid!=-1)
+		{
+			s2c.set_result(true);
+			LOG_INFO("account_name %s password %s signup ok",c2s->account_name().c_str(),c2s->password().c_str());
+		}
+		else
+		{
+			s2c.set_result(false);
+			LOG_ERROR("account_name %s signup failed",c2s->account_name().c_str());
+		}
+		
 		messageSend.Append(&s2c);
 		
 		return Send();
@@ -93,7 +98,7 @@ namespace kiss
 	{
 		c2sLogin* c2s = (c2sLogin*)msg;
 
-		user_info = GetUser(c2s->account_name().c_str(),c2s->password().c_str());
+		user_info = work_thread->db->CheckAccount(c2s->account_name().c_str(),c2s->password().c_str());
 		
 		if(user_info)
 			LOG_INFO("account_name %s password %s login ok",c2s->account_name().c_str(),c2s->password().c_str());
@@ -104,7 +109,16 @@ namespace kiss
 		s2c.set_result(user_info?true:false);
 		
 		if(user_info)
-			GetRole(user_info->id,&role_info,role_count);
+		{
+			work_thread->db->GetRoleList(user_info->id,&role_info);
+			for(auto i:role_info)
+			{
+				auto role= s2c.add_rolelist();
+				role->set_role_id(i->roleID);
+				role->set_role_name(i->rolename);
+				role->set_level(i->level);
+			}
+		}
 
 		messageSend.Append(&s2c);
 		
@@ -118,7 +132,7 @@ namespace kiss
 		if(role_info.size()>=3)
 			return false;
 
-		game::RoleInfo* new_role = CreateRole(c2s->role_name().c_str(),user_info->id);
+		game::RoleInfo* new_role = work_thread->db->CreateRole(c2s->role_name().c_str(),user_info->id);
 		
 		if(new_role)
 			LOG_INFO("account_name %s create role ok role name %s",user_info->username.c_str(),c2s->role_name().c_str());

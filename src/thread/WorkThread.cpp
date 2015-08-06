@@ -5,6 +5,7 @@
 #include<message/ClientSession.h>
 #include<logger/logger.h>
 #include<string.h>
+#include<game/GameDB.h>
 
 namespace kiss
 {
@@ -13,6 +14,7 @@ namespace kiss
 		cur_time = 0;
 		last_time = 0;
 		sleep_time = 0;
+		db = new game::GameDB();
 	}
 
 	void WorkThread::Run()
@@ -64,6 +66,7 @@ namespace kiss
 		while (clientsIter != clients.end())
 		{
 			auto cs = *clientsIter;
+			cs->work_thread = this;
 			if (!cs->Update(cur_time))
 			{
 //				quitClients.push_back(cs);

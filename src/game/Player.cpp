@@ -13,7 +13,7 @@ namespace game
 	{
 		if(dos<<rolename)
 		if(dos<<roleID)
-		if(dos<<userID)
+		if(dos<<accountID)
 		if(dos<<money)
 		if(dos<<exp)
 		if(dos<<level)
@@ -26,7 +26,7 @@ namespace game
 	{
 		if(dis>>rolename)
 		if(dis>>roleID)
-		if(dis>>userID)
+		if(dis>>accountID)
 		if(dis>>money)
 		if(dis>>exp)
 		if(dis>>level)

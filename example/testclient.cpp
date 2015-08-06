@@ -21,13 +21,17 @@ class ClientSession
 	
 	int msgId;
 	unsigned int msgSize;
+	long long role_id=0;
 
 	double cur_time;
 
 public:
 	ClientSession()
 	{
-		messageProcess.RegisterMessage(2, &ClientSession::OnLogin, new s2cLogin());
+		messageProcess.RegisterMessage(s2cSignup::id, &ClientSession::OnSignup, new s2cSignup());
+		messageProcess.RegisterMessage(s2cLogin::id, &ClientSession::OnLogin, new s2cLogin());
+		messageProcess.RegisterMessage(s2cCreateRole::id, &ClientSession::OnCreateRole, new s2cCreateRole());
+		messageProcess.RegisterMessage(s2cSelectRole::id, &ClientSession::OnSelectRole, new s2cSelectRole());
 		
 		sock = new TCPIOSocket(1024);
 		sock->CreateSocket("127.0.0.1",4000);
@@ -69,12 +73,12 @@ public:
 		return true;
 	}
 	
-	bool Send()
+	bool SendCreateAccount()
 	{
 		char account_name[32];
 		snprintf(account_name,32,"name%d",sock->Socket());
 		
-		c2sLogin cts;
+		c2sSignup cts;
 		cts.set_account_name(account_name);
 		cts.set_password("123456");
 		
@@ -94,7 +98,80 @@ public:
 		return true;
 	}
 
-	bool OnLogin(const google::protobuf::MessageLite* msg)
+	bool SendLogin()
+	{
+		char account_name[32];
+		snprintf(account_name,32,"name%d",sock->Socket());
+
+		c2sLogin cts;
+		cts.set_account_name(account_name);
+		cts.set_password("123456");
+
+		messageSend.Append(&cts);
+
+		if(!sock->Write(messageSend.buff,messageSend.curPos))
+		{
+			LOG_ERROR("buff full");
+			return false;
+		}
+
+		if(!sock->Send())
+			return false;
+
+		messageSend.ClearData();
+
+		return true;
+	}
+
+	bool SendCreateRole()
+	{
+		char account_name[32];
+		snprintf(account_name,32,"name%d",sock->Socket());
+
+		c2sCreateRole cts;
+		cts.set_role_name(account_name);
+
+		messageSend.Append(&cts);
+
+		if(!sock->Write(messageSend.buff,messageSend.curPos))
+		{
+			LOG_ERROR("buff full");
+			return false;
+		}
+
+		if(!sock->Send())
+			return false;
+
+		messageSend.ClearData();
+
+		return true;
+	}
+
+	bool SendSelectRole()
+	{
+		char account_name[32];
+		snprintf(account_name,32,"name%d",sock->Socket());
+
+		c2sSelectRole cts;
+		cts.set_role_id(role_id);
+
+		messageSend.Append(&cts);
+
+		if(!sock->Write(messageSend.buff,messageSend.curPos))
+		{
+			LOG_ERROR("buff full");
+			return false;
+		}
+
+		if(!sock->Send())
+			return false;
+
+		messageSend.ClearData();
+
+		return true;
+	}
+
+	bool OnSignup(const google::protobuf::MessageLite* msg)
 	{
 		s2cLogin* s2c = (s2cLogin*)msg;
 
@@ -103,6 +180,42 @@ public:
 		else
 			LOG_ERROR("%d",sock->Socket());
 		
+		return true;
+	}
+
+	bool OnLogin(const google::protobuf::MessageLite* msg)
+	{
+		s2cLogin* s2c = (s2cLogin*)msg;
+
+		if(s2c->result())
+			LOG_HINT("%d",sock->Socket());
+		else
+			LOG_ERROR("%d",sock->Socket());
+
+		return true;
+	}
+
+	bool OnCreateRole(const google::protobuf::MessageLite* msg)
+	{
+		s2cLogin* s2c = (s2cLogin*)msg;
+
+		if(s2c->result())
+			LOG_HINT("%d",sock->Socket());
+		else
+			LOG_ERROR("%d",sock->Socket());
+
+		return true;
+	}
+
+	bool OnSelectRole(const google::protobuf::MessageLite* msg)
+	{
+		s2cLogin* s2c = (s2cLogin*)msg;
+
+		if(s2c->result())
+			LOG_HINT("%d",sock->Socket());
+		else
+			LOG_ERROR("%d",sock->Socket());
+
 		return true;
 	}
 };//class ClientSession
@@ -127,14 +240,62 @@ public:
 		WaitTime(1000);
 		while(true)
 		{
-			if(!cs->Send())
+			if(!cs->SendCreateAccount())
 			{
-				LOG_ERROR("send message error");
+				LOG_ERROR("send SendCreateAccount error");
 				break;
 			}
 
-			LOG_INFO("send success");
+			LOG_INFO("send SendCreateAccount success");
 			
+			if(!cs->Update(NowTime()))
+			{
+				LOG_ERROR("update error");
+				break;
+			}
+
+			WaitTime(1000);
+
+			if(!cs->SendLogin())
+			{
+				LOG_ERROR("send SendLogin error");
+				break;
+			}
+
+			LOG_INFO("send SendLogin success");
+
+			if(!cs->Update(NowTime()))
+			{
+				LOG_ERROR("update error");
+				break;
+			}
+
+			WaitTime(1000);
+
+			if(!cs->SendCreateRole())
+			{
+				LOG_ERROR("send SendCreateRole error");
+				break;
+			}
+
+			LOG_INFO("send SendCreateRole success");
+
+			if(!cs->Update(NowTime()))
+			{
+				LOG_ERROR("update error");
+				break;
+			}
+
+			WaitTime(1000);
+
+			if(!cs->SendSelectRole())
+			{
+				LOG_ERROR("send SendSelectRole error");
+				break;
+			}
+
+			LOG_INFO("send SendSelectRole success");
+
 			if(!cs->Update(NowTime()))
 			{
 				LOG_ERROR("update error");
@@ -153,7 +314,7 @@ int main()
 {
 	InitNetwork();
 
-	const int count =500;
+	const int count =1;
 	ClientThread* tharr[count];
 
 	for(int i=0; i<count; ++i)

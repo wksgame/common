@@ -14,6 +14,7 @@ namespace game
 namespace kiss
 {
 	class TCPIOSocket;
+	class WorkThread;
 
 	class ClientSession
 	{
@@ -32,6 +33,7 @@ namespace kiss
 		
 	public:
 		TCPIOSocket* sock;
+		WorkThread* work_thread;
 
 	public:
 		ClientSession(const int sock,const sockaddr_in& address,const int buffSize=32*1024);
