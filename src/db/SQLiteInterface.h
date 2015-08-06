@@ -5,7 +5,7 @@
 #include"DBInterface.h"
 
 typedef void (*fun)(sqlite3_stmt* stmt);
-typedef void (*getdata)(char** result, int nRow, int nCol, void* out);
+typedef void (*db_callback)(char** result, int nRow, int nCol, void* out);
 
 namespace kiss
 {
@@ -50,7 +50,7 @@ namespace kiss
 			 */
 			bool Select(const char* sqlstr, sqlite3_callback callback, void* arg);
 
-			bool Select(const char* sqlstr, getdata func, void* out);
+			bool Select(const char* sqlstr, db_callback callback, void* arg);
 
 			bool SelectAllFromTable(const char* tablename, fun f);
 

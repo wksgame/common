@@ -19,7 +19,7 @@ namespace kiss
 			virtual bool Insert(const char* sqlstr)=0;
 			virtual bool Update(const char* sqlstr)=0;
 
-			virtual bool Select(const char* sqlstr, void* func, void* data) = 0;
+			virtual bool Select(const char* sqlstr, void* callback, void* arg) = 0;
 		};
 	}
 }

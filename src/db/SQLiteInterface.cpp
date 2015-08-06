@@ -149,7 +149,7 @@ namespace kiss
 			return sqlite3_exec(db, sqlstr, callback, arg, nullptr) == SQLITE_OK;
 		}
 
-		bool SQLiteInterface::Select(const char* sqlstr, getdata func, void* out)
+		bool SQLiteInterface::Select(const char* sqlstr, db_callback callback, void* arg)
 		{
 			//char* errmsg=nullptr;
 			char** result = nullptr;
@@ -164,8 +164,8 @@ namespace kiss
 				return false;
 			}
 
-			if(func)
-				func(result+nCol, nRow, nCol, out);		// result+nCol  remove field name
+			if(callback)
+				callback(result+nCol, nRow, nCol, arg);		// result+nCol  remove field name
 
 			/*index = nCol;
 			for(int i=0; i<nRow; ++i)

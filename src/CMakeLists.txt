@@ -19,6 +19,7 @@ set(LOGGER_DIR		logger/logger.cpp
 )
 
 set(DATABASE_DIR	db/SQLiteInterface.cpp
+					db/MysqlInterface.cpp
 )
 
 set(MESSAGE_DIR		message/ClientSession.cpp
