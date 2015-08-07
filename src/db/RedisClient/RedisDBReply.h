@@ -17,14 +17,6 @@ namespace hgl
 			{
 				va_list ap;
 
-//#ifndef NO_LOGINFO
-//              char tmp[1024];
-//              va_start(ap,format);
-//              vsprintf(tmp,format,ap);
-//              va_end(ap);
-// 				LOG_INFO(tmp);
-//#endif//NO_LOGINFO
-
 				va_start(ap,format);
 				reply = (redisReply *)redisvCommand(con,format,ap);
 				va_end(ap);
@@ -146,8 +138,14 @@ namespace hgl
 
 			for(int i=0;i<count;i++)
 			{
-				redis_string_list_add(field_list,redis_string(r->element[index]->str,r->element[index]->len));++index;
-				redis_string_list_add(value_list,redis_string(r->element[index]->str,r->element[index]->len));++index;
+				field_list.push_back(redis_string(r->element[index]->str,r->element[index]->len));
+				++index;
+
+				value_list.push_back(redis_string(r->element[index]->str,r->element[index]->len));
+				++index;
+
+				//redis_string_list_add(field_list,redis_string(r->element[index]->str,r->element[index]->len));++index;
+				//redis_string_list_add(value_list,redis_string(r->element[index]->str,r->element[index]->len));++index;
 			}
 
 			return count;

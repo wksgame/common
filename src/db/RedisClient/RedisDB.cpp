@@ -72,7 +72,7 @@ namespace hgl
 		void RedisDB::Discard	(){REPLY r(con,"DISCARD");}
 		void RedisDB::Exec		(){REPLY r(con,"EXEC");}
 
-        int64 RedisDB::MultiParam	(const string &cmd,const int number,const char **keys)
+        int64 RedisDB::MultiParam	(const redis_string &cmd,const int number,const char **keys)
 		{
 			if(number<=0||!keys)return(-1);
 
@@ -96,10 +96,12 @@ namespace hgl
 
 			REPLY r(con,number+1,argv,argv_len);
 
+			delete [] argv;
+			delete [] argv_len;
 			return_integer;
 		}
 
-        int64 RedisDB::MultiParam	(const string &cmd, const string &param, const int number, const char **keys)
+        int64 RedisDB::MultiParam	(const redis_string &cmd, const redis_string &param, const int number, const char **keys)
 		{
 			if(number<=0||!keys)return(-1);
 
@@ -125,6 +127,8 @@ namespace hgl
 
 			REPLY r(con,number+2,argv,argv_len);
 
+			delete [] argv;
+			delete [] argv_len;
 			return_integer;
 		}
 

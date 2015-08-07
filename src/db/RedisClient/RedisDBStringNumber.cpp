@@ -1,6 +1,8 @@
 ﻿#include"RedisDB.h"
 #include"RedisDBReply.h"
 
+using namespace std;
+
 namespace hgl
 {
 	namespace redis

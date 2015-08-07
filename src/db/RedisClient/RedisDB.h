@@ -4,14 +4,17 @@
 #include<string>
 #include<list>
 
-using namespace std;
-
 typedef int						int32;
 typedef unsigned int			uint32;
 typedef long long int			int64;
 typedef unsigned long long int  uint64;
-typedef string redis_string;
-typedef list<string> redis_string_list;
+typedef std::string redis_string;
+typedef std::list<std::string> redis_string_list;
+
+#define HGL_FMT_I64				"%lld"
+#define HGL_FMT_U64				"%llu"
+#define HGL_FMT_DOUBLE			"%lf"
+#define HGL_FMT_LONG_DOUBLE		"%le"
 
 struct redisContext;
 
@@ -116,8 +119,8 @@ namespace hgl
 
 		private:
 
-            int64 MultiParam	(const string &cmd, const int number, const char **keys);
-            int64 MultiParam	(const string &cmd,const string &param,const int number,const char **keys);
+            int64 MultiParam	(const redis_string &cmd, const int number, const char **keys);
+            int64 MultiParam	(const redis_string &cmd,const redis_string &param,const int number,const char **keys);
 
 		public:
 

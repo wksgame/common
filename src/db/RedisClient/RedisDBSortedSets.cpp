@@ -8,6 +8,8 @@
 //linux
 #define HGL_FMT_I64			"%lld"
 
+using namespace std;
+
 namespace hgl
 {
 	namespace redis
