@@ -121,7 +121,8 @@ namespace hgl
 				return(false);
 
             //str.Set(r->element[0]->str,r->element[0]->len);
-            str.insert(0,r->element[0]->str,r->element[0]->len);
+            //str.insert(0,r->element[0]->str,r->element[0]->len);
+			str.assign(r->element[0]->str,r->element[0]->len);
 
 			return true;
 		}
