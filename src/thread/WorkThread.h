@@ -13,14 +13,17 @@ namespace game
 
 namespace kiss
 {
-	class ClientSession;
+	class Session;
 
 	class WorkThread : public Thread
 	{
+		WorkThread(const WorkThread&)=delete;
+		WorkThread& operator=(const WorkThread&)=delete;
+
 	public:
 		WorkThread(const char* thread_name);
 
-		void Join(ClientSession*cs);
+		void Join(Session*cs);
 
 	protected:
 		void Run()override;
@@ -29,9 +32,9 @@ namespace kiss
 	public:
 		game::GameDB* db;
 	private:
-		std::list<ClientSession*>  clients;
-		std::list<ClientSession*>  joinClients;
-		std::list<ClientSession*>  quitClients;
+		std::list<Session*>  clients;
+		std::list<Session*>  joinClients;
+		std::list<Session*>  quitClients;
 		std::mutex joinLock;
 		std::mutex quitLock;
 

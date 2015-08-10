@@ -12,6 +12,9 @@ namespace kiss
 
 	class SocketThread:public Thread
 	{
+		SocketThread(const SocketThread&)=delete;
+		SocketThread& operator=(const SocketThread&)=delete;
+
 	public:
 		SocketThread();
 		~SocketThread();

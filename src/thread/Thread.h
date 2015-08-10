@@ -7,6 +7,9 @@ namespace kiss
 	{
 		friend void ThreadFunc(Thread* t);
 
+		Thread(const Thread&)=delete;
+		Thread& operator=(const Thread&)=delete;
+
 	public:
 		Thread(const char* thread_name);
 		virtual ~Thread(){}

@@ -8,7 +8,13 @@ class Mutex
 {
 	std::mutex _lock;
 
+	Mutex(const Mutex&)=delete;
+	Mutex& operator=(const Mutex&)=delete;
+
 public:
+
+	Mutex()=default;
+
 	inline void lock(){_lock.lock();}
 	inline void unlock(){_lock.unlock();}
 	inline bool try_lock(){return _lock.try_lock();}

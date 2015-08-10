@@ -5,6 +5,7 @@
 #include<message/ProtobufMessageSend.h>
 #include<network/IOSocket.h>
 #include<vector>
+#include"Session.h"
 
 namespace game
 {
@@ -16,12 +17,15 @@ namespace kiss
 	class TCPIOSocket;
 	class WorkThread;
 
-	class ClientSession
+	class ClientSession : public Session
 	{
+		ClientSession& operator= (const ClientSession& rhs)=delete;
+		ClientSession(const ClientSession& rhs)=delete;
+
 		kiss::pb::ProtobufMessageProcess<ClientSession> messageProcess;
 		kiss::pb::ProtobufMessageSend<> messageSend;
 		
-		unsigned int msgSize;		// current process message size
+//		unsigned int msgSize;		// current process message size
 
 		double cur_time;			// current update time
 		game::UserInfo* user_info;
@@ -29,14 +33,16 @@ namespace kiss
 		int role_count;
 
 	public:
-		bool Update(const double cur_time);
-		
+//		bool Update();
+		virtual bool ProcessMessage(const char* data, const int size);
+
 	public:
-		TCPIOSocket* sock;
+//		TCPIOSocket* sock;
 		WorkThread* work_thread;
 
 	public:
 		ClientSession(const int sock,const sockaddr_in& address,const int buffSize=32*1024);
+
 		~ClientSession();
 		
 		bool Send();

@@ -4,7 +4,6 @@ project(common)
 
 message(${PROJECT_SOURCE_DIR})
 
-add_definitions(-std=c++11)
 add_definitions(-DLOG_OUTPUT)
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)

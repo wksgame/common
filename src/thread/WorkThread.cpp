@@ -25,7 +25,7 @@ namespace kiss
 		}
 	}
 
-	void WorkThread::Join(ClientSession* cs)
+	void WorkThread::Join(Session* cs)
 	{
 		joinLock.lock();
 			joinClients.push_back(cs);
@@ -67,7 +67,7 @@ namespace kiss
 		{
 			auto cs = *clientsIter;
 			cs->work_thread = this;
-			if (!cs->Update(cur_time))
+			if (!cs->Update())
 			{
 //				quitClients.push_back(cs);
 				clientsIter = clients.erase(clientsIter);

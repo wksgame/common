@@ -1,3 +1,5 @@
+add_definitions(-std=c++11)
+
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(../3rdparty)
 

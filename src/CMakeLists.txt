@@ -10,6 +10,8 @@
 #add_subdirectory(thread)
 #add_subdirectory(xml)
 
+add_definitions(-std=c++11)
+
 include_directories(.)
 include_directories(../3rdparty)
 
@@ -21,14 +23,10 @@ set(LOGGER_DIR		logger/logger.cpp
 set(DATABASE_DIR	db/SQLiteInterface.cpp
 					db/MysqlInterface.cpp
 					db/RedisClient/RedisDB.cpp
-#					db/RedisClient/RedisDBStrings.cpp
-#					db/RedisClient/RedisDBStringNumber.cpp
-#					db/RedisClient/RedisDBStringBinary.cpp
-#					db/RedisClient/RedisDBSortedSets.cpp
-#					db/RedisClient/RedisDBHashes.cpp
 )
 
-set(MESSAGE_DIR		message/ClientSession.cpp
+set(MESSAGE_DIR		message/Session.cpp
+					message/ClientSession.cpp
 					message/msg.pb.cc
 )
 

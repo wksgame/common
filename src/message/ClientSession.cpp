@@ -13,9 +13,9 @@ using namespace std;
 
 namespace kiss
 {
-	ClientSession::ClientSession(const int sock, const sockaddr_in& address, const int buffSize)
+	ClientSession::ClientSession(const int sock, const sockaddr_in& address, const int buffSize):Session(sock,address,buffSize)
 	{
-		this->sock = new TCPIOSocket(sock,address,buffSize);
+//		this->sock = new TCPIOSocket(sock,address,buffSize);
 
 		msgSize = 0;
 		cur_time = 0;
@@ -43,32 +43,37 @@ namespace kiss
 		return result;
 	}
 
-	bool ClientSession::Update(const double cur_time)
+// 	bool ClientSession::Update()
+// 	{
+// //		this->cur_time = cur_time;
+//
+// 		const int buffSize = 1024;
+// 		char tempBuff[1024] = {};
+//
+// 		if(!sock->enable)
+// 			return false;
+//
+// 		if(msgSize==0)
+// 		{
+// 			if(!sock->Read((char*)&msgSize, 4))
+// 				return true;
+//
+// 			if(msgSize<4 || msgSize>1024)
+// 				return false;
+// 		}
+//
+// 		if(!sock->Read(tempBuff,msgSize))
+// 			return true;
+//
+// 		auto result = messageProcess.Process(tempBuff, msgSize);
+// 		msgSize = 0;
+//
+// 		return true;
+// 	}
+
+	bool ClientSession::ProcessMessage(const char* data, const int size)
 	{
-		this->cur_time = cur_time;
-
-		const int buffSize = 1024;
-		char tempBuff[1024] = {};
-		
-		if(!sock->enable)
-			return false;
-
-		if(msgSize==0)
-		{
-			if(!sock->Read((char*)&msgSize, 4))
-				return true;
-			
-			if(msgSize<4 || msgSize>1024)
-				return false;
-		}
-		
-		if(!sock->Read(tempBuff,msgSize))
-			return true;
-		
-		auto result = messageProcess.Process(tempBuff, msgSize);
-		msgSize = 0;
-			
-		return true;
+		return messageProcess.Process(data, size);
 	}
 
 	bool ClientSession::OnSignup(const google::protobuf::MessageLite* msg)
