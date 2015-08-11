@@ -22,7 +22,7 @@ set(LOGGER_DIR		logger/logger.cpp
 
 set(DATABASE_DIR	db/SQLiteInterface.cpp
 					db/MysqlInterface.cpp
-					db/RedisClient/RedisDB.cpp
+					db/RedisDB.cpp
 )
 
 set(MESSAGE_DIR		message/Session.cpp

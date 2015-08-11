@@ -1,6 +1,6 @@
 #include<db/MysqlInterface.h>
 #include<iostream>
-#include<db/RedisClient/RedisDB.h>
+#include<db/RedisDB.h>
 
 using namespace std;
 using namespace kiss::db;
