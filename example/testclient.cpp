@@ -26,7 +26,7 @@ class ClientSession
 	double cur_time;
 
 public:
-	ClientSession()
+	ClientSession():messageProcess(this)
 	{
 		messageProcess.RegisterMessage(s2cSignup::id, &ClientSession::OnSignup, new s2cSignup());
 		messageProcess.RegisterMessage(s2cLogin::id, &ClientSession::OnLogin, new s2cLogin());

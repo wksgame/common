@@ -24,8 +24,6 @@ namespace kiss
 
 		kiss::pb::ProtobufMessageProcess<ClientSession> messageProcess;
 		kiss::pb::ProtobufMessageSend<> messageSend;
-		
-//		unsigned int msgSize;		// current process message size
 
 		double cur_time;			// current update time
 		game::UserInfo* user_info;
@@ -35,10 +33,6 @@ namespace kiss
 	public:
 //		bool Update();
 		virtual bool ProcessMessage(const char* data, const int size);
-
-	public:
-//		TCPIOSocket* sock;
-		WorkThread* work_thread;
 
 	public:
 		ClientSession(const int sock,const sockaddr_in& address,const int buffSize=32*1024);

@@ -13,10 +13,11 @@ using namespace std;
 
 namespace kiss
 {
-	ClientSession::ClientSession(const int sock, const sockaddr_in& address, const int buffSize):Session(sock,address,buffSize)
+	ClientSession::ClientSession(const int sock, const sockaddr_in& address, const int buffSize):Session(sock,address,buffSize),messageProcess(this)
 	{
 //		this->sock = new TCPIOSocket(sock,address,buffSize);
 
+		this;
 		msgSize = 0;
 		cur_time = 0;
 		user_info = nullptr;

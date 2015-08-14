@@ -5,6 +5,8 @@ namespace kiss
 	Session::Session(const int sock, const sockaddr_in& address, const int buffSize)
 	{
 		this->sock = new TCPIOSocket(sock,address,buffSize);
+		msgSize = 0;
+		work_thread = nullptr;
 	}
 
 	Session::~Session()
@@ -37,6 +39,11 @@ namespace kiss
 		msgSize = 0;
 
 		return true;
+	}
+
+	void Session::SetWorkThread(WorkThread* wt)
+	{
+		this->work_thread = wt;
 	}
 
 }//namespace kiss

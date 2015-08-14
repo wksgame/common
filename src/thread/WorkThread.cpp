@@ -28,6 +28,8 @@ namespace kiss
 	void WorkThread::Join(Session* cs)
 	{
 		joinLock.lock();
+			//cs->work_thread = this;
+			cs->SetWorkThread(this);
 			joinClients.push_back(cs);
 		joinLock.unlock();
 	}
@@ -66,7 +68,6 @@ namespace kiss
 		while (clientsIter != clients.end())
 		{
 			auto cs = *clientsIter;
-			cs->work_thread = this;
 			if (!cs->Update())
 			{
 //				quitClients.push_back(cs);

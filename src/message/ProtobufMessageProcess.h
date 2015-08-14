@@ -6,6 +6,8 @@
 
 namespace kiss
 {
+	class Session;
+
 	namespace pb
 	{
 		template<typename SubClass>
@@ -16,7 +18,13 @@ namespace kiss
 
 			std::unordered_map<int, func_message_item>  client_session_func_map;
 
+			SubClass* session;
+
 		public:
+			ProtobufMessageProcess(SubClass* session)
+			{
+				this->session = session;
+			}
 
 			~ProtobufMessageProcess()
 			{
@@ -43,7 +51,7 @@ namespace kiss
 				if (!msg->ParseFromArray(data+4, size-4))
 					return false;
 
-				bool result = (((SubClass*)this)->*(func))(msg);
+				bool result = (((SubClass*)session)->*(func))(msg);
 				return result;
 			}
 

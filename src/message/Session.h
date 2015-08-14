@@ -13,7 +13,7 @@ namespace kiss
 	{
 		friend SocketThread;
 		friend EpollThread;
-		friend WorkThread;
+//		friend WorkThread;
 
 		Session(const Session&)=delete;
 		Session& operator=(const Session&)=delete;
@@ -28,6 +28,9 @@ namespace kiss
 
 	public:
 		TCPIOSocket* sock;
+
+		void SetWorkThread(WorkThread* wt);
+	protected:
 		WorkThread* work_thread;
 
 		unsigned int msgSize;		// current process message size

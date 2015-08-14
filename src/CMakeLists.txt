@@ -1,14 +1,8 @@
-#add_subdirectory(3rdparty)
-#add_subdirectory(db)
-#add_subdirectory(game)
-#add_subdirectory(io)
-#add_subdirectory(logger)
-#add_subdirectory(message)
-#add_subdirectory(network)
-#add_subdirectory(other)
-#add_subdirectory(platform)
-#add_subdirectory(thread)
-#add_subdirectory(xml)
+option(LOG_NOT_OUTPUT "LOG_NOT_OUTPUT" ON)
+
+if(LOG_NOT_OUTPUT)
+	add_definitions(-DLOG_NOT_OUTPUT)
+endif(LOG_NOT_OUTPUT)
 
 add_definitions(-std=c++11)
 
