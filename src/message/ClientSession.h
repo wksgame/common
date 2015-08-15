@@ -32,7 +32,7 @@ namespace kiss
 
 	public:
 //		bool Update();
-		virtual bool ProcessMessage(const char* data, const int size);
+		virtual bool ProcessMessage(const char* data, const int size)override;
 
 	public:
 		ClientSession(const int sock,const sockaddr_in& address,const int buffSize=32*1024);
