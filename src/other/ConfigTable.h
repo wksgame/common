@@ -27,6 +27,17 @@ namespace kiss
 			if(!file)
 				return false;
 
+			const int buffSize = 4096;
+
+			char header[buffSize]={};
+			char type[buffSize]={};
+
+			if(!file.getline(header,buffSize))
+				return false;
+
+			if(!file.getline(type,buffSize))
+				return false;
+
 			std::vector<std::string> rows;
 
 			char code[1024]={0};
@@ -38,6 +49,9 @@ namespace kiss
 
 				rows.push_back(code);
 			}
+
+			if(rows.size()<2)
+				return false;
 
 			file.close();
 		}
