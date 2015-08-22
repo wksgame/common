@@ -1,0 +1,1 @@
+add_executable(csv2table csv2table.cpp)
