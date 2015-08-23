@@ -20,6 +20,7 @@ protected:
 	void MapField()override
 	{
 		Map("id",offsetof(TestData,id));
+		Map("name",offsetof(TestData,name));
 	}
 };
 

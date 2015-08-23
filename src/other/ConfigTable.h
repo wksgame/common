@@ -51,7 +51,8 @@ namespace kiss
 			int size;
 		};
 		
-		std::unordered_map<std::string, convert_struct> convert;
+		std::unordered_map<std::string, FieldType> field_type;
+		std::vector<convert_struct> convert;
 
 	public:
 		ConfigTable()
@@ -61,7 +62,15 @@ namespace kiss
 		
 		void Map(const char* field_name,size_t offset)
 		{
-			convert[field_name].user_struct_offset = offset;
+			auto it = field_type.find(field_name);
+			if(it == field_type.end())
+				return;
+			
+			convert_struct cs;
+			cs.user_struct_offset = offset;
+			cs.data_offset = it->second.offset;
+			cs.size = it->second.len;
+			convert.push_back(cs);
 		}
 		
 		virtual void MapField()=0;
@@ -91,7 +100,6 @@ namespace kiss
 			file.read((char*)&data_size,sizeof(int));
 			file.read((char*)&field_count,sizeof(int));
 			
-			std::vector<FieldType> field_type(field_count);
 			char field_name[128]={};
 			
 			for(int i=0; i<field_count; ++i)
@@ -105,8 +113,7 @@ namespace kiss
 				file.read((char*)&(field.offset),sizeof(int));		// 写入数据偏移量
 				file.read((char*)&(field.len),sizeof(int));			// 写入本字段数据长度
 				
-				convert[field_name].data_offset = field.offset;
-				convert[field_name].size = field.len;
+				field_type[field_name] = field;
 			}
 			
 			char* databuff = new char[row_count*data_size];
@@ -119,7 +126,7 @@ namespace kiss
 			{
 				T* s = new T();
 				for(auto &it:convert)
-					memcpy(((char*)&s)+it.second.user_struct_offset, data[i]+it.second.data_offset, it.second.size);
+					memcpy(((char*)s)+it.user_struct_offset, data[i]+it.data_offset, it.size);
 				
 				CheckData(s);
 			}
