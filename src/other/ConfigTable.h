@@ -60,20 +60,7 @@ namespace kiss
 
 		}
 		
-		void Map(const char* field_name,size_t offset)
-		{
-			auto it = field_type.find(field_name);
-			if(it == field_type.end())
-				return;
-			
-			convert_struct cs;
-			cs.user_struct_offset = offset;
-			cs.data_offset = it->second.offset;
-			cs.size = it->second.len;
-			convert.push_back(cs);
-		}
 		
-		virtual void MapField()=0;
 
 		bool Parse(const char* filename)
 		{
@@ -119,7 +106,8 @@ namespace kiss
 			char* databuff = new char[row_count*data_size];
 			char** data = &databuff;
 			file.read(databuff,row_count*data_size);
-			
+			file.close();
+
 			MapField();
 			
 			for(int i=0; i<row_count; ++i)
@@ -130,11 +118,26 @@ namespace kiss
 				
 				CheckData(s);
 			}
-
-			file.close();
+			
+			delete[] databuff;
 		}
-protected:
-    virtual void CheckData(T* t)=0;
+	protected:
+		virtual void CheckData(T* t)=0;
+		virtual void MapField()=0;
+		
+		void Map(const char* field_name,size_t offset)
+		{
+			auto it = field_type.find(field_name);
+			if(it == field_type.end())
+				return;
+			
+			convert_struct cs;
+			cs.user_struct_offset = offset;
+			cs.data_offset = it->second.offset;
+			cs.size = it->second.len;
+			convert.push_back(cs);
+		}
+		
 	};//class ConfigTable
 }//namespace kiss
 #endif//KISS_CONFIG_TABLE_H
