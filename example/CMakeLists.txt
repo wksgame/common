@@ -12,6 +12,7 @@ add_executable(testclient testclient.cpp)
 add_executable(testnowtime testNowTime.cpp)
 add_executable(testxml testxml.cpp)
 add_executable(testdatabase testdatabase.cpp)
+add_executable(testtable testtable.cpp)
 
 target_link_libraries(testserver kiss sqlite dl)
 target_link_libraries(testclient kiss)
