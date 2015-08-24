@@ -16,8 +16,6 @@ namespace kiss
 		bool read(void* data, const buff_t size)override;
 		bool peek(void* data, const buff_t size)override;
 		bool skip(const buff_t size)override;
-
-		void close()override;
 	};
 }//namespace kiss
 

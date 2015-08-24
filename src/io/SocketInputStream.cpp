@@ -37,11 +37,4 @@ namespace kiss
 	{
 		return false;
 	}
-
-	void SocketInputStream::close()
-	{
-		if(sock)
-			::closesocket(sock);
-		sock=0;
-	}
 }

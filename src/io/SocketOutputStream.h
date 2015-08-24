@@ -15,8 +15,6 @@ namespace kiss
 
 		bool write(const void* data, const buff_t size)override;
 		buff_t cur_pos()const override;
-
-		void close()override;
 	};
 }//namespace kiss
 

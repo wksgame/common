@@ -3,88 +3,63 @@
 
 namespace kiss
 {
-	DataInputStream::DataInputStream()
-	{
-		is = nullptr;
-	}
-
 	DataInputStream::DataInputStream(InputStream* is):is(is)
 	{
 	}
 
-	void DataInputStream::close()
-	{
-		if(is)
-			is->close();
-	}
-
-	void DataInputStream::Set(InputStream* is)
-	{
-		this->is = is;
-	}
-
 	bool DataInputStream::read(void* data, const buff_t size)
 	{
-		if(is)
-			return is->read(data, size);
-		else
-			return false;
+		return is->read(data, size);
 	}
 
 	bool DataInputStream::peek(void* data, const buff_t size)
 	{
-		if(is)
-			return is->peek(data, size);
-		else
-			return false;
+		return is->peek(data, size);
 	}
 
 	bool DataInputStream::skip(const buff_t size)
 	{
-		if(is)
-			return is->skip(size);
-		else
-			return false;
+		return is->skip(size);
 	}
 
-	bool DataInputStream::ReadBool(bool& b)
+	bool DataInputStream::ReadBool(bool& data)
 	{
-		return read((char*)&b, sizeof(b));
+		return Read(data);
 	}
 
-	bool DataInputStream::ReadInt16(int16& i)
+	bool DataInputStream::ReadInt16(int16& data)
 	{
-		return read((char*)&i, sizeof(i));
+		return Read(data);
 	}
 
-	bool DataInputStream::ReadUint16(uint16& i)
+	bool DataInputStream::ReadUint16(uint16& data)
 	{
-		return read((char*)&i, sizeof(i));
+		return Read(data);
 	}
 
-	bool DataInputStream::ReadInt32(int32& i)
+	bool DataInputStream::ReadInt32(int32& data)
 	{
-		return read((char*)&i, sizeof(i));
+		return Read(data);
 	}
 
-	bool DataInputStream::ReadUInt32(uint32& i)
+	bool DataInputStream::ReadUInt32(uint32& data)
 	{
-		return read((char*)&i, sizeof(i));
+		return Read(data);
 	}
 
-	bool DataInputStream::ReadInt64(int64& i)
+	bool DataInputStream::ReadInt64(int64& data)
 	{
-		return read((char*)&i, sizeof(i));
+		return Read(data);
 	}
 
-	bool DataInputStream::ReadUInt64(uint64& i)
+	bool DataInputStream::ReadUInt64(uint64& data)
 	{
-		return read((char*)&i, sizeof(i));
+		return Read(data);
 	}
 
-	bool DataInputStream::ReadUnsignedLongInt(unsigned long int& i)
+	bool DataInputStream::ReadUnsignedLongInt(unsigned long int& data)
 	{
-		return read((char*)&i, sizeof(i));
+		return Read(data);
 	}
 
 	bool DataInputStream::ReadString(std::string& s)
@@ -110,42 +85,57 @@ namespace kiss
 
 	bool DataInputStream::Read(bool& data)
 	{
-		return ReadBool(data);
+		return read((char*)&data, sizeof(data));
 	}
-
-	bool DataInputStream::Read(int16& data)
+	
+	bool DataInputStream::Read(char& data)
 	{
-		return ReadInt16(data);
+		return read((char*)&data, sizeof(data));
 	}
-
-	bool DataInputStream::Read(uint16& data)
+	
+	bool DataInputStream::Read(unsigned char& data)
 	{
-		return ReadUint16(data);
+		return read((char*)&data, sizeof(data));
 	}
 
-	bool DataInputStream::Read(int32& data)
+	bool DataInputStream::Read(short int& data)
 	{
-		return ReadInt32(data);
+		return read((char*)&data, sizeof(data));
 	}
 
-	bool DataInputStream::Read(uint32& data)
+	bool DataInputStream::Read(unsigned short int& data)
 	{
-		return ReadUInt32(data);
+		return read((char*)&data, sizeof(data));
 	}
 
-	bool DataInputStream::Read(int64& data)
+	bool DataInputStream::Read(int& data)
 	{
-		return ReadInt64(data);
+		return read((char*)&data, sizeof(data));
 	}
 
-	bool DataInputStream::Read(uint64& data)
+	bool DataInputStream::Read(unsigned int& data)
 	{
-		return ReadUInt64(data);
+		return read((char*)&data, sizeof(data));
 	}
 
+	bool DataInputStream::Read(long long int& data)
+	{
+		return read((char*)&data, sizeof(data));
+	}
+
+	bool DataInputStream::Read(unsigned long long int& data)
+	{
+		return read((char*)&data, sizeof(data));
+	}
+
+	bool DataInputStream::Read(long int& data)
+	{
+		return read((char*)&data, sizeof(data));
+	}
+	
 	bool DataInputStream::Read(unsigned long int& data)
 	{
-		return ReadUnsignedLongInt(data);
+		return read((char*)&data, sizeof(data));
 	}
 
 	bool DataInputStream::Read(std::string& data)

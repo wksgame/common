@@ -7,18 +7,17 @@ namespace kiss
 {
 	class RingBuffer
 	{
-		uint64 buffSize;			// ��������С
-		uint64 readLeftSize;		// ʣ���ɶ�ȡ��С
-		uint64 writeLeftSize;		// ʣ����д����С
-		uint64 readPos;				// ��ǰ��ȡλ��
-		uint64 writePos;			// ��ǰд��λ��
+		uint64 buffSize;
+		uint64 readLeftSize;
+		uint64 writeLeftSize;
+		uint64 readPos;
+		uint64 writePos;
 
-		char* buff;					// ������
-		bool isNew;					// �Ƿ����ڲ�new�Ļ�����
+		char* buff;	
 
 	public:
 
-		RingBuffer(uint64 size);
+		RingBuffer(const uint64 size);
 		~RingBuffer();
 
 		bool write(const char* b, const uint64 size);

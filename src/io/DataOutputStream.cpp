@@ -4,80 +4,58 @@
 
 namespace kiss
 {
-	DataOutputStream::DataOutputStream()
-	{
-		os = nullptr;
-	}
-
 	DataOutputStream::DataOutputStream(OutputStream* os):os(os)
 	{
 	}
 
-	void DataOutputStream::close()
-	{
-		if(os)
-			os->close();
-	}
-
-	void DataOutputStream::Set(OutputStream* os)
-	{
-		this->os = os;
-	}
-
 	bool DataOutputStream::write(const void* data, const buff_t size)
 	{
-		if(os)
-			return os->write(data, size);
-		else
-			return false;
+		return os->write(data, size);
 	}
 
 	buff_t DataOutputStream::cur_pos()const
 	{
-		if(os)
-			return os->cur_pos();
-		else
-			return 0;
+		return os->cur_pos();
 	}
 
-	bool DataOutputStream::WriteBool(const bool& b)
+	bool DataOutputStream::WriteBool(const bool& data)
 	{
-		return write((char*)&b, sizeof(b));
+		return Write(data);
 	}
 
-	bool DataOutputStream::WriteInt16(const int16& i)
+	bool DataOutputStream::WriteInt16(const int16& data)
 	{
-		return write((char*)&i, sizeof(i));
+		return Write(data);
 	}
 
-	bool DataOutputStream::WriteUint16(const uint16& i)
+	bool DataOutputStream::WriteUint16(const uint16& data)
 	{
-		return write((char*)&i, sizeof(i));
+		return Write(data);
 	}
 
-	bool DataOutputStream::WriteInt32(const int32& i)
+	bool DataOutputStream::WriteInt32(const int32& data)
 	{
-		return write((char*)&i, sizeof(i));
+		return Write(data);
 	}
 
-	bool DataOutputStream::WriteUInt32(const uint32& i)
+	bool DataOutputStream::WriteUInt32(const uint32& data)
 	{
-		return write((char*)&i, sizeof(i));
+		return Write(data);
 	}
 
-	bool DataOutputStream::WriteInt64(const int64& i)
+	bool DataOutputStream::WriteInt64(const int64& data)
 	{
-		return write((char*)&i, sizeof(i));
+		return Write(data);
 	}
 
-	bool DataOutputStream::WriteUInt64(const uint64& i)
+	bool DataOutputStream::WriteUInt64(const uint64& data)
 	{
-		return write((char*)&i, sizeof(i));
+		return Write(data);
 	}
 
-	bool DataOutputStream::WriteUnsignedLongInt(const unsigned long int &i)
+	bool DataOutputStream::WriteULong(const unsigned long int &data)
 	{
-		return write((char*)&i, sizeof(i));
+		return Write(data);
 	}
 
 	bool DataOutputStream::WriteString(const std::string& s)
@@ -93,7 +71,7 @@ namespace kiss
 
 	bool DataOutputStream::WriteString(const char* s)
 	{
-		buff_t size = std::strlen(s);
+		buff_t size = strlen(s);
 
 		if(Write(size))
 			if(write(s, size))
@@ -104,42 +82,57 @@ namespace kiss
 
 	bool DataOutputStream::Write(const bool& data)
 	{
-		return WriteBool(data);
+		return write((char*)&data, sizeof(data));
+	}
+	
+	bool DataOutputStream::Write(const char& data)
+	{
+		return write((char*)&data, sizeof(data));
+	}
+	
+	bool DataOutputStream::Write(const unsigned char& data)
+	{
+		return write((char*)&data, sizeof(data));
 	}
 
-	bool DataOutputStream::Write(const int16& data)
+	bool DataOutputStream::Write(const short int& data)
 	{
-		return WriteInt16(data);
+		return write((char*)&data, sizeof(data));
 	}
 
-	bool DataOutputStream::Write(const uint16& data)
+	bool DataOutputStream::Write(const short unsigned int& data)
 	{
-		return WriteUint16(data);
+		return write((char*)&data, sizeof(data));
 	}
 
-	bool DataOutputStream::Write(const int32& data)
+	bool DataOutputStream::Write(const int& data)
 	{
-		return WriteInt32(data);
+		return write((char*)&data, sizeof(data));
 	}
 
-	bool DataOutputStream::Write(const uint32& data)
+	bool DataOutputStream::Write(const unsigned int& data)
 	{
-		return WriteUInt32(data);
+		return write((char*)&data, sizeof(data));
 	}
 
-	bool DataOutputStream::Write(const int64& data)
+	bool DataOutputStream::Write(const long long int& data)
 	{
-		return WriteInt64(data);
+		return write((char*)&data, sizeof(data));
 	}
 
-	bool DataOutputStream::Write(const uint64& data)
+	bool DataOutputStream::Write(const long long unsigned int& data)
 	{
-		return WriteUInt64(data);
+		return write((char*)&data, sizeof(data));
+	}
+
+	bool DataOutputStream::Write(const long int& data)
+	{
+		return write((char*)&data, sizeof(data));
 	}
 
 	bool DataOutputStream::Write(const unsigned long int& data)
 	{
-		return WriteUnsignedLongInt(data);
+		return write((char*)&data, sizeof(data));
 	}
 
 	bool DataOutputStream::Write(const std::string& data)

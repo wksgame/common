@@ -13,8 +13,6 @@ namespace kiss
 		virtual bool read(void* data, const buff_t size)=0;
 		virtual bool peek(void* data, const buff_t size)=0;
 		virtual bool skip(const buff_t size)=0;
-
-		virtual void close(){};
 	};
 }//namespace kiss
 

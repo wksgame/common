@@ -17,6 +17,31 @@ namespace kiss
 		delete os;
 	}
 
+	bool SocketIODevice::read(void* data, const buff_t size)
+	{
+		return is->read(data,size);
+	}
+
+	bool SocketIODevice::peek(void* data, const buff_t size)
+	{
+		return is->peek(data,size);
+	}
+
+	bool SocketIODevice::skip(const buff_t size)
+	{
+		return is->skip(size);
+	}
+
+	bool SocketIODevice::write(const void* data, const buff_t size)
+	{
+		return os->write(data,size);
+	}
+
+	buff_t SocketIODevice::cur_pos() const
+	{
+		return os->cur_pos();
+	}
+
 	void SocketIODevice::close()
 	{
 		::closesocket(sock);

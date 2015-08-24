@@ -12,18 +12,16 @@ namespace kiss
 		InputStream* is;
 
 	public:
-		DataInputStream();
 		DataInputStream(InputStream* is);
 		~DataInputStream(){};
-
-		void close()override;
-		void Set(InputStream* is);
+		
+		bool operator!()const{return is?true:false;}
 
 		bool read(void* data, const buff_t size)override;
 		bool peek(void* data, const buff_t size)override;
 		bool skip(const buff_t size)override;
 
-		bool ReadBool(bool& b);
+		bool ReadBool(bool& data);
 		bool ReadInt16(int16& i);
 		bool ReadUint16(uint16& i);
 		bool ReadInt32(int32& i);
@@ -33,21 +31,33 @@ namespace kiss
 		bool ReadUnsignedLongInt(unsigned long int& i);
 		bool ReadString(std::string& s);
 
+		bool Read(bool& data);
+		bool Read(char& data);
+		bool Read(unsigned char& data);
+		bool Read(short int& data);
+		bool Read(unsigned short int& data);
+		bool Read(int& data);
+		bool Read(unsigned int& data);
+		bool Read(long long int& data);
+		bool Read(unsigned long long int& data);
+		bool Read(long int& data);
+		bool Read(unsigned long int& i);
+		bool Read(std::string& s);
+		
 		template<class T>
 		bool Read(T& data)
 		{
 			return data.Read(*this);	//bool Read(DataInputStream& dos);
 		}
-
-		bool Read(bool& data);
-		bool Read(int16& i);
-		bool Read(uint16& i);
-		bool Read(int32& i);
-		bool Read(uint32& i);
-		bool Read(int64& i);
-		bool Read(uint64& i);
-		bool Read(unsigned long int& i);
-		bool Read(std::string& s);
+		
+		template<class T>
+		bool Read(T* data,const int size)
+		{
+			for(int i=0; i<size; ++i)
+				if(!Read(data[i]))
+					return false;
+			return true;
+		}
 
 		template<typename T>
 		bool Read(std::list<T>& data)

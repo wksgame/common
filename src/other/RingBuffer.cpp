@@ -3,7 +3,7 @@
 
 namespace kiss
 {
-	RingBuffer::RingBuffer(uint64 size)
+	RingBuffer::RingBuffer(const uint64 size)
 	{
 		buffSize = size;
 		readLeftSize = 0;
@@ -11,13 +11,12 @@ namespace kiss
 		readPos = 0;
 		writePos = 0;
 		buff = new char[buffSize];
-		isNew = true;
 	}
 
 	RingBuffer::~RingBuffer()
 	{
-		if (isNew)
-			delete[] buff;
+		delete[] buff;
+		buff = nullptr;
 	}
 
 	bool RingBuffer::write(const char* b, const uint64 size)
