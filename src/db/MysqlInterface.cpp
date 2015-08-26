@@ -32,6 +32,11 @@ namespace kiss
 			return Open("127.0.0.1","root","",dbname,3306,0,0);
 		}
 
+		bool MysqlInterface::Open(const char* dbname, const char* user, const char* passwd, const char* host, unsigned int port)
+		{
+			return Open(host,user,passwd,dbname,port,0,0);
+		}
+
 		void MysqlInterface::Close()
 		{
 
@@ -50,42 +55,53 @@ namespace kiss
 			char sqlstr[1024]={0};
 			int size = snprintf(sqlstr,1024,"drop table %s",tablename);
 			
-			if(mysql_query(&mysql, sqlstr)!=0)
+			if(mysql_real_query(&mysql, sqlstr, size)!=0)
 				return false;
+
 			auto count = mysql_affected_rows(&mysql);
 			return true;
 		}
 
 		bool MysqlInterface::Insert(const char* sqlstr)
 		{
+			if(mysql_real_query(&mysql, sqlstr, strlen(sqlstr))!=0)
+				return false;
 
+			return true;
 		}
 
 		bool MysqlInterface::Update(const char* sqlstr)
 		{
+			if(mysql_real_query(&mysql, sqlstr, strlen(sqlstr))!=0)
+				return false;
 
+			return true;
 		}
 
-
-		bool MysqlInterface::Select(const char* sqlstr, void* callback, void* arg)
+		bool MysqlInterface::Select(const char* sqlstr, db_callback callback, void* output)
 		{
-			if(mysql_real_query(&mysql, sqlstr, strlen(sqlstr)))
+			if(mysql_real_query(&mysql, sqlstr, strlen(sqlstr))!=0)
 				return false;
 			
 			res = mysql_store_result(&mysql);
 			
 			if(res==nullptr)
 				return false;
-			
-			while(row = mysql_fetch_row(res))
+
+			if(callback)
 			{
+				int field_count=mysql_num_fields(res);
+
+				while(row = mysql_fetch_row(res))
+				{
+					callback(row,field_count,output);
+				}
 			}
 			
 			mysql_free_result(res);
 
 			return true;
 		}
-
 
 	}//namespace db
 

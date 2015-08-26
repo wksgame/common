@@ -154,7 +154,7 @@ namespace kiss
 			//char* errmsg=nullptr;
 			char** result = nullptr;
 			int nRow, nCol;
-			int index;
+			int index=0;
 
 			if(sqlite3_get_table(db, sqlstr, &result, &nRow, &nCol, nullptr) != SQLITE_OK)
 			{
@@ -164,8 +164,19 @@ namespace kiss
 				return false;
 			}
 
+//			if(callback)
+//				callback(result+nCol, nRow, nCol, arg);		// result+nCol  remove field name
+
 			if(callback)
-				callback(result+nCol, nRow, nCol, arg);		// result+nCol  remove field name
+			{
+				char** data = result+nCol;				//skip field name
+
+				for(int i=0; i<nRow; ++i)
+				{
+					callback(data,nCol,arg);
+					data += nCol;
+				}
+			}
 
 			/*index = nCol;
 			for(int i=0; i<nRow; ++i)

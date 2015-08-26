@@ -5,7 +5,6 @@
 #include"DBInterface.h"
 
 typedef void (*fun)(sqlite3_stmt* stmt);
-typedef void (*db_callback)(char** result, int nRow, int nCol, void* out);
 
 namespace kiss
 {
@@ -16,6 +15,12 @@ namespace kiss
 			sqlite3* db;
 			sqlite3_stmt* stmt;
 
+		protected:
+
+			bool Prepare(const char* sqlstr);
+			bool Prepare(const char* sqlstr, const int size);
+			bool Step();		// select 不能用此函数
+
 		public:
 
 			SQLiteInterface();
@@ -23,10 +28,6 @@ namespace kiss
 
 			bool Open(const char* dbname)override;
 			void Close()override;
-
-			bool Prepare(const char* sqlstr);
-			bool Prepare(const char* sqlstr, const int size);
-			bool Step();		// select 不能用此函数
 
 			bool CreateTable(const char* sqlstr)override;
 			bool DropTable(const char* tablename)override;
@@ -36,12 +37,14 @@ namespace kiss
 			
 			bool Update(const char* sqlstr)override;
 
+			bool Select(const char* sqlstr, db_callback callback, void* arg)override;
+
 			/**
 			 * @param sqlstr sql string end of '\0'
 			 * @param callback callback function
 			 * @param arg argument to callback function
 			 */
-			bool Select(const char* sqlstr, void* callback, void* arg)override;
+			bool Select(const char* sqlstr, void* callback, void* arg);
 
 			/**
 			 * @param sqlstr sql string end of '\0'
@@ -49,8 +52,6 @@ namespace kiss
 			 * @param arg argument to callback function
 			 */
 			bool Select(const char* sqlstr, sqlite3_callback callback, void* arg);
-
-			bool Select(const char* sqlstr, db_callback callback, void* arg);
 
 			bool SelectAllFromTable(const char* tablename, fun f);
 

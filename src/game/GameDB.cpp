@@ -70,7 +70,8 @@ namespace game
 
 		auto user = new UserInfo();
 
-		auto func = [](char** result, int nRow, int nCol, void* arg){
+		auto func = [](char** result, int nCol, void* arg)
+		{
 				auto user =(UserInfo*)arg;
 
 				user->id = stoll(result[0]);
@@ -118,20 +119,20 @@ namespace game
 		char sqlstr[1024] = {0};
 		snprintf(sqlstr,1024, selectSQL, accountid);
 
-		auto func = [](char** result, int nRow, int nCol, void* arg){
-
+		auto func = [](char** result, int nCol, void* arg)
+		{
 			vector< game::RoleInfo* >* roles = (vector< game::RoleInfo* >*)arg;
-			roles->resize(nRow);
+
 
 			int index=0;
-			for(int i=0; i<nRow; ++i)
-			{
-				(*roles)[i] = new RoleInfo();
 
-				(*roles)[i]->roleID = stoll(result[index++]);
-				(*roles)[i]->rolename = result[index++];
-				(*roles)[i]->level = stoi(result[index++]);
-			}
+			RoleInfo* r = new RoleInfo();
+
+			r->roleID = stoll(result[index++]);
+			r->rolename = result[index++];
+			r->level = stoi(result[index++]);
+
+			roles->push_back(r);
 		};
 
 		((SQLiteInterface*)db)->Select(sqlstr, func, roles);
@@ -143,22 +144,20 @@ namespace game
 		char sqlstr[1024] = {0};
 		snprintf(sqlstr,1024, selectSQL, roleid);
 
-		auto func = [](char** result, int nRow, int nCol, void* arg){
-
+		auto func = [](char** result, int nCol, void* arg)
+		{
 			RoleInfo* roleinfo = (game::RoleInfo*)arg;
 
-			if(nRow>0)
-			{
-				int index=0;
-				roleinfo = new RoleInfo();
+			int index=0;
+			roleinfo = new RoleInfo();
 
-				roleinfo->roleID = stoll(result[index++]);
-				roleinfo->rolename = result[index++];
-				roleinfo->accountID = stoll(result[index++]);
-				roleinfo->money = stoll(result[index++]);
-				roleinfo->exp = stoll(result[index++]);
-				roleinfo->level = stoi(result[index++]);
-			}
+			roleinfo->roleID = stoll(result[index++]);
+			roleinfo->rolename = result[index++];
+			roleinfo->accountID = stoll(result[index++]);
+			roleinfo->money = stoll(result[index++]);
+			roleinfo->exp = stoll(result[index++]);
+			roleinfo->level = stoi(result[index++]);
+
 		};
 
 		RoleInfo* roleinfo = nullptr;

@@ -1,6 +1,8 @@
 #ifndef KISS_DATABASE_INTERFACE_H
 #define KISS_DATABASE_INTERFACE_H
 
+typedef void (*db_callback)(char** result, int nCol, void* out);
+
 namespace kiss
 {
 	namespace db
@@ -19,7 +21,7 @@ namespace kiss
 			virtual bool Insert(const char* sqlstr)=0;
 			virtual bool Update(const char* sqlstr)=0;
 
-			virtual bool Select(const char* sqlstr, void* callback, void* arg) = 0;
+			virtual bool Select(const char* sqlstr, db_callback callback, void* output)=0;
 		};
 	}
 }

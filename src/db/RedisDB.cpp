@@ -1,6 +1,5 @@
 ﻿#include"RedisDB.h"
 #include"hiredis/hiredis.h"
-//#include"RedisDBReply.h"
 #include<string.h>
 #include<stdlib.h>
 
@@ -23,36 +22,11 @@ namespace hgl
 				va_start(ap,format);
 				reply = (redisReply *)redisvCommand(con,format,ap);
 				va_end(ap);
-
-				if(!reply)
-				{
-					printf("redisvCommand return NULL.\n");
-					return;
-				}
-
-				if(reply->type==REDIS_REPLY_ERROR)
-				{
-					printf("redisvCommand return error: %s\n",reply->str);
-				}
 			}
 
 			REPLY(redisContext *con,int argc,const char **argv,const size_t *argvlen)
 			{
-                const char **p=argv;
-                for(int i=0; i<argc; ++i,++p)
-                    printf("%s\n",*p);
 				reply=(redisReply *)redisCommandArgv(con,argc,argv,argvlen);
-
-				if(!reply)
-				{
-					printf("redisvCommand return NULL.\n");
-					return;
-				}
-
-				if(reply->type==REDIS_REPLY_ERROR)
-				{
-					printf("redisvCommand return error: %s\n",reply->str);
-				}
 			}
 
 			~REPLY()
