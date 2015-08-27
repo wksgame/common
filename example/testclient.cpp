@@ -247,7 +247,7 @@ public:
 				break;
 			}
 
-			syslogger.info("send SendCreateAccount success");
+			LOG_INFO("send SendCreateAccount success");
 			
 			if(!cs->Update(NowTime()))
 			{
@@ -263,7 +263,7 @@ public:
 				break;
 			}
 
-			syslogger.info("send SendLogin success");
+			LOG_INFO("send SendLogin success");
 
 			if(!cs->Update(NowTime()))
 			{
@@ -279,7 +279,7 @@ public:
 				break;
 			}
 
-			syslogger.info("send SendCreateRole success");
+			LOG_INFO("send SendCreateRole success");
 
 			if(!cs->Update(NowTime()))
 			{
@@ -295,7 +295,7 @@ public:
 				break;
 			}
 
-			syslogger.info("send SendSelectRole success");
+			LOG_INFO("send SendSelectRole success");
 
 			if(!cs->Update(NowTime()))
 			{

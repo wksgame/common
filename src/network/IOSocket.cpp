@@ -80,9 +80,6 @@ namespace kiss
 
 	bool TCPIOSocket::Read(char* b, const uint64 size)
 	{
-// 		read_mutex.lock();
-// 			bool result = readBuff->read(b,size);
-// 		read_mutex.unlock();
 		bool result = false;
 
 		if(read_mutex.try_lock())

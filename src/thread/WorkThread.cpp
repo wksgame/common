@@ -40,7 +40,7 @@ namespace kiss
 
 		if(last_time> cur_time-1)
 		{
-			WaitTime(cur_time-last_time);
+			WaitTime((cur_time-last_time)*1000);
 		}
 
 		last_time = cur_time;

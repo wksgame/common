@@ -14,8 +14,7 @@ using namespace kiss;
 #define  PORT 4000
 #define  IP_ADDRESS "0.0.0.0"
 
-const char* green_color="\e[0;40;32m";
-const char* normal_color="\e[0m";
+const unsigned short port = 4000;
 
 bool GameServer::Init()
 {
@@ -27,7 +26,7 @@ bool GameServer::Init()
 	//LoadGameDB();
 
 	srvSock = new TCPServerSocket();
-	srvSock->CreateSocket(IP_ADDRESS, PORT);
+	srvSock->CreateSocket(IP_ADDRESS, port);
 
 	if(!srvSock->Bind())
 	{
@@ -37,11 +36,12 @@ bool GameServer::Init()
 
 	if(!srvSock->Listen(100))
 	{
-		syslogger.error("server listen socket error");
+		LOG_ERROR("server listen socket error");
 		return false;
 	}
 
-	LOG_HINT("server start listen port:%u",PORT);
+	LOG_HINT("server start listen port:%hd",port);
+	syslogger.error("%d",4000);
 
 	recv_threads = new EpollThread*[thread_count];
 	for (int i = 0; i < thread_count; ++i)

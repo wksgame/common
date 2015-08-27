@@ -4,7 +4,7 @@ project(common)
 
 message(${PROJECT_SOURCE_DIR})
 
-add_definitions(-DLOG_OUTPUT)
+#add_definitions(-DLOG_OUTPUT)
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
