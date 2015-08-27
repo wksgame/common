@@ -24,11 +24,11 @@ namespace kiss
 		Mutex<true> logger_mutex;
 		FILE* file_fd;
 
+		void logger(const kiss::LogLevel level, const char* format, va_list& args);
+
 	public:
 		Logger(const char* log_file_name);
 		~Logger();
-
-		void logger(const LogLevel level, const char* format,...);
 
 		void error(const char* format,...);
 		void warn(const char* format,...);

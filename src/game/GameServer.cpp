@@ -41,7 +41,8 @@ bool GameServer::Init()
 	}
 
 	LOG_HINT("server start listen port:%hd",port);
-	syslogger.error("%d",4000);
+	syslogger.error("%d hehe %f %s",4000,30.0,"haha");
+	//syslogger.logger(LogLevel::error,"%d",5000);
 
 	recv_threads = new EpollThread*[thread_count];
 	for (int i = 0; i < thread_count; ++i)

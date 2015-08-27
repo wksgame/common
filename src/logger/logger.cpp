@@ -1,9 +1,8 @@
 #include<thread>
-#include<stdio.h>
-#include"logger.h"
-#include<other/DateTime.h>
 #include<stdarg.h>
-#include<thread/Mutex.h>
+#include"logger.h"
+#include"other/DateTime.h"
+#include"thread/Mutex.h"
 
 #define DAY_OF_USECS	86400000000LL
 
@@ -35,7 +34,7 @@ namespace kiss
 		fclose(file_fd);
 	}
 
-	void Logger::logger(const LogLevel level, const char* format, ...)
+	void Logger::logger(const kiss::LogLevel level, const char* format, va_list& args)
 	{
 		logger_mutex.lock();
 
@@ -67,10 +66,7 @@ namespace kiss
 
 			fprintf(file_fd,"%s %02d:%02d:%02d.%06d ",logger_level_str[(int)level],hour,min,sec,mseconds);
 
-			va_list args;
-			va_start(args,format);
 			vfprintf(file_fd,format,args);
-			va_end(args);
 
 			fprintf(file_fd,"\n");
 
