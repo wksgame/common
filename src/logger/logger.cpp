@@ -5,66 +5,114 @@
 #include<stdarg.h>
 #include<thread/Mutex.h>
 
-namespace
-{
-	Mutex<true> logger_mutex;
-}
-
-enum class CONSOLE_COLOR
-{
-	RED=0,
-	BULE,
-};
-
-/**
- * light1 fgcolor30-37 bgcolor40-47 
- */
-const char* console_color[]=
-{
-	"\e[0;40;31m",		// red
-	"\e[0;40;33m",		// yellow
-	"\e[0;40;32m",		// green
-	"\e[0m"				// reset
-};
+#define DAY_OF_USECS	86400000000LL
 
 namespace kiss
 {
-#ifndef LOG_WITHOUT_THREAD_NAME
-	thread_local char thread_name[32];
-#endif//LOG_WITHOUT_THREAD_NAME
+	const char* logger_level_str[]=
+	{
+		"##erro##",
+		"==warn==",
+		"--hint--",
+		"--info--",
+	};
 
-	void logger(const LogLevel level, const char* format, ...)
+	static_assert((int)LogLevel::end == sizeof(logger_level_str)/sizeof(logger_level_str[0]),"log level string error");
+
+	Logger syslogger("system.log");
+
+	Logger::Logger(const char* log_file_name):file_name(log_file_name)
+	{
+		cur_time=NowTimeUSec();
+		write_time=cur_time;
+		log_day_msec = cur_time - cur_time%DAY_OF_USECS;
+
+		file_fd = fopen(file_name,"at");
+	}
+
+	Logger::~Logger()
+	{
+		fclose(file_fd);
+	}
+
+	void Logger::logger(const LogLevel level, const char* format, ...)
 	{
 		logger_mutex.lock();
 
-#ifndef LOG_WITHOUT_COLOR
-			printf(console_color[(int)level]);
-#endif//LOG_WITHOUT_COLOR
+			cur_time = NowTimeUSec();
 
-#ifndef LOG_WITHOUT_TIME
-			printf("%f ",NowTime());
-#endif//LOG_WITHOUT_TIME
+			if(log_day_msec+DAY_OF_USECS<cur_time)
+			{
+				fclose(file_fd);
 
-#ifndef LOG_WITHOUT_THREAD_NAME
-			printf("%s ",thread_name);
-#endif//LOG_WITHOUT_THREAD_NAME
+				Date log_day(int(log_day_msec/1000000));
+				char new_file_name[128];
+
+				snprintf(new_file_name,128,"%d-%2d-%2d-%s",log_day.Year(),log_day.Month(),log_day.Day(),file_name);
+
+				rename(file_name,new_file_name);
+
+				log_day_msec = cur_time - cur_time%DAY_OF_USECS;
+
+				file_fd = fopen(file_name,"at");
+			}
+
+			long int mseconds = cur_time - log_day_msec;
+			int hour = mseconds/3600000000;
+			mseconds %= 3600000000;
+			int min = mseconds/60000000;
+			mseconds %= 60000000;
+			int sec = mseconds/60000000;
+			mseconds %= 1000000;
+
+			fprintf(file_fd,"%s %02d:%02d:%02d.%06d ",logger_level_str[(int)level],hour,min,sec,mseconds);
 
 			va_list args;
 			va_start(args,format);
-			vprintf(format,args);
+			vfprintf(file_fd,format,args);
 			va_end(args);
 
-#ifndef LOG_WITHOUT_COLOR
-			printf(" \e[0m");
-#endif//LOG_WITHOUT_COLOR
+			fprintf(file_fd,"\n");
 
-			printf("\n");
+			if(write_time+1000000<cur_time)
+			{
+				fflush(file_fd);
+				write_time=cur_time;
+			}
 
 		logger_mutex.unlock();
 	}
-	
-	void logger(const LogLevel level, const std::string& text)
+
+	void Logger::error(const char* format, ...)
 	{
-		logger(level,text.c_str());
+		va_list args;
+		va_start(args,format);
+		logger(LogLevel::error,format,args);
+		va_end(args);
 	}
+
+	void Logger::warn(const char* format, ...)
+	{
+		va_list args;
+		va_start(args,format);
+		logger(LogLevel::warn,format,args);
+		va_end(args);
+	}
+
+	void Logger::hint(const char* format, ...)
+	{
+		va_list args;
+		va_start(args,format);
+		logger(LogLevel::hint,format,args);
+		va_end(args);
+	}
+
+	void Logger::info(const char* format, ...)
+	{
+		va_list args;
+		va_start(args,format);
+		logger(LogLevel::normal,format,args);
+		va_end(args);
+	}
+
 }//namespace kiss

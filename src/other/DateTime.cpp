@@ -52,7 +52,7 @@ namespace kiss
 		weekday	= t->tm_wday?t->tm_wday:7;
 	}
 
-	Date::Date(const int time)
+	Date::Date(const long int time)
 	{
 		auto t = localtime((time_t*)&time);
 
@@ -120,6 +120,34 @@ namespace kiss
 			gettimeofday(&tv, &tz);
 
 			return tv.tv_sec+double(tv.tv_usec)/1000000+boot_time.tm_gmtoff;
+	#endif//WIN32
+	}
+
+	long long int NowTimeMSec()
+	{
+	#ifdef WIN32
+			return GetLocalTime();
+	#else
+			struct timeval tv;
+			struct timezone tz;
+
+			gettimeofday(&tv, &tz);
+
+			return (tv.tv_sec+boot_time.tm_gmtoff)*1000+tv.tv_usec/1000;
+	#endif//WIN32
+	}
+
+	long long int NowTimeUSec()
+	{
+	#ifdef WIN32
+			return GetLocalTime();
+	#else
+			struct timeval tv;
+			struct timezone tz;
+
+			gettimeofday(&tv, &tz);
+
+			return (tv.tv_sec+boot_time.tm_gmtoff)*1000000+tv.tv_usec;
 	#endif//WIN32
 	}
 

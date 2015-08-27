@@ -1,4 +1,4 @@
-﻿#include"RedisDB.h"
+#include"RedisDB.h"
 #include"hiredis/hiredis.h"
 #include<string.h>
 #include<stdlib.h>
@@ -52,7 +52,7 @@ namespace hgl
 			if(!r)return(false);
 			if(r->type!=REDIS_REPLY_STATUS)return(false);
 
-// 			LOG_INFO("Redis return status");
+// 			syslogger.info("Redis return status");
 			return true;
 		}
 
@@ -61,7 +61,7 @@ namespace hgl
 			if(!r)return(-1);
 			if(r->type!=REDIS_REPLY_INTEGER)return(-1);
 
-// 			LOG_INFO("Redis return integer: "+UTF8String(r->integer));
+// 			syslogger.info("Redis return integer: "+UTF8String(r->integer));
 			return r->integer;
 		}
 
@@ -70,7 +70,7 @@ namespace hgl
 			if(!r)return(false);
 			if(r->type!=REDIS_REPLY_INTEGER)return(false);
 
-// 			LOG_INFO("Redis return bool: "+UTF8String((r->integer?"true":"false")));
+// 			syslogger.info("Redis return bool: "+UTF8String((r->integer?"true":"false")));
             return r->integer==1;       ///<1success 0fail
 		}
 
@@ -79,7 +79,7 @@ namespace hgl
 			if(!r)return(-1);
 			if(r->type!=REDIS_REPLY_ARRAY)return(-1);
 
-// 			LOG_INFO("Redis return string array: "+UTF8String(r->elements));
+// 			syslogger.info("Redis return string array: "+UTF8String(r->elements));
 
 			for(int i=0;i<r->elements;i++)
                 sl.push_back(redis_string(r->element[i]->str,r->element[i]->len));
@@ -92,7 +92,7 @@ namespace hgl
 			if(!r)return(false);
 			if(r->type!=REDIS_REPLY_ARRAY)return(false);
 
-// 			LOG_INFO("Redis return string array first: "+UTF8String(r->elements));
+// 			syslogger.info("Redis return string array first: "+UTF8String(r->elements));
 
 			if(r->elements<=0)
 				return(false);
@@ -109,7 +109,7 @@ namespace hgl
 			if(!r)return(-1);
 			if(r->type!=REDIS_REPLY_ARRAY)return(-1);
 
-// 			LOG_INFO("Redis return string array: "+UTF8String(r->elements));
+// 			syslogger.info("Redis return string array: "+UTF8String(r->elements));
 
 			int index=0;
 			const int count=r->elements/2;

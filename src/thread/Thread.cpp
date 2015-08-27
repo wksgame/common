@@ -4,15 +4,15 @@
 
 namespace kiss
 {
-#ifndef LOG_WITHOUT_THREAD_NAME
-	extern thread_local char thread_name[32];
-#endif//LOG_WITHOUT_THREAD_NAME
+// #ifndef LOG_WITHOUT_THREAD_NAME
+// 	extern thread_local char thread_name[32];
+// #endif//LOG_WITHOUT_THREAD_NAME
 
 	void ThreadFunc(Thread* t)
 	{
-#ifndef LOG_WITHOUT_THREAD_NAME
-	strncpy(thread_name,t->thread_name,32);
-#endif//LOG_WITHOUT_THREAD_NAME
+// #ifndef LOG_WITHOUT_THREAD_NAME
+// 	strncpy(thread_name,t->thread_name,32);
+// #endif//LOG_WITHOUT_THREAD_NAME
 
 		t->Run();
 

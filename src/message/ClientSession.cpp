@@ -40,7 +40,7 @@ namespace kiss
 		messageSend.ClearData();
 		
 		if(result)
-			LOG_INFO("send ok %d",sock->Socket());
+			syslogger.info("send ok %d",sock->Socket());
 		return result;
 	}
 
@@ -87,12 +87,12 @@ namespace kiss
 		if(newaccountid!=-1)
 		{
 			s2c.set_result(true);
-			LOG_INFO("account_name %s password %s signup ok",c2s->account_name().c_str(),c2s->password().c_str());
+			syslogger.info("account_name %s password %s signup ok",c2s->account_name().c_str(),c2s->password().c_str());
 		}
 		else
 		{
 			s2c.set_result(false);
-			LOG_ERROR("account_name %s signup failed",c2s->account_name().c_str());
+			syslogger.error("account_name %s signup failed",c2s->account_name().c_str());
 		}
 		
 		messageSend.Append(&s2c);
@@ -107,9 +107,9 @@ namespace kiss
 		user_info = work_thread->db->CheckAccount(c2s->account_name().c_str(),c2s->password().c_str());
 		
 		if(user_info)
-			LOG_INFO("account_name %s password %s login ok",c2s->account_name().c_str(),c2s->password().c_str());
+			syslogger.info("account_name %s password %s login ok",c2s->account_name().c_str(),c2s->password().c_str());
 		else
-			LOG_ERROR("account_name %s login failed",c2s->account_name().c_str());
+			syslogger.error("account_name %s login failed",c2s->account_name().c_str());
 		
 		s2cLogin s2c;
 		s2c.set_result(user_info?true:false);
@@ -141,9 +141,9 @@ namespace kiss
 		game::RoleInfo* new_role = work_thread->db->CreateRole(c2s->role_name().c_str(),user_info->id);
 		
 		if(new_role)
-			LOG_INFO("account_name %s create role ok role name %s",user_info->username.c_str(),c2s->role_name().c_str());
+			syslogger.info("account_name %s create role ok role name %s",user_info->username.c_str(),c2s->role_name().c_str());
 		else
-			LOG_ERROR("account_name %s create role failed role name %s",user_info->username.c_str(),c2s->role_name().c_str());
+			syslogger.error("account_name %s create role failed role name %s",user_info->username.c_str(),c2s->role_name().c_str());
 		
 		role_info.push_back(new_role);
 		
@@ -159,7 +159,7 @@ namespace kiss
 	{
 		c2sSelectRole* c2s = (c2sSelectRole*)msg;
 
-		LOG_INFO("account_name %s role id %d login ok",user_info->username.c_str(),c2s->id);
+		syslogger.info("account_name %s role id %d login ok",user_info->username.c_str(),c2s->id);
 		
 		s2cSelectRole s2c;
 		s2c.set_result(true);

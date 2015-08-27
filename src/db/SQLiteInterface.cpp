@@ -27,7 +27,7 @@ namespace kiss
 				sqlite3_close(db);
 				db = nullptr;
 
-				LOG_ERROR("can't open database:%s",sqlite3_errmsg(db));
+				syslogger.error("can't open database:%s",sqlite3_errmsg(db));
 				//cerr<<"can't open database:"<<sqlite3_errmsg(db)<<endl;
 				
 				return false;
@@ -53,7 +53,7 @@ namespace kiss
 				sqlite3_finalize(stmt);
 				stmt = nullptr;
 
-				LOG_ERROR("can't sqlite3_prepare:%s",sqlite3_errmsg(db));
+				syslogger.error("can't sqlite3_prepare:%s",sqlite3_errmsg(db));
 				return false;
 			}
 
@@ -69,7 +69,7 @@ namespace kiss
 				sqlite3_finalize(stmt);
 				stmt = nullptr;
 
-				LOG_ERROR("can't sqlite3_prepare:%s",sqlite3_errmsg(db));
+				syslogger.error("can't sqlite3_prepare:%s",sqlite3_errmsg(db));
 				return false;
 			}
 
@@ -83,7 +83,7 @@ namespace kiss
 				sqlite3_finalize(stmt);
 				stmt = nullptr;
 
-				LOG_ERROR("can't sqlite3_prepare:%s",sqlite3_errmsg(db));
+				syslogger.error("can't sqlite3_prepare:%s",sqlite3_errmsg(db));
 				//cerr<<"can't sqlite3_prepare:"<<sqlite3_errmsg(db)<<endl;
 				return false;
 			}

@@ -14,7 +14,7 @@ namespace kiss
 		//Init Windows Socket
 		if ( WSAStartup(MAKEWORD(2,2), &ws) != 0 )
 		{
-			LOG_ERROR("Init Windows Socket Failed %s",GetLastError())
+			syslogger.error("Init Windows Socket Failed %s",GetLastError())
 			return false;
 		}
 #else
@@ -36,7 +36,7 @@ namespace kiss
 		auto sock = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if ( sock == SOCKET_ERROR )
 		{
-			LOG_ERROR("Create Socket Failed");
+			syslogger.error("Create Socket Failed");
 			return SOCKET_ERROR;
 		}
  
@@ -68,7 +68,7 @@ namespace kiss
 
 		if ( sock == SOCKET_ERROR )
 		{
-			LOG_ERROR("Create Socket Failed");
+			syslogger.error("Create Socket Failed");
 			return false;
 		}
 
@@ -115,7 +115,7 @@ namespace kiss
 	{
 		if(::bind(sock, (struct sockaddr*)&address, sizeof(address)) != 0 )
 		{
-			LOG_ERROR("Bind Socket Failed");
+			syslogger.error("Bind Socket Failed");
 			return false;
 		}
 
@@ -126,7 +126,7 @@ namespace kiss
 	{
 		if(::listen(sock, count) != 0 )
 		{
-			LOG_ERROR("Listen Socket Failed");
+			syslogger.error("Listen Socket Failed");
 			return false;
 		}
 
@@ -146,7 +146,7 @@ namespace kiss
 
 		if(s == SOCKET_ERROR )
 		{
-			LOG_ERROR("Accept Socket Failed");
+			syslogger.error("Accept Socket Failed");
 			return false;
 		}
 
@@ -157,7 +157,7 @@ namespace kiss
 	{
 		if(connect(sock,(struct sockaddr*)&address, sizeof(address)) == SOCKET_ERROR)
 		{
-			LOG_ERROR("Connect Socket Failed");
+			syslogger.error("Connect Socket Failed");
 			return false;
 		}
 

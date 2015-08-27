@@ -54,7 +54,7 @@ namespace kiss
 
 				if(!msg->SerializeToArray(mb_int,dataSize))
 				{
-					LOG_ERROR("protobuf SerializeToArray error");
+					syslogger.error("protobuf SerializeToArray error");
 					return(false);
 				}
 				

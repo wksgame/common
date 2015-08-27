@@ -7,7 +7,7 @@ namespace kiss
 	{
 	public:
 		Date();
-		Date(const int time);
+		Date(const long int time);
 
 		int Year();
 		int Month();
@@ -40,6 +40,8 @@ namespace kiss
 	};//class Time
 
 	double NowTime();
+	long long int NowTimeMSec();
+	long long int NowTimeUSec();
 
 	void WaitTime(const double milliseconds);
 }//namespace kiss

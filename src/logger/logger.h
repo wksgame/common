@@ -1,7 +1,8 @@
 #ifndef KISS_LOGGER_H
 #define KISS_LOGGER_H
 
-#include<string>
+#include"thread/Mutex.h"
+#include<stdio.h>
 
 namespace kiss
 {
@@ -11,16 +12,38 @@ namespace kiss
 		warn,
 		hint,
 		normal,
+		end
 	};
 
-	void logger(const LogLevel level, const char* format,...);
-	void logger(const LogLevel level, const std::string& text);
+	class Logger
+	{
+		const char* file_name;
+		long long int cur_time;
+		long long int log_day_msec;
+		long long int write_time;					// write to disk
+		Mutex<true> logger_mutex;
+		FILE* file_fd;
 
-#ifndef LOG_NOT_OUTPUT
-#	define LOG_ERROR(str,...)		logger(LogLevel::error, str, ##__VA_ARGS__)
-#	define LOG_WARN(str,...)		logger(LogLevel::warn, str, ##__VA_ARGS__)
-#	define LOG_HINT(str,...)		logger(LogLevel::hint, str, ##__VA_ARGS__)
-#	define LOG_INFO(str,...)		logger(LogLevel::normal, str, ##__VA_ARGS__)
+	public:
+		Logger(const char* log_file_name);
+		~Logger();
+
+		void logger(const LogLevel level, const char* format,...);
+
+		void error(const char* format,...);
+		void warn(const char* format,...);
+		void hint(const char* format,...);
+		void info(const char* format,...);
+
+	};//Logger
+
+	extern Logger syslogger;
+
+#ifdef LOG_OUTPUT
+#	define LOG_ERROR(str,...)		syslogger.error(str, ##__VA_ARGS__)
+#	define LOG_WARN(str,...)		syslogger.warn(str, ##__VA_ARGS__)
+#	define LOG_HINT(str,...)		syslogger.hint(str, ##__VA_ARGS__)
+#	define LOG_INFO(str,...)		syslogger.info(str, ##__VA_ARGS__)
 #else
 #	define LOG_ERROR(str,...)
 #	define LOG_WARN(str,...)

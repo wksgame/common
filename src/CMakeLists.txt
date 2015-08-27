@@ -1,10 +1,13 @@
-option(LOG_NOT_OUTPUT "LOG_NOT_OUTPUT" ON)
+option(LOG_OUTPUT "LOG_OUTPUT" ON)
 
-if(LOG_NOT_OUTPUT)
-	add_definitions(-DLOG_NOT_OUTPUT)
-endif(LOG_NOT_OUTPUT)
+if(LOG_OUTPUT)
+	add_definitions(-DLOG_OUTPUT)
+endif(LOG_OUTPUT)
 
-add_definitions(-std=c++11)
+if(WIN32)
+else(WIN32)
+	add_definitions(-std=c++11)
+endif(WIN32)
 
 include_directories(.)
 include_directories(../3rdparty)

@@ -37,11 +37,11 @@ bool GameServer::Init()
 
 	if(!srvSock->Listen(100))
 	{
-		LOG_ERROR("server listen socket error");
+		syslogger.error("server listen socket error");
 		return false;
 	}
 
-	LOG_HINT("server start listen port:%d",PORT);
+	LOG_HINT("server start listen port:%u",PORT);
 
 	recv_threads = new EpollThread*[thread_count];
 	for (int i = 0; i < thread_count; ++i)
@@ -72,7 +72,7 @@ void GameServer::Run()
 		if (!srvSock->Accept(clientAddress, clientSocket))
 			break;
 
-		LOG_INFO("client connect %s:%d",inet_ntoa(clientAddress.sin_addr),clientAddress.sin_port);
+		syslogger.info("client connect %s:%d",inet_ntoa(clientAddress.sin_addr),clientAddress.sin_port);
 
 		Session* cs = new ClientSession(clientSocket,clientAddress);
 		recv_threads[clientSocket % thread_count]->Join(cs->sock);

@@ -11,6 +11,7 @@ using namespace kiss;
 using namespace std;
 
 std::atomic<int>	cur_count;
+Logger logger("testclient");
 
 class ClientSession
 {
@@ -86,7 +87,7 @@ public:
 
 		if(!sock->Write(messageSend.buff,messageSend.curPos))
 		{
-			LOG_ERROR("buff full");
+			logger.error("buff full");
 			return false;
 		}
 		
@@ -111,7 +112,7 @@ public:
 
 		if(!sock->Write(messageSend.buff,messageSend.curPos))
 		{
-			LOG_ERROR("buff full");
+			logger.error("buff full");
 			return false;
 		}
 
@@ -135,7 +136,7 @@ public:
 
 		if(!sock->Write(messageSend.buff,messageSend.curPos))
 		{
-			LOG_ERROR("buff full");
+			logger.error("buff full");
 			return false;
 		}
 
@@ -159,7 +160,7 @@ public:
 
 		if(!sock->Write(messageSend.buff,messageSend.curPos))
 		{
-			LOG_ERROR("buff full");
+			logger.error("buff full");
 			return false;
 		}
 
@@ -176,9 +177,9 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			LOG_HINT("%d",sock->Socket());
+			logger.error("%d",sock->Socket());
 		else
-			LOG_ERROR("%d",sock->Socket());
+			logger.error("%d",sock->Socket());
 		
 		return true;
 	}
@@ -188,9 +189,9 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			LOG_HINT("%d",sock->Socket());
+			logger.error("%d",sock->Socket());
 		else
-			LOG_ERROR("%d",sock->Socket());
+			logger.error("%d",sock->Socket());
 
 		return true;
 	}
@@ -200,9 +201,9 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			LOG_HINT("%d",sock->Socket());
+			logger.error("%d",sock->Socket());
 		else
-			LOG_ERROR("%d",sock->Socket());
+			logger.error("%d",sock->Socket());
 
 		return true;
 	}
@@ -212,9 +213,9 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			LOG_HINT("%d",sock->Socket());
+			logger.error("%d",sock->Socket());
 		else
-			LOG_ERROR("%d",sock->Socket());
+			logger.error("%d",sock->Socket());
 
 		return true;
 	}
@@ -242,15 +243,15 @@ public:
 		{
 			if(!cs->SendCreateAccount())
 			{
-				LOG_ERROR("send SendCreateAccount error");
+				logger.error("send SendCreateAccount error");
 				break;
 			}
 
-			LOG_INFO("send SendCreateAccount success");
+			syslogger.info("send SendCreateAccount success");
 			
 			if(!cs->Update(NowTime()))
 			{
-				LOG_ERROR("update error");
+				logger.error("update error");
 				break;
 			}
 
@@ -258,15 +259,15 @@ public:
 
 			if(!cs->SendLogin())
 			{
-				LOG_ERROR("send SendLogin error");
+				logger.error("send SendLogin error");
 				break;
 			}
 
-			LOG_INFO("send SendLogin success");
+			syslogger.info("send SendLogin success");
 
 			if(!cs->Update(NowTime()))
 			{
-				LOG_ERROR("update error");
+				logger.error("update error");
 				break;
 			}
 
@@ -274,15 +275,15 @@ public:
 
 			if(!cs->SendCreateRole())
 			{
-				LOG_ERROR("send SendCreateRole error");
+				logger.error("send SendCreateRole error");
 				break;
 			}
 
-			LOG_INFO("send SendCreateRole success");
+			syslogger.info("send SendCreateRole success");
 
 			if(!cs->Update(NowTime()))
 			{
-				LOG_ERROR("update error");
+				logger.error("update error");
 				break;
 			}
 
@@ -290,15 +291,15 @@ public:
 
 			if(!cs->SendSelectRole())
 			{
-				LOG_ERROR("send SendSelectRole error");
+				logger.error("send SendSelectRole error");
 				break;
 			}
 
-			LOG_INFO("send SendSelectRole success");
+			syslogger.info("send SendSelectRole success");
 
 			if(!cs->Update(NowTime()))
 			{
-				LOG_ERROR("update error");
+				logger.error("update error");
 				break;
 			}
 
