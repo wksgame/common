@@ -47,7 +47,7 @@ namespace kiss
 				Date log_day(int(log_day_msec/1000000));
 				char new_file_name[128];
 
-				snprintf(new_file_name,128,"%d-%2d-%2d-%s",log_day.Year(),log_day.Month(),log_day.Day(),file_name);
+				snprintf(new_file_name,128,"%d-%02d-%02d-%s",log_day.Year(),log_day.Month(),log_day.Day(),file_name);
 
 				rename(file_name,new_file_name);
 
