@@ -98,3 +98,23 @@ message s2cSelectRole
 	required bool result = 1;
 	optional RoleInfo info = 2;
 }
+
+message c2sAttackMonster
+{
+	enum MsgID
+	{
+		id = 9;
+	}
+
+	required int64 monster_id = 1;
+}
+
+message s2cAttackMonster
+{
+	enum MsgID
+	{
+		id = 10;
+	}
+
+	required bool result = 1;
+}

@@ -61,7 +61,7 @@ namespace kiss
 			mseconds %= 3600000000;
 			int min = mseconds/60000000;
 			mseconds %= 60000000;
-			int sec = mseconds/60000000;
+			int sec = mseconds/1000000;
 			mseconds %= 1000000;
 
 			fprintf(file_fd,"%s %02d:%02d:%02d.%06d ",logger_level_str[(int)level],hour,min,sec,mseconds);

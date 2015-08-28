@@ -4,16 +4,8 @@
 
 namespace kiss
 {
-// #ifndef LOG_WITHOUT_THREAD_NAME
-// 	extern thread_local char thread_name[32];
-// #endif//LOG_WITHOUT_THREAD_NAME
-
 	void ThreadFunc(Thread* t)
 	{
-// #ifndef LOG_WITHOUT_THREAD_NAME
-// 	strncpy(thread_name,t->thread_name,32);
-// #endif//LOG_WITHOUT_THREAD_NAME
-
 		t->Run();
 
 		delete t;
@@ -22,6 +14,7 @@ namespace kiss
 	Thread::Thread(const char* thread_name)
 	{
 		strncpy(this->thread_name,thread_name,32);
+		quit=false;
 	}
 
 	void Thread::Start()
@@ -29,5 +22,13 @@ namespace kiss
 		std::thread t(ThreadFunc,this);
 
 		t.detach();
+	}
+
+	void Thread::Run()
+	{
+		while(!quit)
+		{
+			Update();
+		}
 	}
 }

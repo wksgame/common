@@ -33,7 +33,7 @@ namespace kiss
 		char tempBuff[buffSize] = {};
 
 		auto recv_size = ::recv(sock, tempBuff, buffSize, 0);
-		
+
 		if(recv_size<=0)
 			return(false);
 

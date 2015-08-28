@@ -24,8 +24,16 @@ namespace kiss
 	void EpollThread::Join(TCPIOSocket* sock)
 	{
 		epoll_event ee;
-		ee.events = EPOLLIN|EPOLLOUT|EPOLLERR;
+
+		ee.events = EPOLLIN
+					|EPOLLOUT
+					|EPOLLERR
+					|EPOLLRDHUP
+					|EPOLLHUP;
+//					|EPOLLET;
+
 		ee.data.ptr = (void*)sock;
+
 		int result = epoll_ctl(epfd,EPOLL_CTL_ADD,sock->Socket(),&ee);
 		if(result==-1)
 			sock->enable = false;
@@ -47,9 +55,9 @@ namespace kiss
 		{
 			TCPIOSocket* sock = (TCPIOSocket*)events[i].data.ptr;
 
-			if(events[i].events&EPOLLERR)
+			if(events[i].events&(EPOLLERR|EPOLLRDHUP|EPOLLHUP))
 			{
-				epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),0);
+				epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),nullptr);
 				sock->enable = false;
 				continue;
 			}
@@ -58,7 +66,7 @@ namespace kiss
 			{
 				if(!sock->Recv())
 				{
-					epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),0);
+					epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),nullptr);
 					sock->enable = false;
 					continue;
 				}
@@ -68,7 +76,7 @@ namespace kiss
 			{
 				if(!sock->Send())
 				{
-					epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),0);
+					epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),nullptr);
 					sock->enable = false;
 					continue;
 				}

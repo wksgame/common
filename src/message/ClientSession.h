@@ -45,6 +45,7 @@ namespace kiss
 		bool OnLogin(const google::protobuf::MessageLite* msg);
 		bool OnCreateRole(const google::protobuf::MessageLite* msg);
 		bool OnSelectRole(const google::protobuf::MessageLite* msg);
+		bool OnAttackMonster(const google::protobuf::MessageLite* msg);
 	};//class ClientSession
 }//namespace kiss
 #endif//KISS_CLIENT_SESSION_H

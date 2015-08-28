@@ -11,7 +11,7 @@ using namespace kiss;
 using namespace std;
 
 std::atomic<int>	cur_count;
-Logger logger("testclient");
+Logger logger("testclient.log");
 
 class ClientSession
 {
@@ -33,6 +33,7 @@ public:
 		messageProcess.RegisterMessage(s2cLogin::id, &ClientSession::OnLogin, new s2cLogin());
 		messageProcess.RegisterMessage(s2cCreateRole::id, &ClientSession::OnCreateRole, new s2cCreateRole());
 		messageProcess.RegisterMessage(s2cSelectRole::id, &ClientSession::OnSelectRole, new s2cSelectRole());
+		messageProcess.RegisterMessage(s2cAttackMonster::id, &ClientSession::OnAttackMonster, new s2cAttackMonster());
 		
 		sock = new TCPIOSocket(1024);
 		sock->CreateSocket("127.0.0.1",4000);
@@ -172,6 +173,27 @@ public:
 		return true;
 	}
 
+	bool SendAttackMonster()
+	{
+		c2sAttackMonster cts;
+		cts.set_monster_id(1);
+
+		messageSend.Append(&cts);
+
+		if(!sock->Write(messageSend.buff,messageSend.curPos))
+		{
+			logger.error("buff full");
+			return false;
+		}
+
+		if(!sock->Send())
+			return false;
+
+		messageSend.ClearData();
+
+		return true;
+	}
+
 	bool OnSignup(const google::protobuf::MessageLite* msg)
 	{
 		s2cLogin* s2c = (s2cLogin*)msg;
@@ -219,6 +241,18 @@ public:
 
 		return true;
 	}
+
+	bool OnAttackMonster(const google::protobuf::MessageLite* msg)
+	{
+		s2cAttackMonster* s2c = (s2cAttackMonster*)msg;
+
+		if(s2c->result())
+			logger.error("%d",sock->Socket());
+		else
+			logger.error("%d",sock->Socket());
+
+		return true;
+	}
 };//class ClientSession
 
 class ClientThread:public Thread
@@ -236,66 +270,83 @@ public:
 		++cur_count;
 	}
 
-	void Run()
+	void Update()
 	{
 		WaitTime(1000);
+
+		if(!cs->SendCreateAccount())
+		{
+			logger.error("send SendCreateAccount error");
+			return;
+		}
+
+		logger.info("send SendCreateAccount success");
+
+		if(!cs->Update(NowTime()))
+		{
+			logger.error("update error");
+			return;
+		}
+
+		WaitTime(1000);
+
+		if(!cs->SendLogin())
+		{
+			logger.error("send SendLogin error");
+			return;
+		}
+
+		logger.info("send SendLogin success");
+
+		if(!cs->Update(NowTime()))
+		{
+			logger.error("update error");
+			return;
+		}
+
+		WaitTime(1000);
+
+		if(!cs->SendCreateRole())
+		{
+			logger.error("send SendCreateRole error");
+			return;
+		}
+
+		logger.info("send SendCreateRole success");
+
+		if(!cs->Update(NowTime()))
+		{
+			logger.error("update error");
+			return;
+		}
+
+		WaitTime(1000);
+
+		if(!cs->SendSelectRole())
+		{
+			logger.error("send SendSelectRole error");
+			return;
+		}
+
+		logger.info("send SendSelectRole success");
+
+		if(!cs->Update(NowTime()))
+		{
+			logger.error("update error");
+			return;
+		}
+
+		WaitTime(1000);
+
 		while(true)
 		{
-			if(!cs->SendCreateAccount())
-			{
-				logger.error("send SendCreateAccount error");
-				break;
-			}
-
-			LOG_INFO("send SendCreateAccount success");
-			
-			if(!cs->Update(NowTime()))
-			{
-				logger.error("update error");
-				break;
-			}
-
-			WaitTime(1000);
-
-			if(!cs->SendLogin())
-			{
-				logger.error("send SendLogin error");
-				break;
-			}
-
-			LOG_INFO("send SendLogin success");
-
-			if(!cs->Update(NowTime()))
-			{
-				logger.error("update error");
-				break;
-			}
-
-			WaitTime(1000);
-
-			if(!cs->SendCreateRole())
-			{
-				logger.error("send SendCreateRole error");
-				break;
-			}
-
-			LOG_INFO("send SendCreateRole success");
-
-			if(!cs->Update(NowTime()))
-			{
-				logger.error("update error");
-				break;
-			}
-
-			WaitTime(1000);
-
-			if(!cs->SendSelectRole())
+			if(!cs->SendAttackMonster())
 			{
 				logger.error("send SendSelectRole error");
 				break;
 			}
 
-			LOG_INFO("send SendSelectRole success");
+			logger.info("send SendSelectRole success");
 
 			if(!cs->Update(NowTime()))
 			{
@@ -315,7 +366,7 @@ int main()
 {
 	InitNetwork();
 
-	const int count =1;
+	const int count =900;
 	ClientThread* tharr[count];
 
 	for(int i=0; i<count; ++i)

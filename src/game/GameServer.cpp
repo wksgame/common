@@ -23,7 +23,6 @@ bool GameServer::Init()
 	
 	if(!game::InitGameDB())
 		return false;
-	//LoadGameDB();
 
 	srvSock = new TCPServerSocket();
 	srvSock->CreateSocket(IP_ADDRESS, port);
@@ -41,8 +40,6 @@ bool GameServer::Init()
 	}
 
 	LOG_HINT("server start listen port:%hd",port);
-	syslogger.error("%d hehe %f %s",4000,30.0,"haha");
-	//syslogger.logger(LogLevel::error,"%d",5000);
 
 	recv_threads = new EpollThread*[thread_count];
 	for (int i = 0; i < thread_count; ++i)
@@ -73,7 +70,7 @@ void GameServer::Run()
 		if (!srvSock->Accept(clientAddress, clientSocket))
 			break;
 
-		syslogger.info("client connect %s:%d",inet_ntoa(clientAddress.sin_addr),clientAddress.sin_port);
+		LOG_INFO("client connect %s:%d",inet_ntoa(clientAddress.sin_addr),clientAddress.sin_port);
 
 		Session* cs = new ClientSession(clientSocket,clientAddress);
 		recv_threads[clientSocket % thread_count]->Join(cs->sock);

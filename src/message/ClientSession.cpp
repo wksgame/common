@@ -168,4 +168,19 @@ namespace kiss
 		
 		return Send();
 	}
+
+	bool ClientSession::OnAttackMonster(const google::protobuf::MessageLite* msg)
+	{
+		c2sAttackMonster* c2s = (c2sAttackMonster*)msg;
+
+		syslogger.info("%s attack %d",user_info->username.c_str(),c2s->monster_id());
+
+		s2cAttackMonster s2c;
+		s2c.set_result(true);
+
+		messageSend.Append(&s2c);
+
+		return Send();
+	}
+
 }//namespace kiss
