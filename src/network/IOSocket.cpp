@@ -1,6 +1,7 @@
 #include"IOSocket.h"
-#include<other/RingBuffer.h>
+#include"other/RingBuffer.h"
 #include<cstring>
+#include<errno.h>
 
 namespace kiss 
 {
@@ -44,13 +45,48 @@ namespace kiss
 		return result;
 	}
 
-	bool TCPIOSocket::Send()
+	bool TCPIOSocket::Send(const char* b, const uint64 size)
 	{
 		const int buffSize = 1024;
 		char tempBuff[buffSize] = {};
 
 		write_mutex.lock();
 			int sendSize = writeBuff->readSize();
+			
+			if(sendSize<=0)		// 缓冲区没有数据，直接走发送
+			{
+				int ss = ::send(sock, b, size, 0);
+				
+				if(ss == size)
+				{
+					write_mutex.unlock();
+					return true;
+				}
+				
+				if(ss == -1 && errno !=EAGAIN)
+				{
+					write_mutex.unlock();
+					return false;
+				}
+			
+				if(ss<0)
+					ss=0;
+				
+				bool result = writeBuff->write(b+ss,size-ss);		// 未发送完的数据写入缓冲区
+				
+				write_mutex.unlock();
+				return result;
+			}
+			else
+			{
+				if(!writeBuff->write(b,size))
+				{
+					write_mutex.unlock();
+					return false;
+				}
+			}
+
+			sendSize = writeBuff->readSize();
 
 			while(sendSize>0)
 			{
@@ -64,7 +100,10 @@ namespace kiss
 				{
 					write_mutex.unlock();
 					
-					return false;
+					if(errno != EAGAIN)
+						return false;
+					else
+						return true;
 				}
 
 				if(_size==0)

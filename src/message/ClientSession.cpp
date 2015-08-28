@@ -26,6 +26,7 @@ namespace kiss
 		messageProcess.RegisterMessage(c2sLogin::id, &ClientSession::OnLogin, new c2sLogin());
 		messageProcess.RegisterMessage(c2sCreateRole::id, &ClientSession::OnCreateRole, new c2sCreateRole());
 		messageProcess.RegisterMessage(c2sSelectRole::id, &ClientSession::OnSelectRole, new c2sSelectRole());
+		messageProcess.RegisterMessage(c2sAttackMonster::id, &ClientSession::OnAttackMonster, new c2sAttackMonster());
 	}
 
 	ClientSession::~ClientSession()
@@ -36,11 +37,9 @@ namespace kiss
 	
 	bool ClientSession::Send()
 	{
-		bool result = sock->Write(messageSend.buff, messageSend.curPos);
+		bool result = sock->Send(messageSend.buff, messageSend.curPos);
 		messageSend.ClearData();
-		
-		if(result)
-			syslogger.info("send ok %d",sock->Socket());
+
 		return result;
 	}
 
@@ -136,6 +135,9 @@ namespace kiss
 		c2sCreateRole* c2s = (c2sCreateRole*)msg;
 
 		if(role_info.size()>=3)
+			return false;
+
+		if(!user_info)
 			return false;
 
 		game::RoleInfo* new_role = work_thread->db->CreateRole(c2s->role_name().c_str(),user_info->id);

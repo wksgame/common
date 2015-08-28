@@ -27,7 +27,7 @@ namespace kiss
 		~TCPIOSocket();
 		
 		bool Recv();
-		bool Send();
+		bool Send(const char* b, const uint64 size);
 		
 		bool Read(char* b, const uint64 size);				// read from buffer
 		bool Write(const char* b, const uint64 size);		// write to buffer

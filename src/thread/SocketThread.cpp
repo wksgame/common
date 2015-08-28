@@ -106,18 +106,18 @@ namespace kiss
 				}
 			}
 			
-			if (FD_ISSET(cs->sock->Socket(), &send_sock))
-			{
-				if (!cs->sock->Send())
-				{
-					//quitClients.push_back(cs);
-				
-					FD_CLR(cs->sock->Socket(),&all_sock);
-					clientsIter = clients.erase(clientsIter);
-					
-					continue;
-				}
-			}
+// 			if (FD_ISSET(cs->sock->Socket(), &send_sock))
+// 			{
+// 				if (!cs->sock->Send())
+// 				{
+// 					//quitClients.push_back(cs);
+// 				
+// 					FD_CLR(cs->sock->Socket(),&all_sock);
+// 					clientsIter = clients.erase(clientsIter);
+// 					
+// 					continue;
+// 				}
+// 			}
 
 			++clientsIter;
 		}

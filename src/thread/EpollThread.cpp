@@ -26,11 +26,11 @@ namespace kiss
 		epoll_event ee;
 
 		ee.events = EPOLLIN
-					|EPOLLOUT
+//					|EPOLLOUT
 					|EPOLLERR
 					|EPOLLRDHUP
-					|EPOLLHUP;
-//					|EPOLLET;
+					|EPOLLHUP
+					|EPOLLET;
 
 		ee.data.ptr = (void*)sock;
 
@@ -71,7 +71,7 @@ namespace kiss
 					continue;
 				}
 			}
-			
+/*			
 			if(events[i].events&EPOLLOUT)
 			{
 				if(!sock->Send())
@@ -80,7 +80,7 @@ namespace kiss
 					sock->enable = false;
 					continue;
 				}
-			}
+			}*/
 		}
 	}
 }//namespace kiss

@@ -86,14 +86,11 @@ public:
 		
 		messageSend.Append(&cts);
 
-		if(!sock->Write(messageSend.buff,messageSend.curPos))
+		if(!sock->Send(messageSend.buff,messageSend.curPos))
 		{
 			logger.error("buff full");
 			return false;
 		}
-		
-		if(!sock->Send())
-			return false;
 
 		messageSend.ClearData();
 
@@ -111,14 +108,11 @@ public:
 
 		messageSend.Append(&cts);
 
-		if(!sock->Write(messageSend.buff,messageSend.curPos))
+		if(!sock->Send(messageSend.buff,messageSend.curPos))
 		{
 			logger.error("buff full");
 			return false;
 		}
-
-		if(!sock->Send())
-			return false;
 
 		messageSend.ClearData();
 
@@ -135,14 +129,11 @@ public:
 
 		messageSend.Append(&cts);
 
-		if(!sock->Write(messageSend.buff,messageSend.curPos))
+		if(!sock->Send(messageSend.buff,messageSend.curPos))
 		{
 			logger.error("buff full");
 			return false;
 		}
-
-		if(!sock->Send())
-			return false;
 
 		messageSend.ClearData();
 
@@ -159,14 +150,11 @@ public:
 
 		messageSend.Append(&cts);
 
-		if(!sock->Write(messageSend.buff,messageSend.curPos))
+		if(!sock->Send(messageSend.buff,messageSend.curPos))
 		{
 			logger.error("buff full");
 			return false;
 		}
-
-		if(!sock->Send())
-			return false;
 
 		messageSend.ClearData();
 
@@ -180,14 +168,11 @@ public:
 
 		messageSend.Append(&cts);
 
-		if(!sock->Write(messageSend.buff,messageSend.curPos))
+		if(!sock->Send(messageSend.buff,messageSend.curPos))
 		{
 			logger.error("buff full");
 			return false;
 		}
-
-		if(!sock->Send())
-			return false;
 
 		messageSend.ClearData();
 
@@ -199,7 +184,7 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			logger.error("%d",sock->Socket());
+			logger.info("%d",sock->Socket());
 		else
 			logger.error("%d",sock->Socket());
 		
@@ -211,7 +196,7 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			logger.error("%d",sock->Socket());
+			logger.info("%d",sock->Socket());
 		else
 			logger.error("%d",sock->Socket());
 
@@ -223,7 +208,7 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			logger.error("%d",sock->Socket());
+			logger.info("%d",sock->Socket());
 		else
 			logger.error("%d",sock->Socket());
 
@@ -235,7 +220,7 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			logger.error("%d",sock->Socket());
+			logger.info("%d",sock->Socket());
 		else
 			logger.error("%d",sock->Socket());
 
@@ -247,7 +232,7 @@ public:
 		s2cAttackMonster* s2c = (s2cAttackMonster*)msg;
 
 		if(s2c->result())
-			logger.error("%d",sock->Socket());
+			logger.info("%d",sock->Socket());
 		else
 			logger.error("%d",sock->Socket());
 

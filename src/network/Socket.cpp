@@ -90,7 +90,10 @@ namespace kiss
 		if (ioctlsocket(sock, FIONBIO, &ul) == SOCKET_ERROR)
 			return false;
 #else
-		fcntl(sock,F_SETFL,O_NONBLOCK);
+		int opts = fcntl(sock,F_GETFL);
+		opts|=O_NONBLOCK;
+		if(fcntl(sock,F_SETFL,O_NONBLOCK)<0)
+			return false;
 #endif
 		return true;
 	}

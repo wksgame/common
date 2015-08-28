@@ -38,7 +38,7 @@ namespace kiss
 		auto result = ProcessMessage(tempBuff, msgSize);
 		msgSize = 0;
 
-		return true;
+		return result;
 	}
 
 	void Session::SetWorkThread(WorkThread* wt)
