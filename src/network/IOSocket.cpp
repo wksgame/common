@@ -30,12 +30,12 @@ namespace kiss
 
 	bool TCPIOSocket::Recv()
 	{
-		const int buffSize = 32 * 1024;
+		const int buffSize = 1024*64;
 		char tempBuff[buffSize] = {};
 
 		auto recv_size = ::recv(sock, tempBuff, buffSize, 0);
 
-		if(recv_size<=0)
+		if(recv_size<=0)		// 调用时表示有数据可以接收，没收到就算出错了
 			return(false);
 
 		read_mutex.lock();
@@ -47,7 +47,7 @@ namespace kiss
 
 	bool TCPIOSocket::Send(const char* b, const uint64 size)
 	{
-		const int buffSize = 1024;
+		const int buffSize = 1024*16;
 		char tempBuff[buffSize] = {};
 
 		write_mutex.lock();
