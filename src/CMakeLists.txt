@@ -29,6 +29,7 @@ set(MESSAGE_DIR		message/Session.cpp
 
 set(NETWORK_DIR		network/Socket.cpp
 					network/IOSocket.cpp
+					network/AcceptSocket.cpp
 )
 
 set(OTHER_DIR		other/DateTime.cpp
