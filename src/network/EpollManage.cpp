@@ -3,7 +3,7 @@
 #include"EpollManage.h"
 #include"message/Session.h"
 
-namespace slg
+namespace kiss
 {
 	EpollManage::EpollManage()
 	{
@@ -19,7 +19,7 @@ namespace slg
 		delete [] events;
 	}
 	
-	bool EpollManage::Join(slg::Session* s)
+	bool EpollManage::Join(Session* s)
 	{
 		epoll_event ee;
 
@@ -66,6 +66,12 @@ namespace slg
 					epoll_ctl(epfd,EPOLL_CTL_DEL,s->sock.GetSocketFD(),nullptr);
 					continue;
 				}
+
+				if(!Process(s))
+				{
+					epoll_ctl(epfd,EPOLL_CTL_DEL,s->sock.GetSocketFD(),nullptr);
+					continue;
+				}
 			}
 /*			
 			if(events[i].events&EPOLLOUT)
@@ -81,4 +87,4 @@ namespace slg
 
 		return true;
 	}
-}//namespace slg
+}//namespace kiss

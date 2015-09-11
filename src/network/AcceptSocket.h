@@ -21,6 +21,9 @@ namespace kiss
 		sockaddr_in address;
 
 	public:
+		bool enable;
+
+	public:
 
 		AcceptSocket(const int sock,const sockaddr_in& address,const int buffSize=64*1024);
 		~AcceptSocket();

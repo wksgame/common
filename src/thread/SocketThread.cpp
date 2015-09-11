@@ -54,10 +54,10 @@ namespace kiss
 			{
 				for (auto i : joinClients)
 				{
-					if(max_sock < i->sock->Socket())
-						max_sock=i->sock->Socket()+1;
+					if(max_sock < i->sock->GetSocketFD())
+						max_sock=i->sock->GetSocketFD()+1;
 
-					FD_SET(i->sock->Socket(), &all_sock);
+					FD_SET(i->sock->GetSocketFD(), &all_sock);
 				}
 
 				clients.insert(clients.end(), joinClients.begin(), joinClients.end());
@@ -83,23 +83,23 @@ namespace kiss
 		while (clientsIter != clients.end())
 		{
 			auto cs = *clientsIter;
-			if (FD_ISSET(cs->sock->Socket(), &err_sock))
+			if (FD_ISSET(cs->sock->GetSocketFD(), &err_sock))
 			{
 				//quitClients.push_back(cs);
 				
-				FD_CLR(cs->sock->Socket(),&all_sock);
+				FD_CLR(cs->sock->GetSocketFD(),&all_sock);
 				clientsIter = clients.erase(clientsIter);
 				
 				continue;
 			}
 
-			if(FD_ISSET(cs->sock->Socket(), &recv_sock))
+			if(FD_ISSET(cs->sock->GetSocketFD(), &recv_sock))
 			{
 				if (!cs->sock->Recv())
 				{
 					//quitClients.push_back(cs);
 				
-					FD_CLR(cs->sock->Socket(),&all_sock);
+					FD_CLR(cs->sock->GetSocketFD(),&all_sock);
 					clientsIter = clients.erase(clientsIter);
 				
 					continue;

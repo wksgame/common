@@ -1,9 +1,10 @@
 #include"EpollThread.h"
 #include<other/DateTime.h>
 #include<platform/platform.h>
-#include<network/IOSocket.h>
+#include<network/AcceptSocket.h>
 #include<logger/logger.h>
 #include<sys/epoll.h>
+#include<defines.h>
 
 namespace kiss 
 {
@@ -21,7 +22,7 @@ namespace kiss
 		SAFE_DELETE_ARRAY(events);
 	}
 	
-	void EpollThread::Join(TCPIOSocket* sock)
+	void EpollThread::Join(AcceptSocket* sock)
 	{
 		epoll_event ee;
 
@@ -34,7 +35,7 @@ namespace kiss
 
 		ee.data.ptr = (void*)sock;
 
-		int result = epoll_ctl(epfd,EPOLL_CTL_ADD,sock->Socket(),&ee);
+		int result = epoll_ctl(epfd,EPOLL_CTL_ADD,sock->GetSocketFD(),&ee);
 		if(result==-1)
 			sock->enable = false;
 	}
@@ -53,11 +54,11 @@ namespace kiss
 
 		for(int i=0; i<selret; ++i)
 		{
-			TCPIOSocket* sock = (TCPIOSocket*)events[i].data.ptr;
+			AcceptSocket* sock = (AcceptSocket*)events[i].data.ptr;
 
 			if(events[i].events&(EPOLLERR|EPOLLRDHUP|EPOLLHUP))
 			{
-				epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),nullptr);
+				epoll_ctl(epfd,EPOLL_CTL_DEL,sock->GetSocketFD(),nullptr);
 				sock->enable = false;
 				continue;
 			}
@@ -66,7 +67,7 @@ namespace kiss
 			{
 				if(!sock->Recv())
 				{
-					epoll_ctl(epfd,EPOLL_CTL_DEL,sock->Socket(),nullptr);
+					epoll_ctl(epfd,EPOLL_CTL_DEL,sock->GetSocketFD(),nullptr);
 					sock->enable = false;
 					continue;
 				}

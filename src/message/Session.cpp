@@ -4,7 +4,7 @@ namespace kiss
 {
 	Session::Session(const int sock, const sockaddr_in& address, const int buffSize)
 	{
-		this->sock = new TCPIOSocket(sock,address,buffSize);
+		this->sock = new AcceptSocket(sock,address,buffSize);
 		msgSize = 0;
 		work_thread = nullptr;
 	}

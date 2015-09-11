@@ -5,7 +5,7 @@
 
 struct epoll_event;
 
-namespace slg
+namespace kiss
 {
 	class Session;
 
@@ -15,8 +15,9 @@ namespace slg
 		EpollManage();
 		~EpollManage();
 		
-		bool Join(Session* sock);
+		bool Join(Session* s);
 		bool Update();
+		bool Process(Session* sock){return true;}
 
 	private:
 		epoll_event* events;
@@ -25,6 +26,6 @@ namespace slg
 		int cur_size;
 		int timeout;
 	};//class EpollManage
-}//namespace slg
+}//namespace kiss
 
 #endif//SLG_EPOLL_MANAGE_H

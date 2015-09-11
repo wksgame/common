@@ -1,7 +1,7 @@
 #ifndef KISS_SESSION_H
 #define KISS_SESSION_H
 
-#include<network/IOSocket.h>
+#include<network/AcceptSocket.h>
 
 namespace kiss
 {
@@ -27,7 +27,7 @@ namespace kiss
 		virtual bool ProcessMessage(const char* data, const int size)=0;
 
 	public:
-		TCPIOSocket* sock;
+		AcceptSocket* sock;
 
 		void SetWorkThread(WorkThread* wt);
 	protected:

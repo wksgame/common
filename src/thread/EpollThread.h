@@ -9,7 +9,7 @@ struct epoll_event;
 
 namespace kiss
 {
-	class TCPIOSocket;
+	class AcceptSocket;
 
 	class EpollThread : public Thread
 	{
@@ -17,7 +17,7 @@ namespace kiss
 		EpollThread(const char* thread_name);
 		~EpollThread();
 		
-		void Join(TCPIOSocket* sock);
+		void Join(AcceptSocket* sock);
 
 	protected:
 		void Run()override;
