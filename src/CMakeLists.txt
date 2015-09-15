@@ -28,8 +28,12 @@ set(MESSAGE_DIR		message/Session.cpp
 )
 
 set(NETWORK_DIR		network/Socket.cpp
-					network/IOSocket.cpp
+					network/TCPSocket.cpp
+					network/ServerSocket.cpp
+					network/TCPIOSocket.cpp
+					network/ClientSocket.cpp
 					network/AcceptSocket.cpp
+					network/EpollManage.cpp
 )
 
 set(OTHER_DIR		other/DateTime.cpp

@@ -5,9 +5,9 @@
 
 namespace kiss
 {
-	EpollManage::EpollManage()
+	EpollManage::EpollManage(const int count)
 	{
-		events_size = 1000;
+		events_size = count;
 		events = new epoll_event[events_size];
 		epfd = epoll_create(events_size);
 		timeout = -1;
@@ -19,7 +19,7 @@ namespace kiss
 		delete [] events;
 	}
 	
-	bool EpollManage::Join(Session* s)
+	bool EpollManage::Add(Session* s)
 	{
 		epoll_event ee;
 
@@ -39,6 +39,11 @@ namespace kiss
 		return true;
 	}
 
+	void EpollManage::Remove(Session* s)
+	{
+		epoll_ctl(epfd,EPOLL_CTL_DEL,s->sock.GetSocketFD(),nullptr);
+	}
+
 	bool EpollManage::Update()
 	{
 		auto selret = epoll_wait(epfd, events, events_size, timeout);
@@ -55,21 +60,21 @@ namespace kiss
 
 			if(events[i].events&EPOLLIN)
 			{
-				if(!s->sock.Recv())
+				if(!s->Recv())
 				{
-					epoll_ctl(epfd,EPOLL_CTL_DEL,s->sock.GetSocketFD(),nullptr);
+					Remove(s);
 					continue;
 				}
 
 				if(!s->Update())
 				{
-					epoll_ctl(epfd,EPOLL_CTL_DEL,s->sock.GetSocketFD(),nullptr);
+					Remove(s);
 					continue;
 				}
 
 				if(!Process(s))
 				{
-					epoll_ctl(epfd,EPOLL_CTL_DEL,s->sock.GetSocketFD(),nullptr);
+					Remove(s);
 					continue;
 				}
 			}

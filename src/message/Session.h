@@ -22,12 +22,14 @@ namespace kiss
 		Session(const int sock,const sockaddr_in& address,const int buffSize);
 		virtual ~Session();
 
+		bool Recv();
 		bool Update();
 
 		virtual bool ProcessMessage(const char* data, const int size)=0;
+		virtual bool SendMessage(const char* data, const int size)=0;
 
 	public:
-		AcceptSocket* sock;
+		AcceptSocket sock;
 
 		void SetWorkThread(WorkThread* wt);
 	protected:

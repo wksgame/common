@@ -1,8 +1,6 @@
 #ifndef SLG_EPOLL_MANAGE_H
 #define SLG_EPOLL_MANAGE_H
 
-#include"hgl/thread/Thread.h"
-
 struct epoll_event;
 
 namespace kiss
@@ -12,10 +10,12 @@ namespace kiss
 	class EpollManage
 	{
 	public:
-		EpollManage();
+		EpollManage(const int count);
 		~EpollManage();
 		
-		bool Join(Session* s);
+		bool Add(Session* s);
+		void Remove(Session* s);
+
 		bool Update();
 		bool Process(Session* sock){return true;}
 

@@ -4,7 +4,7 @@
 #include"other/RingBuffer.h"
 #include<string>
 #include<logger/logger.h>
-#include<network/IOSocket.h>
+#include<network/ClientSocket.h>
 #include<game/GameDB.h>
 #include<game/Player.h>
 #include<thread/WorkThread.h>
@@ -15,10 +15,7 @@ namespace kiss
 {
 	ClientSession::ClientSession(const int sock, const sockaddr_in& address, const int buffSize):Session(sock,address,buffSize),messageProcess(this)
 	{
-//		this->sock = new TCPIOSocket(sock,address,buffSize);
-
 		this;
-		msgSize = 0;
 		cur_time = 0;
 		user_info = nullptr;
 
@@ -31,49 +28,26 @@ namespace kiss
 
 	ClientSession::~ClientSession()
 	{
-		delete sock;
-		sock = nullptr;
 	}
 	
-	bool ClientSession::Send()
-	{
-		bool result = sock->Send(messageSend.buff, messageSend.curPos);
-		messageSend.ClearData();
 
-		return result;
-	}
-
-// 	bool ClientSession::Update()
-// 	{
-// //		this->cur_time = cur_time;
-//
-// 		const int buffSize = 1024;
-// 		char tempBuff[1024] = {};
-//
-// 		if(!sock->enable)
-// 			return false;
-//
-// 		if(msgSize==0)
-// 		{
-// 			if(!sock->Read((char*)&msgSize, 4))
-// 				return true;
-//
-// 			if(msgSize<4 || msgSize>1024)
-// 				return false;
-// 		}
-//
-// 		if(!sock->Read(tempBuff,msgSize))
-// 			return true;
-//
-// 		auto result = messageProcess.Process(tempBuff, msgSize);
-// 		msgSize = 0;
-//
-// 		return true;
-// 	}
 
 	bool ClientSession::ProcessMessage(const char* data, const int size)
 	{
 		return messageProcess.Process(data, size);
+	}
+
+	bool ClientSession::SendMessage(const char* data, const int size)
+	{
+		return sock.Send(data, size);
+	}
+
+	bool ClientSession::SendMessage()
+	{
+		bool result = SendMessage(messageSend.buff, messageSend.curPos);
+		messageSend.ClearData();
+
+		return result;
 	}
 
 	bool ClientSession::OnSignup(const google::protobuf::MessageLite* msg)
@@ -96,7 +70,7 @@ namespace kiss
 		
 		messageSend.Append(&s2c);
 		
-		return Send();
+		return SendMessage();
 	}
 	
 	bool ClientSession::OnLogin(const google::protobuf::MessageLite* msg)
@@ -127,7 +101,7 @@ namespace kiss
 
 		messageSend.Append(&s2c);
 		
-		return Send();
+		return SendMessage();
 	}
 	
 	bool ClientSession::OnCreateRole(const google::protobuf::MessageLite* msg)
@@ -154,7 +128,7 @@ namespace kiss
 
 		messageSend.Append(&s2c);
 		
-		return Send();
+		return SendMessage();
 	}
 	
 	bool ClientSession::OnSelectRole(const google::protobuf::MessageLite* msg)
@@ -168,7 +142,7 @@ namespace kiss
 
 		messageSend.Append(&s2c);
 		
-		return Send();
+		return SendMessage();
 	}
 
 	bool ClientSession::OnAttackMonster(const google::protobuf::MessageLite* msg)
@@ -182,7 +156,7 @@ namespace kiss
 
 		messageSend.Append(&s2c);
 
-		return Send();
+		return SendMessage();
 	}
 
 }//namespace kiss

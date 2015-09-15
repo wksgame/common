@@ -1,5 +1,5 @@
 #include"GameServer.h"
-#include<network/Socket.h>
+#include"network/ServerSocket.h"
 //#include<thread/SocketThread.h>
 #include<thread/EpollThread.h>
 #include<thread/WorkThread.h>
@@ -18,22 +18,13 @@ const unsigned short port = 4000;
 
 bool GameServer::Init()
 {
-	if (!InitNetwork())
-		return false;
-	
 	if(!game::InitGameDB())
 		return false;
 
-	srvSock = new TCPServerSocket();
-	srvSock->CreateSocket(IP_ADDRESS, port);
+	srvSock = new ServerSocket();
+//	srvSock->CreateSocket(IP_ADDRESS, port);
 
-	if(!srvSock->Bind())
-	{
-		LOG_ERROR("server bind socket error");
-		return false;
-	}
-
-	if(!srvSock->Listen(100))
+	if(!srvSock->Init(IP_ADDRESS,port,100))
 	{
 		LOG_ERROR("server listen socket error");
 		return false;
@@ -73,11 +64,9 @@ void GameServer::Run()
 		LOG_INFO("client connect %s:%d",inet_ntoa(clientAddress.sin_addr),clientAddress.sin_port);
 
 		Session* cs = new ClientSession(clientSocket,clientAddress);
-		recv_threads[clientSocket % thread_count]->Join(cs->sock);
+		recv_threads[clientSocket % thread_count]->Join(cs);
 		work_threads[clientSocket % thread_count]->Join(cs);
 	}
-
-	CloseNetwork();
 
 	getchar();
 }

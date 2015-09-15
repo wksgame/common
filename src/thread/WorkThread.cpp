@@ -72,7 +72,7 @@ namespace kiss
 			{
 //				quitClients.push_back(cs);
 				clientsIter = clients.erase(clientsIter);
-				syslogger.warn("client quit socket:%d",cs->sock->GetSocketFD());
+				syslogger.warn("client quit socket:%d",cs->sock.GetSocketFD());
 				SAFE_DELETE(cs);
 			}
 			else

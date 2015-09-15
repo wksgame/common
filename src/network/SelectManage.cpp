@@ -1,16 +1,15 @@
-#include"SocketThread.h"
+#include"SelectManage.h"
 #include"other/RingBuffer.h"
 #include<other/DateTime.h>
 #include<platform/platform.h>
 #include<message/ClientSession.h>
-#include<logger/logger.h>
 #include<string.h>
 
 using namespace std;
 
 namespace kiss
 {
-	SocketThread::SocketThread():Thread("SocketThread")
+	SelectManage::SelectManage()
 	{
 		timeout.tv_sec=1;
 		timeout.tv_usec = 0;
@@ -24,11 +23,11 @@ namespace kiss
 		sleep_time = 0;
 	}
 
-	SocketThread::~SocketThread()
+	SelectManage::~SelectManage()
 	{
 	}
 
-	void SocketThread::Run()
+	void SelectManage::Run()
 	{
 		while (true)
 		{
@@ -36,14 +35,21 @@ namespace kiss
 		}
 	}
 
-	void SocketThread::Join(ClientSession*cs)
+	void SelectManage::Add(Session*s)
 	{
 		joinLock.lock();
-			joinClients.push_back(cs);
+			joinClients.push_back(s);
 		joinLock.unlock();
 	}
 
-	void SocketThread::Update()
+	void SelectManage::Remove(Session* s)
+	{
+		quitLock.lock();
+			quitClients.push_back(s);
+		quitLock.unlock();
+	}
+
+	void SelectManage::Update()
 	{
 		cur_time = NowTime();
 
@@ -86,10 +92,10 @@ namespace kiss
 			if (FD_ISSET(cs->sock.GetSocketFD(), &err_sock))
 			{
 				//quitClients.push_back(cs);
-				
+
 				FD_CLR(cs->sock.GetSocketFD(),&all_sock);
 				clientsIter = clients.erase(clientsIter);
-				
+
 				continue;
 			}
 
@@ -98,23 +104,23 @@ namespace kiss
 				if (!cs->sock.Recv())
 				{
 					//quitClients.push_back(cs);
-				
+
 					FD_CLR(cs->sock.GetSocketFD(),&all_sock);
 					clientsIter = clients.erase(clientsIter);
-				
+
 					continue;
 				}
 			}
-			
+
 // 			if (FD_ISSET(cs->sock->Socket(), &send_sock))
 // 			{
 // 				if (!cs->sock->Send())
 // 				{
 // 					//quitClients.push_back(cs);
-// 				
+//
 // 					FD_CLR(cs->sock->Socket(),&all_sock);
 // 					clientsIter = clients.erase(clientsIter);
-// 					
+//
 // 					continue;
 // 				}
 // 			}
