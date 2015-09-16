@@ -27,15 +27,7 @@ namespace kiss
 	{
 	}
 
-	void SelectManage::Run()
-	{
-		while (true)
-		{
-			Update();
-		}
-	}
-
-	void SelectManage::Add(Session*s)
+	bool SelectManage::Add(Session*s)
 	{
 		joinLock.lock();
 			joinClients.push_back(s);
@@ -129,5 +121,9 @@ namespace kiss
 		}
 
 //		quitClients.clear();
+		for(auto& i:quitClients)
+		{
+			clients.remove(i);
+		}
 	}
 }//namespace kiss

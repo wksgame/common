@@ -34,6 +34,7 @@ set(NETWORK_DIR		network/Socket.cpp
 					network/ClientSocket.cpp
 					network/AcceptSocket.cpp
 					network/EpollManage.cpp
+					network/SelectManage.cpp
 )
 
 set(OTHER_DIR		other/DateTime.cpp
