@@ -43,8 +43,8 @@ set(OTHER_DIR		other/DateTime.cpp
 )
 
 set(THREAD_DIR		thread/Thread.cpp
-					thread/SocketThread.cpp
 					thread/WorkThread.cpp
+					thread/SelectThread.cpp
 					thread/EpollThread.cpp
 )
 

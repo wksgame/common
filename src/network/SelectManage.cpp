@@ -18,9 +18,6 @@ namespace kiss
 		FD_ZERO(&send_sock);
 		FD_ZERO(&err_sock);
 		max_sock = 0;
-		cur_time = 0;
-		last_time = 0;
-		sleep_time = 0;
 	}
 
 	SelectManage::~SelectManage()
@@ -29,53 +26,47 @@ namespace kiss
 
 	bool SelectManage::Add(Session*s)
 	{
-		joinLock.lock();
-			joinClients.push_back(s);
-		joinLock.unlock();
+		joinClients.push_back(s);
 	}
 
 	void SelectManage::Remove(Session* s)
 	{
-		quitLock.lock();
-			quitClients.push_back(s);
-		quitLock.unlock();
+		quitClients.push_back(s);
+	}
+
+	void SelectManage::ProcessAdd()
+	{
+		if(joinClients.size()>0)
+		{
+			for (auto i : joinClients)
+			{
+				if(max_sock < i->sock.GetSocketFD())
+					max_sock=i->sock.GetSocketFD()+1;
+
+				FD_SET(i->sock.GetSocketFD(), &all_sock);
+			}
+
+			clients.insert(clients.end(), joinClients.begin(), joinClients.end());
+			joinClients.clear();
+		}
+	}
+
+	void SelectManage::ProcessRemove()
+	{
+		for(auto& i:quitClients)
+		{
+			clients.remove(i);
+		}
+		quitClients.clear();
 	}
 
 	void SelectManage::Update()
 	{
-		cur_time = NowTime();
-
-		//add new_player
-		if (joinLock.try_lock())
-		{
-			if(joinClients.size()>0)
-			{
-				for (auto i : joinClients)
-				{
-					if(max_sock < i->sock.GetSocketFD())
-						max_sock=i->sock.GetSocketFD()+1;
-
-					FD_SET(i->sock.GetSocketFD(), &all_sock);
-				}
-
-				clients.insert(clients.end(), joinClients.begin(), joinClients.end());
-				joinClients.clear();
-			}
-
-			joinLock.unlock();
-		}
-
-		if (clients.size() <= 0)
-		{
-			WaitTime(1000);
-			return;
-		}
-
 		memcpy(&recv_sock, &all_sock, sizeof(all_sock));
 		memcpy(&send_sock, &all_sock, sizeof(all_sock));
 		memcpy(&err_sock, &all_sock, sizeof(all_sock));
 
-		auto selret = select(max_sock, &recv_sock, &send_sock, &err_sock, nullptr);//&timeout);
+		auto selret = ::select(max_sock, &recv_sock, &send_sock, &err_sock, nullptr);//&timeout);
 
 		auto clientsIter = clients.begin();
 		while (clientsIter != clients.end())
@@ -118,12 +109,6 @@ namespace kiss
 // 			}
 
 			++clientsIter;
-		}
-
-//		quitClients.clear();
-		for(auto& i:quitClients)
-		{
-			clients.remove(i);
 		}
 	}
 }//namespace kiss

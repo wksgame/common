@@ -21,14 +21,16 @@ namespace kiss
 		bool Add(Session* s);
 		void Remove(Session* s);
 
+		void ProcessAdd();
+		void ProcessRemove();
+
 		void Update();
 
 	private:
+
 		std::list<Session*>  clients;
 		std::list<Session*>  joinClients;
 		std::list<Session*>  quitClients;
-		std::mutex joinLock;
-		std::mutex quitLock;
 
 		timeval timeout;
 		fd_set all_sock;
@@ -36,10 +38,6 @@ namespace kiss
 		fd_set send_sock;
 		fd_set err_sock;
 		sock_t max_sock;
-
-		double cur_time;
-		double last_time;
-		double sleep_time;
 	};//class SelectManage
 
 }//namespace kiss
