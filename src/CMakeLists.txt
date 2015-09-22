@@ -4,11 +4,6 @@ if(LOG_OUTPUT)
 	add_definitions(-DLOG_OUTPUT)
 endif(LOG_OUTPUT)
 
-if(WIN32)
-else(WIN32)
-	add_definitions(-std=c++11)
-endif(WIN32)
-
 include_directories(.)
 include_directories(../3rdparty)
 
