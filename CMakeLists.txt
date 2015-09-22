@@ -11,4 +11,5 @@ SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 add_subdirectory(3rdparty)
 add_subdirectory(src)
-add_subdirectory(example)
+add_subdirectory(examples)
+add_subdirectory(tools)
