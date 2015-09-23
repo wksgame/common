@@ -1,11 +1,10 @@
 option(LOG_OUTPUT "LOG_OUTPUT" ON)
-
 if(LOG_OUTPUT)
 	add_definitions(-DLOG_OUTPUT)
 endif(LOG_OUTPUT)
 
-include_directories(.)
-include_directories(../3rdparty)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/3rdparty)
 
 aux_source_directory(io/ IO_DIR)
 
@@ -48,19 +47,24 @@ set(XML_DIR  		xml/XMLParser.cpp
 
 aux_source_directory(game/ GAME_DIR)
 
-add_library(kiss	${GAME_DIR}
-					${IO_DIR}
-					${LOGGER_DIR}
-					${DATABASE_DIR}
-					${MESSAGE_DIR}
-					${NETWORK_DIR}
-					${OTHER_DIR}
-					${THREAD_DIR}
-					${XML_DIR}
+add_library(${PROJECT_NAME} STATIC
+			${GAME_DIR}
+			${IO_DIR}
+			${LOGGER_DIR}
+			${DATABASE_DIR}
+			${MESSAGE_DIR}
+			${NETWORK_DIR}
+			${OTHER_DIR}
+			${THREAD_DIR}
+			${XML_DIR}
 )
 
+#set(CMAKE_LINK_LIBRARY_SUFFIX ".a")
+
 if(WIN32)
-	target_link_libraries(kiss libprotobuf ws2_32.lib)
-else(WIN32)
-	target_link_libraries(kiss protobuf pthread)
+	target_link_libraries(${PROJECT_NAME} libprotobuf ws2_32.lib)
 endif(WIN32)
+
+if(UNIX)
+	target_link_libraries(${PROJECT_NAME} protobuf pthread)
+endif(UNIX)

@@ -21,6 +21,9 @@ namespace kiss
 	
 	bool EpollManage::Add(Session* s)
 	{
+		if(cur_size>=events_size)
+			return false;
+
 		epoll_event ee;
 
 		ee.events = EPOLLIN
@@ -36,6 +39,7 @@ namespace kiss
 		if(result==-1)
 			return false;
 
+		++cur_size;
 		return true;
 	}
 
