@@ -1,22 +1,12 @@
-#include"IOSocket.h"
+#include"TCPIOSocket.h"
 #include"other/RingBuffer.h"
 #include<cstring>
 #include<errno.h>
 
 namespace kiss 
 {
-	TCPIOSocket::TCPIOSocket(const int buffSize)
+	TCPIOSocket::TCPIOSocket(const uint32 buffSize)
 	{
-		readBuff = new RingBuffer(buffSize);
-		writeBuff = new RingBuffer(buffSize);
-		enable = true;
-	}
-
-	TCPIOSocket::TCPIOSocket(const sock_t sock,const sockaddr_in& address,const int buffSize)
-	{
-		this->sock = sock;
-		memcpy(&(this->address),&address,sizeof(address));
-
 		readBuff = new RingBuffer(buffSize);
 		writeBuff = new RingBuffer(buffSize);
 		enable = true;
@@ -33,7 +23,7 @@ namespace kiss
 		const int buffSize = 1024*64;
 		char tempBuff[buffSize] = {};
 
-		auto recv_size = ::recv(sock, tempBuff, buffSize, 0);
+		auto recv_size = ::recv(sockfd, tempBuff, buffSize, 0);
 
 		if(recv_size<=0)		// 调用时表示有数据可以接收，没收到就算出错了
 			return(false);
@@ -55,7 +45,7 @@ namespace kiss
 			
 			if(sendSize<=0)		// 缓冲区没有数据，直接走发送
 			{
-				int ss = ::send(sock, b, size, 0);
+				int ss = ::send(sockfd, b, size, 0);
 				
 				if(ss == size)
 				{
@@ -94,7 +84,7 @@ namespace kiss
 
 				writeBuff->peek(tempBuff,sendSize);
 
-				auto _size = ::send(sock, tempBuff, sendSize, 0);
+				auto _size = ::send(sockfd, tempBuff, sendSize, 0);
 
 				if(_size<0)
 				{

@@ -1,16 +1,10 @@
 option(LOG_OUTPUT "LOG_OUTPUT" ON)
-
 if(LOG_OUTPUT)
 	add_definitions(-DLOG_OUTPUT)
 endif(LOG_OUTPUT)
 
-if(WIN32)
-else(WIN32)
-	add_definitions(-std=c++11)
-endif(WIN32)
-
-include_directories(.)
-include_directories(../3rdparty)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/3rdparty)
 
 aux_source_directory(io/ IO_DIR)
 
@@ -28,7 +22,13 @@ set(MESSAGE_DIR		message/Session.cpp
 )
 
 set(NETWORK_DIR		network/Socket.cpp
-					network/IOSocket.cpp
+					network/TCPSocket.cpp
+					network/ServerSocket.cpp
+					network/TCPIOSocket.cpp
+					network/ClientSocket.cpp
+					network/AcceptSocket.cpp
+					network/EpollManage.cpp
+					network/SelectManage.cpp
 )
 
 set(OTHER_DIR		other/DateTime.cpp
@@ -37,8 +37,8 @@ set(OTHER_DIR		other/DateTime.cpp
 )
 
 set(THREAD_DIR		thread/Thread.cpp
-					thread/SocketThread.cpp
 					thread/WorkThread.cpp
+					thread/SelectThread.cpp
 					thread/EpollThread.cpp
 )
 
@@ -47,20 +47,24 @@ set(XML_DIR  		xml/XMLParser.cpp
 
 aux_source_directory(game/ GAME_DIR)
 
-add_library(kiss	${GAME_DIR}
-					${IO_DIR}
-					${LOGGER_DIR}
-					${DATABASE_DIR}
-					${MESSAGE_DIR}
-					${NETWORK_DIR}
-					${OTHER_DIR}
-					${THREAD_DIR}
-					${XML_DIR}
+add_library(${PROJECT_NAME} STATIC
+			${GAME_DIR}
+			${IO_DIR}
+			${LOGGER_DIR}
+			${DATABASE_DIR}
+			${MESSAGE_DIR}
+			${NETWORK_DIR}
+			${OTHER_DIR}
+			${THREAD_DIR}
+			${XML_DIR}
 )
 
+#set(CMAKE_LINK_LIBRARY_SUFFIX ".a")
+
 if(WIN32)
-	target_link_libraries(kiss libprotobuf ws2_32.lib)
-else(WIN32)
-	target_link_libraries(kiss protobuf pthread)
+	target_link_libraries(${PROJECT_NAME} libprotobuf ws2_32.lib)
 endif(WIN32)
-add_subdirectory(tools)
+
+if(UNIX)
+	target_link_libraries(${PROJECT_NAME} protobuf pthread)
+endif(UNIX)

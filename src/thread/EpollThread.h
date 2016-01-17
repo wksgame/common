@@ -2,14 +2,11 @@
 #define KISS_EPOLL_THREAD_H
 
 #include"Thread.h"
-#include<list>
-#include<mutex>
-
-struct epoll_event;
 
 namespace kiss
 {
-	class TCPIOSocket;
+	class Session;
+	class EpollManage;
 
 	class EpollThread : public Thread
 	{
@@ -17,17 +14,14 @@ namespace kiss
 		EpollThread();
 		~EpollThread();
 		
-		void Join(TCPIOSocket* sock);
+		bool Join(Session* sock);
 
 	protected:
-		void Run()override;
 		void Update();
 
 	private:
-		int epfd;
-		epoll_event* events;
-		int events_size;
-		int timeout;
+		EpollManage* manage;
 	};//class EpollThread
+
 }//namespace kiss
 #endif//KISS_EPOLL_THREAD_H

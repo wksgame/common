@@ -3,7 +3,6 @@
 
 #include<message/ProtobufMessageProcess.h>
 #include<message/ProtobufMessageSend.h>
-#include<network/IOSocket.h>
 #include<vector>
 #include"Session.h"
 
@@ -14,7 +13,6 @@ namespace game
 }
 namespace kiss
 {
-	class TCPIOSocket;
 	class WorkThread;
 
 	class ClientSession : public Session
@@ -31,15 +29,12 @@ namespace kiss
 		int role_count;
 
 	public:
-//		bool Update();
-		virtual bool ProcessMessage(const char* data, const int size)override;
-
-	public:
 		ClientSession(const int sock,const sockaddr_in& address,const int buffSize=32*1024);
-
 		~ClientSession();
-		
-		bool Send();
+
+		bool ProcessMessage(const char* data, const int size)override;
+		bool SendMessage(const char* data, const int size)override;
+		bool SendMessage();
 
 		bool OnSignup(const google::protobuf::MessageLite* msg);
 		bool OnLogin(const google::protobuf::MessageLite* msg);

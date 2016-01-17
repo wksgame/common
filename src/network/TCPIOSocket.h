@@ -1,16 +1,18 @@
-#ifndef KISS_IO_SOCKET_H
-#define KISS_IO_SOCKET_H
+#ifndef KISS_TCP_IO_SOCKET_H
+#define KISS_TCP_IO_SOCKET_H
 
-#include"Socket.h"
-#include<mutex>
+#include"TCPSocket.h"
+#include"thread/Mutex.h"
 #include<atomic>
-#include<thread/Mutex.h>
 
 namespace kiss
 {
 	class RingBuffer;
 
-	class TCPIOSocket:public TCPClientSocket
+	/**
+	 * @brief 有读写需求的TCPSocket
+	 */
+	class TCPIOSocket:public TCPSocket
 	{
 		RingBuffer* readBuff;
 		RingBuffer* writeBuff;
@@ -22,8 +24,7 @@ namespace kiss
 		std::atomic<bool> enable;
 		
 	public:
-		TCPIOSocket(const int buffSize);
-		TCPIOSocket(const sock_t sock,const sockaddr_in& address,const int buffSize);
+		TCPIOSocket(const uint32 buffSize);
 		~TCPIOSocket();
 		
 		bool Recv();
@@ -34,6 +35,9 @@ namespace kiss
 		
 		bool Peek(char* b, const uint64 size);
 		bool Skip(const uint64 size);
-	};
+
+	};//class TCPIOSocket
+
 }//namespace kiss
-#endif//KISS_IO_SOCKET_H
+
+#endif//KISS_TCP_IO_SOCKET_H

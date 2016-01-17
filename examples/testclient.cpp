@@ -1,6 +1,6 @@
 #include<message/ProtobufMessageProcess.h>
 #include<message/ProtobufMessageSend.h>
-#include<network/IOSocket.h>
+#include<network/ClientSocket.h>
 #include<message/msg.pb.h>
 #include<other/DateTime.h>
 #include<logger/logger.h>
@@ -18,7 +18,7 @@ class ClientSession
 	kiss::pb::ProtobufMessageProcess<ClientSession> messageProcess;
 	kiss::pb::ProtobufMessageSend<> messageSend;
 	
-	TCPIOSocket* sock;
+	ClientSocket* sock;
 	
 	int msgId;
 	unsigned int msgSize;
@@ -35,8 +35,8 @@ public:
 		messageProcess.RegisterMessage(s2cSelectRole::id, &ClientSession::OnSelectRole, new s2cSelectRole());
 		messageProcess.RegisterMessage(s2cAttackMonster::id, &ClientSession::OnAttackMonster, new s2cAttackMonster());
 		
-		sock = new TCPIOSocket(1024);
-		sock->CreateSocket("127.0.0.1",4000);
+		sock = new ClientSocket(1024);
+		sock->Init("127.0.0.1",4000);
 		
 		//sock->SetBlockTimeOut(10,0);
 
@@ -78,7 +78,7 @@ public:
 	bool SendCreateAccount()
 	{
 		char account_name[32];
-		snprintf(account_name,32,"name%d",sock->Socket());
+		snprintf(account_name,32,"name%d",sock->GetSocketFD());
 		
 		c2sSignup cts;
 		cts.set_account_name(account_name);
@@ -100,7 +100,7 @@ public:
 	bool SendLogin()
 	{
 		char account_name[32];
-		snprintf(account_name,32,"name%d",sock->Socket());
+		snprintf(account_name,32,"name%d",sock->GetSocketFD());
 
 		c2sLogin cts;
 		cts.set_account_name(account_name);
@@ -122,7 +122,7 @@ public:
 	bool SendCreateRole()
 	{
 		char account_name[32];
-		snprintf(account_name,32,"name%d",sock->Socket());
+		snprintf(account_name,32,"name%d",sock->GetSocketFD());
 
 		c2sCreateRole cts;
 		cts.set_role_name(account_name);
@@ -143,7 +143,7 @@ public:
 	bool SendSelectRole()
 	{
 		char account_name[32];
-		snprintf(account_name,32,"name%d",sock->Socket());
+		snprintf(account_name,32,"name%d",sock->GetSocketFD());
 
 		c2sSelectRole cts;
 		cts.set_role_id(role_id);
@@ -184,9 +184,9 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			logger.info("%d",sock->Socket());
+			logger.info("%d",sock->GetSocketFD());
 		else
-			logger.error("%d",sock->Socket());
+			logger.error("%d",sock->GetSocketFD());
 		
 		return true;
 	}
@@ -196,9 +196,9 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			logger.info("%d",sock->Socket());
+			logger.info("%d",sock->GetSocketFD());
 		else
-			logger.error("%d",sock->Socket());
+			logger.error("%d",sock->GetSocketFD());
 
 		return true;
 	}
@@ -208,9 +208,9 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			logger.info("%d",sock->Socket());
+			logger.info("%d",sock->GetSocketFD());
 		else
-			logger.error("%d",sock->Socket());
+			logger.error("%d",sock->GetSocketFD());
 
 		return true;
 	}
@@ -220,9 +220,9 @@ public:
 		s2cLogin* s2c = (s2cLogin*)msg;
 
 		if(s2c->result())
-			logger.info("%d",sock->Socket());
+			logger.info("%d",sock->GetSocketFD());
 		else
-			logger.error("%d",sock->Socket());
+			logger.error("%d",sock->GetSocketFD());
 
 		return true;
 	}
@@ -232,9 +232,9 @@ public:
 		s2cAttackMonster* s2c = (s2cAttackMonster*)msg;
 
 		if(s2c->result())
-			logger.info("%d",sock->Socket());
+			logger.info("%d",sock->GetSocketFD());
 		else
-			logger.error("%d",sock->Socket());
+			logger.error("%d",sock->GetSocketFD());
 
 		return true;
 	}
@@ -357,8 +357,6 @@ public:
 
 int main()
 {
-	InitNetwork();
-
 	const int count =900;
 	ClientThread* tharr[count];
 
@@ -371,6 +369,5 @@ int main()
 	while(cur_count>0)
 		WaitTime(1000);
 
-	CloseNetwork();
 	return 0;
 }
