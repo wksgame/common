@@ -247,12 +247,20 @@ class ClientThread:public Thread
 
 public:
 	
-	ClientThread(const int index):Thread("ClientThread")
+	ClientThread(const int index):Thread()
 	{
 		this->index = index;
 		cs = new ClientSession();
 
 		++cur_count;
+	}
+
+	void Run()override
+	{
+		while(true)
+		{
+			Update();
+		}
 	}
 
 	void Update()

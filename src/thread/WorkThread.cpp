@@ -9,7 +9,7 @@
 
 namespace kiss
 {
-	WorkThread::WorkThread(const char* thread_name): Thread(thread_name)
+	WorkThread::WorkThread(): Thread()
 	{
 		cur_time = 0;
 		last_time = 0;

@@ -44,7 +44,7 @@ bool GameServer::Init()
 	recv_threads = new EpollThread*[thread_count];
 	for (int i = 0; i < thread_count; ++i)
 	{
-		recv_threads[i] = new EpollThread("EpollThread");
+		recv_threads[i] = new EpollThread();
 
 		recv_threads[i]->Start();
 	}
@@ -52,7 +52,7 @@ bool GameServer::Init()
 	work_threads = new WorkThread*[thread_count];
 	for (int i = 0; i < thread_count; ++i)
 	{
-		work_threads[i] = new WorkThread("WorkThread");
+		work_threads[i] = new WorkThread();
 
 		work_threads[i]->Start();
 	}

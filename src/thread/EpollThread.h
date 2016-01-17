@@ -14,7 +14,7 @@ namespace kiss
 	class EpollThread : public Thread
 	{
 	public:
-		EpollThread(const char* thread_name);
+		EpollThread();
 		~EpollThread();
 		
 		void Join(TCPIOSocket* sock);

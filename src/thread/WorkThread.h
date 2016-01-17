@@ -21,7 +21,7 @@ namespace kiss
 		WorkThread& operator=(const WorkThread&)=delete;
 
 	public:
-		WorkThread(const char* thread_name);
+		WorkThread();
 
 		void Join(Session*cs);
 

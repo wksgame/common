@@ -7,7 +7,7 @@
 
 namespace kiss 
 {
-	EpollThread::EpollThread(const char* thread_name): Thread(thread_name)
+	EpollThread::EpollThread(): Thread()
 	{
 		events_size = 2000;
 		events = new epoll_event[events_size];

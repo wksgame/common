@@ -10,7 +10,7 @@ using namespace std;
 
 namespace kiss
 {
-	SocketThread::SocketThread():Thread("SocketThread")
+	SocketThread::SocketThread():Thread()
 	{
 		timeout.tv_sec=1;
 		timeout.tv_usec = 0;

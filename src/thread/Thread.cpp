@@ -4,17 +4,14 @@
 
 namespace kiss
 {
-	void ThreadFunc(Thread* t)
+	void Thread::ThreadFunc(Thread* t)
 	{
 		t->Run();
-
-		delete t;
 	}
 
-	Thread::Thread(const char* thread_name)
+	Thread::Thread()
 	{
-		strncpy(this->thread_name,thread_name,32);
-		quit=false;
+		//quit=false;
 	}
 
 	void Thread::Start()
@@ -22,13 +19,5 @@ namespace kiss
 		std::thread t(ThreadFunc,this);
 
 		t.detach();
-	}
-
-	void Thread::Run()
-	{
-		while(!quit)
-		{
-			Update();
-		}
 	}
 }
