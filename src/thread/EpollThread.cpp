@@ -4,7 +4,7 @@
 
 namespace kiss 
 {
-	EpollThread::EpollThread(): Thread()
+	EpollThread::EpollThread()
 	{
 		manage = new EpollManage(1000);
 	}
@@ -15,9 +15,17 @@ namespace kiss
 		manage = nullptr;
 	}
 	
-	bool EpollThread::Join(Session* sock)
+	bool EpollThread::Add(AcceptSocket* sock)
 	{
 		return manage->Add(sock);
+	}
+
+	void EpollThread::Run()
+	{
+		while(true)
+		{
+			Update();
+		}
 	}
 
 	void EpollThread::Update()

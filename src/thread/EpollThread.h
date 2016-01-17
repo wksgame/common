@@ -1,26 +1,30 @@
 #ifndef KISS_EPOLL_THREAD_H
 #define KISS_EPOLL_THREAD_H
 
-#include"Thread.h"
+#include"SocketThread.h"
 
 namespace kiss
 {
-	class Session;
+	class AcceptSocket;
 	class EpollManage;
 
-	class EpollThread : public Thread
+	class EpollThread : public SocketThread
 	{
+		EpollThread(const EpollThread&)=delete;
+		EpollThread& operator=(const EpollThread&)=delete;
+		
 	public:
 		EpollThread();
 		~EpollThread();
 		
-		bool Join(Session* sock);
+		bool Add(kiss::AcceptSocket* sock)override;
 
 	protected:
+		void Run()override;
 		void Update();
 
-	private:
-		EpollManage* manage;
+ 	private:
+ 		EpollManage* manage;
 	};//class EpollThread
 
 }//namespace kiss

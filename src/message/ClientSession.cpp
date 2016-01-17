@@ -13,7 +13,7 @@ using namespace std;
 
 namespace kiss
 {
-	ClientSession::ClientSession(const int sock, const sockaddr_in& address, const int buffSize):Session(sock,address,buffSize),messageProcess(this)
+	ClientSession::ClientSession(AcceptSocket* as):Session(as),messageProcess(this)
 	{
 		this;
 		cur_time = 0;
@@ -39,7 +39,7 @@ namespace kiss
 
 	bool ClientSession::SendMessage(const char* data, const int size)
 	{
-		return sock.Send(data, size);
+		return sock->Send(data, size);
 	}
 
 	bool ClientSession::SendMessage()

@@ -6,7 +6,7 @@ using namespace std;
 
 namespace kiss
 {
-	SocketThread::SocketThread():Thread("SocketThread")
+	SelectThread::SelectThread()
 	{
 		manage = new SelectManage();
 		cur_time = 0;
@@ -14,11 +14,11 @@ namespace kiss
 		sleep_time = 0;
 	}
 
-	SocketThread::~SocketThread()
+	SelectThread::~SelectThread()
 	{
 	}
 
-	bool SocketThread::Add(Session* s)
+	bool SelectThread::Add(AcceptSocket* s)
 	{
 		bool result = false;
 
@@ -29,14 +29,14 @@ namespace kiss
 		return result;
 	}
 
-	void SocketThread::Remove(Session* s)
+	void SelectThread::Remove(AcceptSocket* s)
 	{
 		quitLock.lock();
 			manage->Remove(s);
 		quitLock.unlock();
 	}
 
-	void SocketThread::Update()
+	void SelectThread::Update()
 	{
 		if(joinLock.try_lock())
 		{

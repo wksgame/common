@@ -1,27 +1,27 @@
 #ifndef KISS_SELECT_THREAD_H
 #define KISS_SELECT_THREAD_H
 
-#include"Thread.h"
+#include"SocketThread.h"
 #include<list>
 #include<mutex>
 #include<platform/platform.h>
 
 namespace kiss
 {
-	class Session;
+	class AcceptSocket;
 	class SelectManage;
 
-	class SocketThread:public Thread
+	class SelectThread:public SocketThread
 	{
-		SocketThread(const SocketThread&)=delete;
-		SocketThread& operator=(const SocketThread&)=delete;
+		SelectThread(const SelectThread&)=delete;
+		SelectThread& operator=(const SelectThread&)=delete;
 
 	public:
-		SocketThread();
-		~SocketThread();
+		SelectThread();
+		~SelectThread();
 
-		bool Add(Session* s);
-		void Remove(Session* s);
+		bool Add(kiss::AcceptSocket* s)override;
+		void Remove(kiss::AcceptSocket* s);
 
 	protected:
 		void Update();

@@ -4,12 +4,13 @@
 #include<list>
 #include<mutex>
 #include<platform/platform.h>
+#include"SocketManage.h"
 
 namespace kiss
 {
 	class Session;
 
-	class SelectManage
+	class SelectManage : public SocketManage
 	{
 		SelectManage(const SelectManage&)=delete;
 		SelectManage& operator=(const SelectManage&)=delete;
@@ -18,19 +19,19 @@ namespace kiss
 		SelectManage();
 		~SelectManage();
 
-		bool Add(Session* s);
-		void Remove(Session* s);
+		bool Add(AcceptSocket* s);
+		void Remove(AcceptSocket* s);
 
 		void ProcessAdd();
 		void ProcessRemove();
 
-		void Update();
+		bool Update()override;
 
 	private:
 
-		std::list<Session*>  clients;
-		std::list<Session*>  joinClients;
-		std::list<Session*>  quitClients;
+		std::list<AcceptSocket*>  clients;
+		std::list<AcceptSocket*>  joinClients;
+		std::list<AcceptSocket*>  quitClients;
 
 		timeval timeout;
 		fd_set all_sock;

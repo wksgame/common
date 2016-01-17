@@ -24,12 +24,12 @@ namespace kiss
 	{
 	}
 
-	bool SelectManage::Add(Session*s)
+	bool SelectManage::Add(kiss::AcceptSocket* s)
 	{
 		joinClients.push_back(s);
 	}
 
-	void SelectManage::Remove(Session* s)
+	void SelectManage::Remove(kiss::AcceptSocket* s)
 	{
 		quitClients.push_back(s);
 	}
@@ -38,12 +38,12 @@ namespace kiss
 	{
 		if(joinClients.size()>0)
 		{
-			for (auto i : joinClients)
+			for (auto sock : joinClients)
 			{
-				if(max_sock < i->sock.GetSocketFD())
-					max_sock=i->sock.GetSocketFD()+1;
+				if(max_sock < sock->GetSocketFD())
+					max_sock=sock->GetSocketFD()+1;
 
-				FD_SET(i->sock.GetSocketFD(), &all_sock);
+				FD_SET(sock->GetSocketFD(), &all_sock);
 			}
 
 			clients.insert(clients.end(), joinClients.begin(), joinClients.end());
@@ -60,7 +60,7 @@ namespace kiss
 		quitClients.clear();
 	}
 
-	void SelectManage::Update()
+	bool SelectManage::Update()
 	{
 		memcpy(&recv_sock, &all_sock, sizeof(all_sock));
 		memcpy(&send_sock, &all_sock, sizeof(all_sock));
@@ -72,23 +72,23 @@ namespace kiss
 		while (clientsIter != clients.end())
 		{
 			auto cs = *clientsIter;
-			if (FD_ISSET(cs->sock.GetSocketFD(), &err_sock))
+			if (FD_ISSET(cs->GetSocketFD(), &err_sock))
 			{
 				//quitClients.push_back(cs);
 
-				FD_CLR(cs->sock.GetSocketFD(),&all_sock);
+				FD_CLR(cs->GetSocketFD(),&all_sock);
 				clientsIter = clients.erase(clientsIter);
 
 				continue;
 			}
 
-			if(FD_ISSET(cs->sock.GetSocketFD(), &recv_sock))
+			if(FD_ISSET(cs->GetSocketFD(), &recv_sock))
 			{
-				if (!cs->sock.Recv())
+				if (!cs->Recv())
 				{
 					//quitClients.push_back(cs);
 
-					FD_CLR(cs->sock.GetSocketFD(),&all_sock);
+					FD_CLR(cs->GetSocketFD(),&all_sock);
 					clientsIter = clients.erase(clientsIter);
 
 					continue;

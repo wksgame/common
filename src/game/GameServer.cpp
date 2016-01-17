@@ -32,7 +32,7 @@ bool GameServer::Init()
 
 	LOG_HINT("server start listen port:%hd",port);
 
-	recv_threads = new EpollThread*[thread_count];
+	recv_threads = new SocketThread*[thread_count];
 	for (int i = 0; i < thread_count; ++i)
 	{
 		recv_threads[i] = new EpollThread();
@@ -62,9 +62,11 @@ void GameServer::Run()
 			break;
 
 		LOG_INFO("client connect %s:%d",inet_ntoa(clientAddress.sin_addr),clientAddress.sin_port);
+		
+		AcceptSocket* as = new AcceptSocket(clientSocket,clientAddress,1024);
 
-		Session* cs = new ClientSession(clientSocket,clientAddress);
-		recv_threads[clientSocket % thread_count]->Join(cs);
+		Session* cs = new ClientSession(as);
+		recv_threads[clientSocket % thread_count]->Add(as);
 		work_threads[clientSocket % thread_count]->Join(cs);
 	}
 

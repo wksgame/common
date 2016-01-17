@@ -6,15 +6,13 @@ namespace kiss
 	class ServerSocket;
 	class SocketThread;
 	class WorkThread;
-	class EpollThread;
 }
 
 class GameServer
 {
 	kiss::ServerSocket* srvSock;
-	//kiss::SocketThread** recv_threads;
 	kiss::WorkThread** work_threads;
-	kiss::EpollThread** recv_threads;
+	kiss::SocketThread** recv_threads;
 	const int thread_count = 1;
 
 public:

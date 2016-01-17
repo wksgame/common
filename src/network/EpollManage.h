@@ -2,22 +2,22 @@
 #define SLG_EPOLL_MANAGE_H
 
 struct epoll_event;
+#include"SocketManage.h"
 
 namespace kiss
 {
-	class Session;
+	class AcceptSocket;
 
-	class EpollManage
+	class EpollManage :public SocketManage
 	{
 	public:
 		EpollManage(const int count);
 		~EpollManage();
 		
-		bool Add(Session* s);
-		void Remove(Session* s);
+		bool Add(kiss::AcceptSocket* s)override;
+		void Remove(kiss::AcceptSocket* s)override;
 
-		bool Update();
-		bool Process(Session* sock){return true;}
+		bool Update()override;
 
 	private:
 		epoll_event* events;

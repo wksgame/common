@@ -11,25 +11,25 @@ namespace kiss
 
 	class Session
 	{
-		friend SocketThread;
-		friend EpollThread;
+//		friend SocketThread;
+//		friend EpollThread;
 //		friend WorkThread;
 
 		Session(const Session&)=delete;
 		Session& operator=(const Session&)=delete;
 
 	public:
-		Session(const int sock,const sockaddr_in& address,const int buffSize);
+		Session(AcceptSocket* as);
 		virtual ~Session();
 
-		bool Recv();
+		//bool Recv();
 		bool Update();
 
 		virtual bool ProcessMessage(const char* data, const int size)=0;
 		virtual bool SendMessage(const char* data, const int size)=0;
 
 	public:
-		AcceptSocket sock;
+		AcceptSocket* sock;
 
 		void SetWorkThread(WorkThread* wt);
 	protected:

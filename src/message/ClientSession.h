@@ -29,7 +29,7 @@ namespace kiss
 		int role_count;
 
 	public:
-		ClientSession(const int sock,const sockaddr_in& address,const int buffSize=32*1024);
+		ClientSession(kiss::AcceptSocket* as);
 		~ClientSession();
 
 		bool ProcessMessage(const char* data, const int size)override;

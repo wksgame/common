@@ -19,7 +19,7 @@ namespace kiss
 		delete [] events;
 	}
 	
-	bool EpollManage::Add(Session* s)
+	bool EpollManage::Add(AcceptSocket* s)
 	{
 		if(cur_size>=events_size)
 			return false;
@@ -35,7 +35,7 @@ namespace kiss
 
 		ee.data.ptr = (void*)s;
 
-		int result = epoll_ctl(epfd,EPOLL_CTL_ADD,s->sock.GetSocketFD(),&ee);
+		int result = epoll_ctl(epfd,EPOLL_CTL_ADD,s->GetSocketFD(),&ee);
 		if(result==-1)
 			return false;
 
@@ -43,9 +43,9 @@ namespace kiss
 		return true;
 	}
 
-	void EpollManage::Remove(Session* s)
+	void EpollManage::Remove(AcceptSocket* s)
 	{
-		epoll_ctl(epfd,EPOLL_CTL_DEL,s->sock.GetSocketFD(),nullptr);
+		epoll_ctl(epfd,EPOLL_CTL_DEL,s->GetSocketFD(),nullptr);
 	}
 
 	bool EpollManage::Update()
@@ -54,11 +54,11 @@ namespace kiss
 
 		for(int i=0; i<selret; ++i)
 		{
-			Session* s = (Session*)events[i].data.ptr;
+			AcceptSocket* s = (AcceptSocket*)events[i].data.ptr;
 
 			if(events[i].events&(EPOLLERR|EPOLLRDHUP|EPOLLHUP))
 			{
-				epoll_ctl(epfd,EPOLL_CTL_DEL,s->sock.GetSocketFD(),nullptr);
+				epoll_ctl(epfd,EPOLL_CTL_DEL,s->GetSocketFD(),nullptr);
 				continue;
 			}
 
@@ -70,17 +70,17 @@ namespace kiss
 					continue;
 				}
 
-				if(!s->Update())
-				{
-					Remove(s);
-					continue;
-				}
+// 				if(!s->Update())
+// 				{
+// 					Remove(s);
+// 					continue;
+// 				}
 
-				if(!Process(s))
-				{
-					Remove(s);
-					continue;
-				}
+// 				if(!Process(s))
+// 				{
+// 					Remove(s);
+// 					continue;
+// 				}
 			}
 /*			
 			if(events[i].events&EPOLLOUT)
