@@ -26,8 +26,8 @@ namespace kiss
 		bool peek(char* b, const uint64 size);		// for read
 		bool skip(const uint64 size);				// for read
 
-		uint64 readSize(){ return readLeftSize; }	// can read size
-		uint64 writeSize(){return writeLeftSize;}	// can write size
+		uint64 readSize()const{ return readLeftSize; }	// can read size
+		uint64 writeSize()const{return writeLeftSize;}	// can write size
 	};// class Buffer
 }//namespace kiss
 #endif//RING_BUFFER_H
