@@ -23,7 +23,7 @@ namespace kiss
 	public:
 		WorkThread();
 
-		void Join(Session*cs);
+		void Add(Session*cs);
 
 	protected:
 		void Run()override;

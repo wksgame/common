@@ -4,13 +4,13 @@
 #include<list>
 #include<mutex>
 #include<platform/platform.h>
-#include"SocketManage.h"
+#include"ISocketManage.h"
 
 namespace kiss
 {
 	class Session;
 
-	class SelectManage : public SocketManage
+	class SelectManage : public ISocketManage
 	{
 		SelectManage(const SelectManage&)=delete;
 		SelectManage& operator=(const SelectManage&)=delete;

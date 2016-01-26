@@ -25,7 +25,7 @@ namespace kiss
 		}
 	}
 
-	void WorkThread::Join(Session* cs)
+	void WorkThread::Add(Session* cs)
 	{
 		joinLock.lock();
 			//cs->work_thread = this;

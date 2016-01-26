@@ -5,13 +5,13 @@ namespace kiss
 {
 	class AcceptSocket;
 	
-	class SocketManage
+	class ISocketManage
 	{
 	public:
-		virtual ~SocketManage(){}
+		virtual ~ISocketManage(){}
 		
-		virtual bool Add(kiss::AcceptSocket* s)=0;
-		virtual void Remove(kiss::AcceptSocket* s)=0;
+		virtual bool Add(AcceptSocket* s)=0;
+		virtual void Remove(AcceptSocket* s)=0;
 
 		virtual bool Update()=0;
 	};//class SocketManage

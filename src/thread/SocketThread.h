@@ -6,7 +6,7 @@
 namespace kiss
 {
 	class AcceptSocket;
-	class SocketManage;
+	class ISocketManage;
 
 	class SocketThread : public Thread
 	{

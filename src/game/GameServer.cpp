@@ -67,7 +67,7 @@ void GameServer::Run()
 
 		Session* cs = new ClientSession(as);
 		recv_threads[clientSocket % thread_count]->Add(as);
-		work_threads[clientSocket % thread_count]->Join(cs);
+		work_threads[clientSocket % thread_count]->Add(cs);
 	}
 
 	getchar();

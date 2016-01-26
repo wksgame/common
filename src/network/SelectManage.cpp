@@ -55,6 +55,7 @@ namespace kiss
 	{
 		for(auto& i:quitClients)
 		{
+			FD_CLR(i->GetSocketFD(),&all_sock);
 			clients.remove(i);
 		}
 		quitClients.clear();
