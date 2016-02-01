@@ -18,10 +18,11 @@ namespace kiss
 		~EpollThread();
 		
 		bool Add(kiss::AcceptSocket* sock)override;
+		void Remove(kiss::AcceptSocket* s)override;
 
 	protected:
-		void Run()override;
-		void Update();
+		//void Run()override;
+		void Update()override;
 
  	private:
  		EpollManage* manage;

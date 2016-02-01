@@ -11,10 +11,6 @@ namespace kiss
 
 	class Session
 	{
-//		friend SocketThread;
-//		friend EpollThread;
-//		friend WorkThread;
-
 		Session(const Session&)=delete;
 		Session& operator=(const Session&)=delete;
 
@@ -32,8 +28,11 @@ namespace kiss
 		AcceptSocket* sock;
 
 		void SetWorkThread(WorkThread* wt);
+		void SetSocketThread(SocketThread* st);
+		
 	protected:
 		WorkThread* work_thread;
+		SocketThread * socket_thread;
 
 		unsigned int msgSize;		// current process message size
 	};//class Session

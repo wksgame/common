@@ -48,4 +48,9 @@ namespace kiss
 		this->work_thread = wt;
 	}
 
+	void Session::SetSocketThread(SocketThread* st)
+	{
+		this->socket_thread = st;
+	}
+
 }//namespace kiss

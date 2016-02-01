@@ -21,10 +21,10 @@ namespace kiss
 		~SelectThread();
 
 		bool Add(kiss::AcceptSocket* s)override;
-		void Remove(kiss::AcceptSocket* s);
+		void Remove(kiss::AcceptSocket* s)override;
 
 	protected:
-		void Update();
+		void Update()override;
 
 	private:
 		SelectManage* manage;

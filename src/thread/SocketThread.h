@@ -14,11 +14,19 @@ namespace kiss
 		//SocketThread(){}
 		//virtual ~SocketThread(){}
 		
-		virtual bool Add(kiss::AcceptSocket* sock)=0;
+		virtual bool Add(AcceptSocket* sock)=0;
+		virtual void Remove(AcceptSocket* sock)=0;
 
-	//protected:
-//		void Run()=0;
-		//virtual void Update()=0;
+	protected:
+		void Run()override
+		{
+			while(true)
+			{
+				Update();
+			}
+		}
+
+		virtual void Update()=0;
 
 		//SocketManage* manage;
 	};//class SocketThread

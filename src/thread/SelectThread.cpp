@@ -16,6 +16,8 @@ namespace kiss
 
 	SelectThread::~SelectThread()
 	{
+		delete manage;
+		manage = nullptr;
 	}
 
 	bool SelectThread::Add(AcceptSocket* s)

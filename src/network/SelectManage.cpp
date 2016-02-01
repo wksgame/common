@@ -38,7 +38,7 @@ namespace kiss
 	{
 		if(joinClients.size()>0)
 		{
-			for (auto sock : joinClients)
+			for (AcceptSocket* sock : joinClients)
 			{
 				if(max_sock < sock->GetSocketFD())
 					max_sock=sock->GetSocketFD()+1;
@@ -53,7 +53,7 @@ namespace kiss
 
 	void SelectManage::ProcessRemove()
 	{
-		for(auto& i:quitClients)
+		for(AcceptSocket* i:quitClients)
 		{
 			FD_CLR(i->GetSocketFD(),&all_sock);
 			clients.remove(i);

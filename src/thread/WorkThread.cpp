@@ -59,7 +59,7 @@ namespace kiss
 
 		if (clients.size() <= 0)
 		{
-			WaitTime(1000);
+			WaitTime(100);
 			return;
 		}
 

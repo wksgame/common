@@ -20,13 +20,18 @@ namespace kiss
 		return manage->Add(sock);
 	}
 
-	void EpollThread::Run()
+	void EpollThread::Remove(AcceptSocket* s)
 	{
-		while(true)
-		{
-			Update();
-		}
+		return manage->Remove(s);
 	}
+
+// 	void EpollThread::Run()
+// 	{
+// 		while(true)
+// 		{
+// 			Update();
+// 		}
+// 	}
 
 	void EpollThread::Update()
 	{
