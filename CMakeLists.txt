@@ -16,5 +16,5 @@ message("lib path:${LIBRARY_OUTPUT_PATH}")
 
 add_subdirectory(3rdparty)
 add_subdirectory(src)
-add_subdirectory(examples)
-add_subdirectory(tools)
+#add_subdirectory(examples)
+#add_subdirectory(tools)

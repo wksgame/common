@@ -88,25 +88,27 @@ namespace kiss
 		if (readLeftSize < size)
 			return false;
 
-		if (readPos >= writePos)
+		auto _readPos = readPos;
+
+		if (_readPos >= writePos)
 		{
-			uint64 left = buffSize - readPos;
+			uint64 left = buffSize - _readPos;
 			if (left >= size)
 			{
-				memcpy(b, buff + readPos, size);
-				readPos += size;
+				memcpy(b, buff + _readPos, size);
+				_readPos += size;
 			}
 			else
 			{
-				memcpy(b, buff + readPos, left);
+				memcpy(b, buff + _readPos, left);
 				memcpy(b + left, buff, size - left);
-				readPos = size - left;
+				_readPos = size - left;
 			}
 		}
 		else
 		{
-			memcpy(b, buff + readPos, size);
-			readPos += size;
+			memcpy(b, buff + _readPos, size);
+			_readPos += size;
 		}
 		
 		return true;

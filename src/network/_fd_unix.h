@@ -4,5 +4,6 @@
 #include<netinet/in.h>		//sockaddr_in
 #include<arpa/inet.h>		//ip地址转换
 #include<errno.h>
+#include<fcntl.h>
 
 bool SetSocketNoBlock(const int sock);

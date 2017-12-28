@@ -20,7 +20,7 @@ namespace kiss
 
 	bool TCPIOSocket::Recv()
 	{
-		const int buffSize = 1024*64;
+		const int buffSize = 1024*8;
 		char tempBuff[buffSize] = {};
 
 		auto recv_size = ::recv(sockfd, tempBuff, buffSize, 0);

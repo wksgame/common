@@ -1,6 +1,8 @@
 #ifndef KISS_TIME_H
 #define KISS_TIME_H
 
+#include "defines.h"
+
 namespace kiss
 {
 	class Date
@@ -39,9 +41,20 @@ namespace kiss
 
 	};//class Time
 
+	/**
+	 * 获取以秒为单位的double时间
+	 */
 	double NowTime();
-	long long int NowTimeMSec();
-	long long int NowTimeUSec();
+
+	/**
+	 * 获取以毫秒为单位的int64时间
+	 */
+	int64 NowTimeMSec();
+
+	/**
+	 * 获取以微秒为单位的int64时间
+	 */
+	int64 NowTimeUSec();
 
 	void WaitTime(const double milliseconds);
 }//namespace kiss

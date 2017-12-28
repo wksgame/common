@@ -11,7 +11,6 @@ namespace kiss
 
 	Thread::Thread()
 	{
-		//quit=false;
 	}
 
 	void Thread::Start()

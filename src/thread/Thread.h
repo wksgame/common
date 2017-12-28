@@ -1,8 +1,6 @@
 #ifndef KISS_THREAD_H
 #define KISS_THREAD_H
 
-#include<atomic>
-
 namespace kiss
 {
 	class Thread
@@ -19,9 +17,6 @@ namespace kiss
 
 	protected:
 		virtual void Run()=0;
-
-	protected:
-		//std::atomic<bool>	quit;
 	};
 }//namespace kiss
 #endif//KISS_THREAD_H

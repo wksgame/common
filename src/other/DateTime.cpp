@@ -8,8 +8,19 @@
 #	include<sys/time.h>
 #endif
 
+//#include "time.h"
+
 namespace
 {
+	void localtime_m(tm* t, const time_t* now)
+	{
+#ifdef WIN32
+		localtime_s(t, now);
+#else
+		localtime_r(now, t);
+#endif//WIN32
+	}
+
 	time_t boot_time_seconds;
 	tm boot_time;			///<save start time
 
@@ -18,16 +29,11 @@ namespace
 		TimeInit()
 		{
 			boot_time_seconds = time(nullptr);
-			tm* t = localtime(&boot_time_seconds);
+			localtime_m(&boot_time, &boot_time_seconds);
 
-			boot_time.tm_year		= t->tm_year+1900;
-			boot_time.tm_mon		= t->tm_mon+1;
-			boot_time.tm_mday		= t->tm_mday;
-			boot_time.tm_hour		= t->tm_hour;
-			boot_time.tm_min		= t->tm_min;
-			boot_time.tm_sec		= t->tm_sec;
-			boot_time.tm_wday		= t->tm_wday?t->tm_wday:7;
-			boot_time.tm_gmtoff 	= t->tm_gmtoff;
+			boot_time.tm_year		+= 1900;
+			boot_time.tm_mon		+= 1;
+			boot_time.tm_wday		= boot_time.tm_wday?boot_time.tm_wday:7;
 		}
 	};
 
@@ -41,28 +47,30 @@ namespace kiss
 	Date::Date()
 	{
 		auto now_time = time(nullptr);
-		auto t = localtime(&now_time);
+		tm t;
+		localtime_m(&t, &now_time);
 
-		year	= t->tm_year+1900;
-		month	= t->tm_mon+1;
-		day		= t->tm_mday;
-		hour	= t->tm_hour;
-		minute	= t->tm_min;
-		second	= t->tm_sec;
-		weekday	= t->tm_wday?t->tm_wday:7;
+		year	= t.tm_year+1900;
+		month	= t.tm_mon+1;
+		day		= t.tm_mday;
+		hour	= t.tm_hour;
+		minute	= t.tm_min;
+		second	= t.tm_sec;
+		weekday	= t.tm_wday?t.tm_wday:7;
 	}
 
-	Date::Date(const long int time)
+	Date::Date(const time_t time)
 	{
-		auto t = localtime((time_t*)&time);
+		tm t;
+		localtime_m(&t, &time);
 
-		year = t->tm_year + 1900;
-		month = t->tm_mon + 1;
-		day = t->tm_mday;
-		hour = t->tm_hour;
-		minute = t->tm_min;
-		second = t->tm_sec;
-		weekday = t->tm_wday ? t->tm_wday : 7;
+		year = t.tm_year + 1900;
+		month = t.tm_mon + 1;
+		day = t.tm_mday;
+		hour = t.tm_hour;
+		minute = t.tm_min;
+		second = t.tm_sec;
+		weekday = t.tm_wday ? t.tm_wday : 7;
 	}
 
 	int Date::Year()
@@ -123,7 +131,7 @@ namespace kiss
 	#endif//WIN32
 	}
 
-	long long int NowTimeMSec()
+	int64 NowTimeMSec()
 	{
 	#ifdef WIN32
 			return GetLocalTime();
@@ -137,7 +145,7 @@ namespace kiss
 	#endif//WIN32
 	}
 
-	long long int NowTimeUSec()
+	int64 NowTimeUSec()
 	{
 	#ifdef WIN32
 			return GetLocalTime();

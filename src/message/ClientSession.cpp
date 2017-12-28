@@ -60,12 +60,12 @@ namespace kiss
 		if(newaccountid!=-1)
 		{
 			s2c.set_result(true);
-			syslogger.info("account_name %s password %s signup ok",c2s->account_name().c_str(),c2s->password().c_str());
+			LOG_DEBUG("account_name %s password %s signup ok",c2s->account_name().c_str(),c2s->password().c_str());
 		}
 		else
 		{
 			s2c.set_result(false);
-			syslogger.error("account_name %s signup failed",c2s->account_name().c_str());
+			LOG_ERROR("account_name %s signup failed",c2s->account_name().c_str());
 		}
 		
 		messageSend.Append(&s2c);
@@ -80,9 +80,9 @@ namespace kiss
 		user_info = work_thread->db->CheckAccount(c2s->account_name().c_str(),c2s->password().c_str());
 		
 		if(user_info)
-			syslogger.info("account_name %s password %s login ok",c2s->account_name().c_str(),c2s->password().c_str());
+			LOG_DEBUG("account_name %s password %s login ok",c2s->account_name().c_str(),c2s->password().c_str());
 		else
-			syslogger.error("account_name %s login failed",c2s->account_name().c_str());
+			LOG_ERROR("account_name %s login failed",c2s->account_name().c_str());
 		
 		s2cLogin s2c;
 		s2c.set_result(user_info?true:false);
@@ -117,9 +117,9 @@ namespace kiss
 		game::RoleInfo* new_role = work_thread->db->CreateRole(c2s->role_name().c_str(),user_info->id);
 		
 		if(new_role)
-			syslogger.info("account_name %s create role ok role name %s",user_info->username.c_str(),c2s->role_name().c_str());
+			LOG_DEBUG("account_name %s create role ok role name %s",user_info->username.c_str(),c2s->role_name().c_str());
 		else
-			syslogger.error("account_name %s create role failed role name %s",user_info->username.c_str(),c2s->role_name().c_str());
+			LOG_ERROR("account_name %s create role failed role name %s",user_info->username.c_str(),c2s->role_name().c_str());
 		
 		role_info.push_back(new_role);
 		
@@ -135,7 +135,7 @@ namespace kiss
 	{
 		c2sSelectRole* c2s = (c2sSelectRole*)msg;
 
-		syslogger.info("account_name %s role id %d login ok",user_info->username.c_str(),c2s->id);
+		LOG_DEBUG("account_name %s role id %d login ok",user_info->username.c_str(),c2s->id);
 		
 		s2cSelectRole s2c;
 		s2c.set_result(true);
@@ -149,7 +149,7 @@ namespace kiss
 	{
 		c2sAttackMonster* c2s = (c2sAttackMonster*)msg;
 
-		syslogger.info("%s attack %d",user_info->username.c_str(),c2s->monster_id());
+		LOG_DEBUG("%s attack %d",user_info->username.c_str(),c2s->monster_id());
 
 		s2cAttackMonster s2c;
 		s2c.set_result(true);

@@ -3,11 +3,8 @@
 
 #include<string>
 #include<list>
+#include "defines.h"
 
-typedef int						int32;
-typedef unsigned int			uint32;
-typedef long long int			int64;
-typedef unsigned long long int  uint64;
 typedef std::string redis_string;
 typedef std::list<std::string> redis_string_list;
 

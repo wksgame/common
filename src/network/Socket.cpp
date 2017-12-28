@@ -32,7 +32,7 @@ namespace kiss
 		auto sock = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if ( sock == SOCKET_ERROR )
 		{
-			syslogger.error("Create Socket Failed");
+			LOG_ERROR("Create Socket Failed");
 			return SOCKET_ERROR;
 		}
  

@@ -30,7 +30,7 @@ bool GameServer::Init()
 		return false;
 	}
 
-	LOG_HINT("server start listen port:%hd",port);
+	LOG_INFO("server start listen port:%hd",port);
 
 	recv_threads = new SocketThread*[thread_count];
 	for (int i = 0; i < thread_count; ++i)
